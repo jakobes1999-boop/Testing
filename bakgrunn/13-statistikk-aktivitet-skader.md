@@ -109,9 +109,71 @@ Kilder: kondis.no («Turrenn på retrett i skinasjonen Norge»; turrenn-topplist
 - **Finans Norge:** åpen forsikringsstatistikk finnes, men ingen egen kategori for idretts-/skiskader.
 - **Skadeforebyggende forum:** har ikke egen skistatistikk; nyttig som metodikk-/nettverksinngang.
 
-## 5. SSB — skideltakelse i befolkningen
+## 5. SSB — skideltakelse og idrettsaktivitet i befolkningen
 
-*(Fylles inn: SSB-agenten har identifisert tabellene 13372, 09116, 13404, 09137 og 14406 i Statistikkbanken — tall sammenstilles i endelig leveranse.)*
+Kilde: SSB Statistikkbanken (Levekårsundersøkelsen om idrett og friluftsliv / EU-SILC). URL-mønster: https://www.ssb.no/statbank/table/&lt;tabellnummer&gt;
+
+### Tabell 13372 — Skideltakelse siste 12 måneder, voksne 16+ (2021 og 2024)
+
+| Aktivitet | Alder | 2021 | 2024 |
+|---|---|---|---|
+| Skitur i fjell, skog eller mark, i alt | Alle (16+) | 38,6 % | 33,6 % |
+| — 16–24 år | | 45,7 % | 37,4 % |
+| — 25–44 år | | 44,5 % | 38,1 % |
+| — 45–66 år | | 40,8 % | 37,0 % |
+| — 67+ år | | 19,5 % | 18,1 % |
+| Skitur > 3 timer | Alle | 19,2 % | 13,7 % |
+| Alpint/snowboard/randonee e.l. | Alle | 18,4 % | 21,1 % |
+| — 16–24 år | | 38,4 % | 43,9 % |
+| — 25–44 år | | 24,5 % | 28,0 % |
+
+Absolutte tall: skitur **1 685 000** personer (2021) → **1 524 000** (2024); alpint/snowboard/randonee **804 000** (2021) → **958 000** (2024).
+
+### Tabell 09116 — Tidsserie 2011–2020, voksne 16+ (avsluttet serie)
+
+Andel som deltok minst én gang siste 12 mnd.:
+
+| Aktivitet | 2011 | 2014 | 2017 | 2020 |
+|---|---|---|---|---|
+| Lengre skitur i skog/fjell | 29 % | 25 % | 23 % | 21 % |
+| Kortere skitur i skog/fjell | 42 % | 39 % | 34 % | 33 % |
+| Alpint, snowboard eller telemark | 24 % | 22 % | 22 % | 20 % |
+
+Merk: 09116 (2011–2020) og 13372 (2021–) har ulik spørsmålsformulering — seriebrudd i 2021.
+
+### Tabell 14406 — Barn 6–15 år, skifrekvens (2024)
+
+| Frekvens | Langrenn | Slalåm/snowboard |
+|---|---|---|
+| Aldri | 25,4 % | 41,5 % |
+| Sjeldnere enn månedlig | 33,3 % | 25,6 % |
+| 1–3 ganger i måneden | 27,1 % | 20,7 % |
+| Én gang i uka | 8,3 % | 6,5 % |
+| Flere ganger i uka | 6,0 % | 5,7 % |
+
+Ca. 75 % av barn 6–15 år går på ski minst én gang, men bare ca. 14 % ukentlig eller oftere.
+
+### Tabell 13404 — Organisert trening og konkurransedeltakelse, 16+
+
+| Variabel | Alder | 2021 | 2024 |
+|---|---|---|---|
+| Trent/mosjonert med idrettslag | Alle | 8,9 % | 11,4 % |
+| — 16–24 år | | 23,2 % | 27,1 % |
+| **Deltatt i idrettskonkurranse** | Alle | 5,0 % | 9,9 % |
+| — 16–24 år | | 15,7 % | 24,8 % |
+| — 25–44 år | | 4,8 % | 13,1 % |
+| — 45–66 år | | 3,5 % | 5,8 % |
+
+(2021 trolig pandemipreget.)
+
+### Tabell 09137 — Medlemskap i idrettslag, 16+ (2011–2020)
+
+| Alder | 2011 | 2014 | 2017 | 2020 |
+|---|---|---|---|---|
+| Alle (16+) | 27 % | 25 % | 25 % | 26 % |
+| 16–24 år | 31 % | 27 % | 29 % | 31 % |
+
+**Tolkning:** Skiturgåing er bred, men fallende — særlig lange skiturer (fra 29 % i 2011 til 13,7 % i 2024, med forbehold om seriebrudd), mens alpint/snowboard vokser, særlig blant unge (44 % av 16–24-åringer i 2024). Bare ca. 10 % av voksne deltok i idrettskonkurranse i 2024. Det hyppige skimiljøet er en liten kjerne av en stor, sporadisk skibefolkning — markedet for engangs-/turrennlisens ligger i dette store, uorganiserte sjiktet. Trendene speiler NSF-tallene: langrennsdominansen svekkes, alpint/freestyle vokser.
 
 ## 6. Kunnskapshull utvalget bør merke seg
 

@@ -65,7 +65,7 @@ Litteraturen om øremerkede avgifter (Buchanan 1963) gir løsningen: **øremerki
 
 ### 4.2 Forbundets dobbeltrolle
 
-Et særforbund er samtidig regulator (setter lisenskrav) og økonomisk interessent (mottar lisensinntekt) i samme marked — den dobbeltrollen som EU-domstolen problematiserte i ISU- og Super League-sakene (jf. Weatherill; `bakgrunn/16`). Rettslig er et ikke-diskriminerende lisenskrav for egne terminfestede renn trolig trygt; *prinsipielt* tilsier dobbeltrolle-logikken likevel selvpålagte skranker: objektive kriterier, kostnadsbasert prising av det obligatoriske elementet, og en klageadgang. Jo mer lisensen ligner en kostnadsriktig forsikringspremie pluss et symbolsk startgebyr, desto mindre angripelig er ordningen — juridisk og omdømmemessig.
+Et særforbund er samtidig regulator (setter lisenskrav) og økonomisk interessent (mottar lisensinntekt) i samme marked. EU-domstolens fremste presedens er her **MOTOE-dommen (C-49/07)**: et forbund som blander regulatorisk myndighet med kommersiell virksomhet kan ikke påberope seg immunitet fra konkurranseretten — og domstolen regnet uttrykkelig *forsikringskontrakter* som del av det relevante markedet (Weatherill 2014, kap. 18). Samme logikk ble videreført i ISU- og Super League-dommene (des. 2023; jf. `bakgrunn/16`). Rettslig er et ikke-diskriminerende lisenskrav for egne terminfestede renn trolig trygt; *prinsipielt* tilsier dobbeltrolle-logikken likevel selvpålagte skranker: objektive kriterier, kostnadsbasert prising av det obligatoriske elementet, og en klageadgang. Jo mer lisensen ligner en kostnadsriktig forsikringspremie pluss et symbolsk startgebyr, desto mindre angripelig er ordningen — juridisk og omdømmemessig.
 
 ### 4.3 Solidaritet som eksplisitt valg
 

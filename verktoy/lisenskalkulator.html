@@ -1,0 +1,389 @@
+<title>Skilisens – scenariokalkulator</title>
+<style>
+  :root {
+    --page: #f9f9f7; --surface: #fcfcfb;
+    --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --baseline: #c3c2b7; --ring: rgba(11,11,11,0.10);
+    --accent: #256abf; --accent-ink: #ffffff;
+    --s1: #2a78d6; --s2: #1baf7a;
+    --good: #006300; --bad: #d03b3b;
+    --input-bg: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #0d0d0d; --surface: #1a1a19;
+      --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --baseline: #383835; --ring: rgba(255,255,255,0.10);
+      --accent: #3987e5; --accent-ink: #0b0b0b;
+      --s1: #3987e5; --s2: #199e70;
+      --good: #0ca30c; --bad: #e66767;
+      --input-bg: #111110;
+    }
+  }
+  :root[data-theme="light"] {
+    --page: #f9f9f7; --surface: #fcfcfb;
+    --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --baseline: #c3c2b7; --ring: rgba(11,11,11,0.10);
+    --accent: #256abf; --accent-ink: #ffffff;
+    --s1: #2a78d6; --s2: #1baf7a;
+    --good: #006300; --bad: #d03b3b;
+    --input-bg: #ffffff;
+  }
+  :root[data-theme="dark"] {
+    --page: #0d0d0d; --surface: #1a1a19;
+    --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --baseline: #383835; --ring: rgba(255,255,255,0.10);
+    --accent: #3987e5; --accent-ink: #0b0b0b;
+    --s1: #3987e5; --s2: #199e70;
+    --good: #0ca30c; --bad: #e66767;
+    --input-bg: #111110;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink);
+    font: 15px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 32px 20px 64px; }
+  header.top { margin-bottom: 24px; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 6px;
+  }
+  h1 { font-size: 26px; margin: 0 0 6px; text-wrap: balance; }
+  .lede { color: var(--ink-2); max-width: 68ch; margin: 0; }
+  .note {
+    margin-top: 14px; padding: 10px 14px; border: 1px solid var(--ring);
+    border-left: 3px solid var(--accent); border-radius: 6px;
+    background: var(--surface); color: var(--ink-2); font-size: 13.5px; max-width: 78ch;
+  }
+  h2 { font-size: 17px; margin: 36px 0 4px; }
+  .sub { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--ring);
+    border-radius: 10px; padding: 16px 18px;
+  }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; min-width: 780px; }
+  th, td { text-align: right; padding: 7px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+  th { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: 0.02em; }
+  th:first-child, td:first-child { text-align: left; }
+  td.num, th.num { font-variant-numeric: tabular-nums; }
+  tbody tr:last-child td { border-bottom: none; }
+  tfoot td { border-top: 2px solid var(--baseline); border-bottom: none; font-weight: 600; }
+  input[type="number"], input[type="text"] {
+    width: 96px; padding: 5px 7px; border: 1px solid var(--baseline); border-radius: 6px;
+    background: var(--input-bg); color: var(--ink); font: inherit;
+    font-variant-numeric: tabular-nums; text-align: right;
+  }
+  input[type="text"].name { width: 200px; text-align: left; }
+  input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .delta-pos { color: var(--good); font-weight: 600; }
+  .delta-neg { color: var(--bad); font-weight: 600; }
+
+  .globals { display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: end; }
+  .globals label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--ink-2); }
+  .btnrow { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  button {
+    font: inherit; font-size: 13.5px; padding: 7px 14px; border-radius: 7px;
+    border: 1px solid var(--baseline); background: var(--surface); color: var(--ink); cursor: pointer;
+  }
+  button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  button:hover { border-color: var(--accent); }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin: 14px 0 6px; }
+  .tile { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; padding: 14px 16px; }
+  .tile .k { font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .tile .v { font-size: 24px; font-weight: 650; line-height: 1.15; }
+  .tile .d { font-size: 13px; margin-top: 3px; }
+
+  .legend { display: flex; gap: 18px; font-size: 13px; color: var(--ink-2); margin: 4px 0 10px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+  #chart { width: 100%; }
+  .tip {
+    position: fixed; pointer-events: none; z-index: 10; display: none;
+    background: var(--surface); border: 1px solid var(--ring); border-radius: 8px;
+    padding: 8px 11px; font-size: 12.5px; box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    font-variant-numeric: tabular-nums;
+  }
+  .tip b { display: block; margin-bottom: 2px; }
+  footer { margin-top: 40px; color: var(--muted); font-size: 12.5px; max-width: 80ch; }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <p class="eyebrow">Utvalg for Skilisens · arbeidsverktøy</p>
+    <h1>Scenariokalkulator for lisensøkonomi</h1>
+    <p class="lede">Test hvordan endringer i priser, segmenter og volum slår ut i brutto lisensinntekt,
+    forsikringspremie og netto proveny. Alle felter kan redigeres; tallene regnes om fortløpende og lagres lokalt i nettleseren.</p>
+    <p class="note"><strong>Forutsetninger, ikke fasit:</strong> Startverdiene under er <em>eksempeltall</em> som kun viser
+    mekanikken. Erstatt dem med faktiske volum- og økonomitall fra NSF-administrasjonen og Söderberg &amp; Partners
+    (bestillingsliste pkt. 3–5) før kalkulatoren brukes i utvalgets vurderinger.</p>
+  </header>
+
+  <h2>1 · Segmenter</h2>
+  <p class="sub">Volum og pris per lisenssegment. Priselastisitet: forventet %-endring i volum ved 1 % prisøkning (0 = ingen effekt, −0,3 = moderat følsomhet).</p>
+  <div class="card tablewrap">
+    <table id="segTable">
+      <thead>
+        <tr>
+          <th>Segment</th>
+          <th class="num">Antall i dag</th>
+          <th class="num">Pris i dag (kr)</th>
+          <th class="num">Ny pris (kr)</th>
+          <th class="num">Elastisitet</th>
+          <th class="num">Nytt antall</th>
+          <th class="num">Inntekt i dag</th>
+          <th class="num">Inntekt scenario</th>
+          <th class="num">Endring</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td>Sum</td>
+          <td class="num" id="tVol0"></td><td></td><td></td><td></td>
+          <td class="num" id="tVol1"></td>
+          <td class="num" id="tRev0"></td>
+          <td class="num" id="tRev1"></td>
+          <td class="num" id="tDelta"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div class="btnrow">
+    <button id="addRow">+ Legg til segment</button>
+    <button id="reset">Nullstill til eksempeltall</button>
+    <button id="exportCsv" class="primary">Eksporter CSV</button>
+  </div>
+
+  <h2>2 · Kostnadsforutsetninger</h2>
+  <p class="sub">Brukes til å regne netto proveny (det som blir igjen til forbund/formål etter forsikring og administrasjon).</p>
+  <div class="card globals">
+    <label>Forsikringspremie, kr per helårslisens
+      <input type="number" id="premYear" value="250" min="0" step="10">
+    </label>
+    <label>Forsikringspremie, kr per engangslisens
+      <input type="number" id="premOnce" value="40" min="0" step="5">
+    </label>
+    <label>Administrasjon, % av bruttoinntekt
+      <input type="number" id="adminPct" value="8" min="0" max="100" step="0.5">
+    </label>
+  </div>
+
+  <h2>3 · Resultat</h2>
+  <div class="tiles" id="tiles"></div>
+
+  <h2>4 · Inntekt per segment – i dag mot scenario</h2>
+  <div class="legend">
+    <span><span class="sw" style="background:var(--s1)"></span>I dag</span>
+    <span><span class="sw" style="background:var(--s2)"></span>Scenario</span>
+  </div>
+  <div class="card"><svg id="chart" role="img" aria-label="Stolpediagram: lisensinntekt per segment, i dag mot scenario"></svg></div>
+
+  <footer>
+    Modell: nytt antall = antall i dag × (1 + elastisitet × prosentvis prisendring), avgrenset nedad til 0.
+    Netto proveny = bruttoinntekt − forsikringspremie (per lisens × antall) − administrasjon (% av brutto).
+    Engangslisens-segmenter merkes med «engangs» i navnet for å få engangspremien.
+    Verktøyet er laget for utvalgets interne følsomhetsanalyser og erstatter ikke forsikringsteknisk prising fra megler.
+  </footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+(function () {
+  const DEFAULTS = [
+    { name: "Helår grunn, 13–25 år",      vol: 8000,  p0: 500,  p1: 500,  el: -0.1 },
+    { name: "Helår utvidet, 13–25 år",    vol: 4000,  p0: 900,  p1: 900,  el: -0.1 },
+    { name: "Helår grunn, 26 år +",       vol: 6000,  p0: 750,  p1: 750,  el: -0.3 },
+    { name: "Helår utvidet, 26 år +",     vol: 3000,  p0: 1300, p1: 1300, el: -0.3 },
+    { name: "Engangs, terminfestet renn", vol: 5000,  p0: 150,  p1: 150,  el: -0.4 },
+    { name: "Engangs, turrenn",           vol: 15000, p0: 150,  p1: 150,  el: -0.6 },
+  ];
+  const KEY = "skilisens-kalkulator-v1";
+  const nf0 = new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 0 });
+  const kr = n => nf0.format(Math.round(n)) + " kr";
+
+  let state = load();
+  function load() {
+    try {
+      const s = JSON.parse(localStorage.getItem(KEY));
+      if (s && Array.isArray(s.rows)) return s;
+    } catch (e) {}
+    return { rows: DEFAULTS.map(r => ({ ...r })), premYear: 250, premOnce: 40, adminPct: 8 };
+  }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  const tbody = document.querySelector("#segTable tbody");
+  const tip = document.getElementById("tip");
+
+  function calc(r) {
+    const chg = r.p0 > 0 ? (r.p1 - r.p0) / r.p0 : 0;
+    const vol1 = Math.max(0, r.vol * (1 + r.el * chg * 100 / 100 * 100 / 100 * 100) / 100 * 100 / 100);
+    return vol1;
+  }
+  // (ryddig versjon – elastisitet er per 1 % prisendring)
+  function newVol(r) {
+    const pctChange = r.p0 > 0 ? ((r.p1 - r.p0) / r.p0) * 100 : 0;
+    return Math.max(0, r.vol * (1 + (r.el * pctChange) / 100));
+  }
+
+  function renderRows() {
+    tbody.innerHTML = "";
+    state.rows.forEach((r, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td><input type="text" class="name" data-i="' + i + '" data-k="name"></td>' +
+        '<td class="num"><input type="number" min="0" step="100" data-i="' + i + '" data-k="vol"></td>' +
+        '<td class="num"><input type="number" min="0" step="25" data-i="' + i + '" data-k="p0"></td>' +
+        '<td class="num"><input type="number" min="0" step="25" data-i="' + i + '" data-k="p1"></td>' +
+        '<td class="num"><input type="number" step="0.05" data-i="' + i + '" data-k="el"></td>' +
+        '<td class="num" data-out="vol1"></td>' +
+        '<td class="num" data-out="rev0"></td>' +
+        '<td class="num" data-out="rev1"></td>' +
+        '<td class="num" data-out="delta"></td>';
+      tbody.appendChild(tr);
+      tr.querySelectorAll("input").forEach(inp => {
+        const k = inp.dataset.k;
+        inp.value = r[k];
+        inp.addEventListener("input", () => {
+          state.rows[i][k] = k === "name" ? inp.value : parseFloat(inp.value) || 0;
+          recompute(); save();
+        });
+      });
+    });
+  }
+
+  function recompute() {
+    let v0 = 0, v1 = 0, rev0 = 0, rev1 = 0, prem1 = 0;
+    state.rows.forEach((r, i) => {
+      const nv = newVol(r);
+      const r0 = r.vol * r.p0, r1 = nv * r.p1;
+      v0 += r.vol; v1 += nv; rev0 += r0; rev1 += r1;
+      const isOnce = /engangs/i.test(r.name);
+      prem1 += nv * (isOnce ? state.premOnce : state.premYear);
+      const tr = tbody.children[i];
+      if (!tr) return;
+      tr.querySelector('[data-out="vol1"]').textContent = nf0.format(Math.round(nv));
+      tr.querySelector('[data-out="rev0"]').textContent = kr(r0);
+      tr.querySelector('[data-out="rev1"]').textContent = kr(r1);
+      const d = r1 - r0;
+      const cell = tr.querySelector('[data-out="delta"]');
+      cell.textContent = (d >= 0 ? "+" : "−") + kr(Math.abs(d));
+      cell.className = "num " + (d >= 0 ? "delta-pos" : "delta-neg");
+    });
+    document.getElementById("tVol0").textContent = nf0.format(Math.round(v0));
+    document.getElementById("tVol1").textContent = nf0.format(Math.round(v1));
+    document.getElementById("tRev0").textContent = kr(rev0);
+    document.getElementById("tRev1").textContent = kr(rev1);
+    const td = document.getElementById("tDelta");
+    td.textContent = (rev1 - rev0 >= 0 ? "+" : "−") + kr(Math.abs(rev1 - rev0));
+    td.className = "num " + (rev1 - rev0 >= 0 ? "delta-pos" : "delta-neg");
+
+    const admin1 = rev1 * state.adminPct / 100;
+    const netto1 = rev1 - prem1 - admin1;
+    // dagens netto med samme forutsetninger
+    let prem0 = 0;
+    state.rows.forEach(r => { prem0 += r.vol * (/engangs/i.test(r.name) ? state.premOnce : state.premYear); });
+    const netto0 = rev0 - prem0 - rev0 * state.adminPct / 100;
+
+    renderTiles([
+      { k: "Bruttoinntekt, scenario", v: kr(rev1), d: diff(rev1, rev0) },
+      { k: "Forsikringspremie", v: kr(prem1), d: diff(prem1, prem0) },
+      { k: "Netto proveny, scenario", v: kr(netto1), d: diff(netto1, netto0) },
+      { k: "Antall lisenser", v: nf0.format(Math.round(v1)), d: diff(v1, v0, true) },
+    ]);
+    renderChart();
+  }
+
+  function diff(a, b, plain) {
+    const d = a - b;
+    if (Math.abs(d) < 0.5) return '<span style="color:var(--muted)">uendret fra i dag</span>';
+    const pct = b !== 0 ? " (" + (d / b * 100).toFixed(1).replace(".", ",") + " %)" : "";
+    const cls = d >= 0 ? "delta-pos" : "delta-neg";
+    const val = plain ? nf0.format(Math.round(Math.abs(d))) : kr(Math.abs(d));
+    return '<span class="' + cls + '">' + (d >= 0 ? "+" : "−") + val + pct + "</span> mot i dag";
+  }
+
+  function renderTiles(items) {
+    document.getElementById("tiles").innerHTML = items.map(t =>
+      '<div class="tile"><div class="k">' + t.k + '</div><div class="v">' + t.v + '</div><div class="d">' + t.d + "</div></div>"
+    ).join("");
+  }
+
+  function renderChart() {
+    const svg = document.getElementById("chart");
+    const rows = state.rows;
+    const W = Math.max(svg.clientWidth || 900, 600);
+    const rowH = 52, padL = 10, padR = 90, padT = 8;
+    const H = padT + rows.length * rowH + 24;
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    svg.style.height = H + "px";
+    const max = Math.max(1, ...rows.flatMap(r => [r.vol * r.p0, newVol(r) * r.p1]));
+    const x = v => padL + (v / max) * (W - padL - padR);
+    const css = getComputedStyle(document.documentElement);
+    const c1 = css.getPropertyValue("--s1").trim(), c2 = css.getPropertyValue("--s2").trim();
+    const inkMut = css.getPropertyValue("--muted").trim();
+    const ink2 = css.getPropertyValue("--ink-2").trim();
+    let out = "";
+    rows.forEach((r, i) => {
+      const y = padT + i * rowH;
+      const v0 = r.vol * r.p0, v1 = newVol(r) * r.p1;
+      out += '<text x="' + padL + '" y="' + (y + 11) + '" font-size="12" fill="' + ink2 + '">' + esc(r.name) + "</text>";
+      out += bar(x(v0), y + 17, 9, c1, i, 0) + '<text x="' + (x(v0) + 6) + '" y="' + (y + 25) + '" font-size="11" fill="' + inkMut + '">' + nf0.format(Math.round(v0)) + "</text>";
+      out += bar(x(v1), y + 30, 9, c2, i, 1) + '<text x="' + (x(v1) + 6) + '" y="' + (y + 38) + '" font-size="11" fill="' + inkMut + '">' + nf0.format(Math.round(v1)) + "</text>";
+    });
+    out += '<line x1="' + padL + '" y1="' + (H - 16) + '" x2="' + (W - padR) + '" y2="' + (H - 16) + '" stroke="' + css.getPropertyValue("--baseline").trim() + '" stroke-width="1"/>';
+    svg.innerHTML = out;
+    svg.querySelectorAll("rect").forEach(rect => {
+      rect.addEventListener("mousemove", ev => {
+        const i = +rect.dataset.i, s = +rect.dataset.s, r = rows[i];
+        const val = s === 0 ? r.vol * r.p0 : newVol(r) * r.p1;
+        tip.style.display = "block";
+        tip.innerHTML = "<b>" + esc(r.name) + "</b>" + (s === 0 ? "I dag: " : "Scenario: ") + kr(val);
+        tip.style.left = Math.min(ev.clientX + 14, innerWidth - 230) + "px";
+        tip.style.top = (ev.clientY + 14) + "px";
+      });
+      rect.addEventListener("mouseleave", () => { tip.style.display = "none"; });
+    });
+  }
+  function bar(w, y, h, color, i, s) {
+    const bw = Math.max(2, w - 10);
+    return '<rect data-i="' + i + '" data-s="' + s + '" x="10" y="' + y + '" width="' + bw + '" height="' + h + '" rx="4" fill="' + color + '"/>';
+  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
+
+  ["premYear", "premOnce", "adminPct"].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = state[id];
+    el.addEventListener("input", () => { state[id] = parseFloat(el.value) || 0; recompute(); save(); });
+  });
+  document.getElementById("addRow").addEventListener("click", () => {
+    state.rows.push({ name: "Nytt segment", vol: 0, p0: 0, p1: 0, el: -0.3 });
+    renderRows(); recompute(); save();
+  });
+  document.getElementById("reset").addEventListener("click", () => {
+    state = { rows: DEFAULTS.map(r => ({ ...r })), premYear: 250, premOnce: 40, adminPct: 8 };
+    ["premYear", "premOnce", "adminPct"].forEach(id => { document.getElementById(id).value = state[id]; });
+    renderRows(); recompute(); save();
+  });
+  document.getElementById("exportCsv").addEventListener("click", () => {
+    const head = "segment;antall_i_dag;pris_i_dag;ny_pris;elastisitet;nytt_antall;inntekt_i_dag;inntekt_scenario\n";
+    const lines = state.rows.map(r =>
+      [r.name, r.vol, r.p0, r.p1, String(r.el).replace(".", ","), Math.round(newVol(r)), Math.round(r.vol * r.p0), Math.round(newVol(r) * r.p1)].join(";")
+    ).join("\n");
+    const blob = new Blob(["﻿" + head + lines], { type: "text/csv;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "skilisens-scenario.csv";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  new MutationObserver(renderChart).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  addEventListener("resize", renderChart);
+  renderRows(); recompute();
+})();
+</script>

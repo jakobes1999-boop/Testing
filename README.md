@@ -17,6 +17,10 @@ Dette repoet strukturerer innhentingen av bakgrunnsfakta og data til utvalgsarbe
 | `bakgrunn/11-andre-saerforbund.md` | Benchmarking av lisens-/forsikringsordninger i andre norske særforbund |
 | `bakgrunn/12-internasjonalt-og-turrenn.md` | Sverige/Finland, FIS-krav, praksis hos store turrenn/langløp |
 | `bakgrunn/13-statistikk-aktivitet-skader.md` | Medlems-/aktivitetstall (NIF, SSB), deltakertall, skadedata, datakildekatalog |
+| `bakgrunn/14-debatt-interessenter.md` | Mediedebatt, interessentmatrise, presedenser fra friidrett og sykkel |
+| `bakgrunn/15-alpeland-og-usa.md` | Lisens-/medlemskapsmodeller i USA, Østerrike, Tyskland, Sveits, Frankrike, Italia |
+| `bakgrunn/16-juridisk-ramme.md` | NIFs lov, barneidrettsforsikring, forsikringsavtale-/formidlingsrett, EØS, GDPR |
+| `verktoy/lisenskalkulator.html` | Interaktiv scenariokalkulator for lisensøkonomi (åpnes i nettleser) |
 
 ## Arbeidsflyt
 

@@ -118,9 +118,10 @@
     <h1>Scenariokalkulator for lisensøkonomi</h1>
     <p class="lede">Test hvordan endringer i priser, segmenter og volum slår ut i brutto lisensinntekt,
     forsikringspremie og netto proveny. Alle felter kan redigeres; tallene regnes om fortløpende og lagres lokalt i nettleseren.</p>
-    <p class="note"><strong>Forutsetninger, ikke fasit:</strong> Startverdiene under er <em>eksempeltall</em> som kun viser
-    mekanikken. Erstatt dem med faktiske volum- og økonomitall fra NSF-administrasjonen og Söderberg &amp; Partners
-    (bestillingsliste pkt. 3–5) før kalkulatoren brukes i utvalgets vurderinger.</p>
+    <p class="note"><strong>Forutsetninger, ikke fasit:</strong> Prisene er faktiske NSF-satser 2025/26 (skiforbundet.no).
+    Volumene er <em>illustrasjoner</em> kalibrert mot ca. 6 700 helårslisenser (NSF årsberetning 2023/24) og ca. 12,9 MNOK
+    lisensinntekt (NSF-regnskap 2024) — fordelingen per segment, engangsvolum, premier og elastisiteter er antakelser som må
+    erstattes med data fra NSF og forsikringsmegler (bestillingsliste pkt. 3–5) før kalkulatoren brukes i utvalgets vurderinger.</p>
   </header>
 
   <h2>1 · Segmenter</h2>
@@ -162,14 +163,14 @@
   <h2>2 · Kostnadsforutsetninger</h2>
   <p class="sub">Brukes til å regne netto proveny (det som blir igjen til forbund/formål etter forsikring og administrasjon).</p>
   <div class="card globals">
-    <label>Forsikringspremie, kr per helårslisens
-      <input type="number" id="premYear" value="250" min="0" step="10">
+    <label>Forsikringspremie, kr per helårslisens (snitt)
+      <input type="number" id="premYear" value="1600" min="0" step="50">
     </label>
-    <label>Forsikringspremie, kr per engangslisens
-      <input type="number" id="premOnce" value="40" min="0" step="5">
+    <label>Forsikringspremie, kr per engangslisens (snitt)
+      <input type="number" id="premOnce" value="150" min="0" step="10">
     </label>
     <label>Administrasjon, % av bruttoinntekt
-      <input type="number" id="adminPct" value="8" min="0" max="100" step="0.5">
+      <input type="number" id="adminPct" value="5" min="0" max="100" step="0.5">
     </label>
   </div>
 
@@ -194,15 +195,20 @@
 
 <script>
 (function () {
+  // Priser = faktiske NSF-satser 2025/26 (skiforbundet.no). Volum = ILLUSTRASJON:
+  // kalibrert mot ca. 6 700 helårslisenser 2023/24 (NSF årsberetning) og ca. 12,9 MNOK
+  // lisensinntekt 2024 (NSF regnskap). Fordeling per segment og engangsvolum er ANTAKELSER
+  // som må erstattes med NSF-data (bestillingsliste pkt. 3).
   const DEFAULTS = [
-    { name: "Helår grunn, 13–25 år",      vol: 8000,  p0: 500,  p1: 500,  el: -0.1 },
-    { name: "Helår utvidet, 13–25 år",    vol: 4000,  p0: 900,  p1: 900,  el: -0.1 },
-    { name: "Helår grunn, 26 år +",       vol: 6000,  p0: 750,  p1: 750,  el: -0.3 },
-    { name: "Helår utvidet, 26 år +",     vol: 3000,  p0: 1300, p1: 1300, el: -0.3 },
-    { name: "Engangs, terminfestet renn", vol: 5000,  p0: 150,  p1: 150,  el: -0.4 },
-    { name: "Engangs, turrenn",           vol: 15000, p0: 150,  p1: 150,  el: -0.6 },
+    { name: "Helår langrenn/rando, grunn",   vol: 4200, p0: 650,  p1: 650,  el: -0.2 },
+    { name: "Helår langrenn/rando, utvidet", vol: 650,  p0: 2400, p1: 2400, el: -0.3 },
+    { name: "Helår alpint/freeride, grunn",  vol: 400,  p0: 2400, p1: 2400, el: -0.3 },
+    { name: "Helår alpint/freeride, utvidet",vol: 800,  p0: 5200, p1: 5200, el: -0.4 },
+    { name: "Helår øvrige grener (snitt)",   vol: 650,  p0: 1500, p1: 1500, el: -0.3 },
+    { name: "Engangs 13–25 år",              vol: 3000, p0: 120,  p1: 120,  el: -0.4 },
+    { name: "Engangs 26+ (turrenn m.m.)",    vol: 6000, p0: 300,  p1: 300,  el: -0.6 },
   ];
-  const KEY = "skilisens-kalkulator-v1";
+  const KEY = "skilisens-kalkulator-v2";
   const nf0 = new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 0 });
   const kr = n => nf0.format(Math.round(n)) + " kr";
 
@@ -212,19 +218,14 @@
       const s = JSON.parse(localStorage.getItem(KEY));
       if (s && Array.isArray(s.rows)) return s;
     } catch (e) {}
-    return { rows: DEFAULTS.map(r => ({ ...r })), premYear: 250, premOnce: 40, adminPct: 8 };
+    return { rows: DEFAULTS.map(r => ({ ...r })), premYear: 1600, premOnce: 150, adminPct: 5 };
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
 
   const tbody = document.querySelector("#segTable tbody");
   const tip = document.getElementById("tip");
 
-  function calc(r) {
-    const chg = r.p0 > 0 ? (r.p1 - r.p0) / r.p0 : 0;
-    const vol1 = Math.max(0, r.vol * (1 + r.el * chg * 100 / 100 * 100 / 100 * 100) / 100 * 100 / 100);
-    return vol1;
-  }
-  // (ryddig versjon – elastisitet er per 1 % prisendring)
+  // elastisitet er per 1 % prisendring
   function newVol(r) {
     const pctChange = r.p0 > 0 ? ((r.p1 - r.p0) / r.p0) * 100 : 0;
     return Math.max(0, r.vol * (1 + (r.el * pctChange) / 100));
@@ -365,7 +366,7 @@
     renderRows(); recompute(); save();
   });
   document.getElementById("reset").addEventListener("click", () => {
-    state = { rows: DEFAULTS.map(r => ({ ...r })), premYear: 250, premOnce: 40, adminPct: 8 };
+    state = { rows: DEFAULTS.map(r => ({ ...r })), premYear: 1600, premOnce: 150, adminPct: 5 };
     ["premYear", "premOnce", "adminPct"].forEach(id => { document.getElementById(id).value = state[id]; });
     renderRows(); recompute(); save();
   });

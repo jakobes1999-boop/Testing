@@ -13,6 +13,7 @@ Dette repoet strukturerer innhentingen av bakgrunnsfakta og data til utvalgsarbe
 |---|---|
 | `01-datainnhentingsplan.md` | Hovedplan: spørsmål utvalget må besvare, datakategorier, kilder, ansvar og frister |
 | `02-bestillingsliste-internt.md` | Konkrete databestillinger til NSF-administrasjonen og Söderberg & Partners |
+| `03-syntese-modellalternativer.md` | Syntese: problembilde, rammer og fire modellalternativer vurdert mot mandatet |
 | `bakgrunn/10-dagens-ordning.md` | Dagens skilisensordning: typer, priser, dekning, historikk, kritikk |
 | `bakgrunn/11-andre-saerforbund.md` | Benchmarking av lisens-/forsikringsordninger i andre norske særforbund |
 | `bakgrunn/12-internasjonalt-og-turrenn.md` | Sverige/Finland, FIS-krav, praksis hos store turrenn/langløp |

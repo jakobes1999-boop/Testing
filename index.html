@@ -128,7 +128,7 @@ function checkStrike() {
 /* ============================== audio ============================== */
 let audio = null;
 function initAudio() {
-  if (audio) return;
+  if (audio) { if (audio.state === 'suspended') audio.resume(); return; }
   try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
 }
 function moo() {
@@ -322,35 +322,38 @@ document.getElementById('reset').addEventListener('click', spawnCows);
 
 /* ============================== drawing ============================== */
 function drawScene() {
+  // draw well past the world bounds so letterboxed screens are filled edge-to-edge
+  const M = 3000, X0 = -M, X1 = W + M;
+
   // sky
-  const sky = ctx.createLinearGradient(0, 0, 0, 320);
-  sky.addColorStop(0, '#b9cdd4'); sky.addColorStop(1, '#d7e2d2');
-  ctx.fillStyle = sky; ctx.fillRect(0, 0, W, 340);
+  const sky = ctx.createLinearGradient(0, -M, 0, 320);
+  sky.addColorStop(0, '#a7bfc9'); sky.addColorStop(1, '#d7e2d2');
+  ctx.fillStyle = sky; ctx.fillRect(X0, -M, X1 - X0, 340 + M);
 
   // forest along the top of the hill
   ctx.fillStyle = '#2c4a26';
-  ctx.beginPath(); ctx.moveTo(0, 250);
-  for (let x=0; x<=W; x+=40)
+  ctx.beginPath(); ctx.moveTo(X0, groundY(X0*0.5) - 130);
+  for (let x=X0; x<=X1; x+=40)
     ctx.lineTo(x, groundY(x*0.5) - 130 - Math.sin(x*0.05)*24 - (x%80===0?28:0));
-  ctx.lineTo(W, 0); ctx.lineTo(0, 0); ctx.closePath(); ctx.fill();
+  ctx.lineTo(X1, -M); ctx.lineTo(X0, -M); ctx.closePath(); ctx.fill();
   ctx.fillStyle = '#3a5c30';
-  for (let x=20; x<W; x+=90) {
+  for (let x=X0+20; x<X1; x+=90) {
     const ty = groundY(x*0.5) - 120 - Math.sin(x*0.11)*18;
-    ctx.beginPath(); ctx.arc(x, ty, 34 + (x*7)%22, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x, ty, 34 + Math.abs(x*7)%22, 0, Math.PI*2); ctx.fill();
   }
 
   // power line, like in the photo
   ctx.strokeStyle = 'rgba(40,40,40,.5)'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(0, 80);
-  ctx.quadraticCurveTo(W/2, 190, W, 120); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(X0, -240);
+  ctx.quadraticCurveTo(W/2, 210, X1, -160); ctx.stroke();
 
   // hillside
   const grass = ctx.createLinearGradient(0, 200, 0, H);
   grass.addColorStop(0, '#8fa963'); grass.addColorStop(1, '#6e8f4e');
   ctx.fillStyle = grass;
-  ctx.beginPath(); ctx.moveTo(0, groundY(0));
-  for (let x=0; x<=W; x+=16) ctx.lineTo(x, groundY(x));
-  ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(X0, groundY(X0));
+  for (let x=X0; x<=X1; x+=16) ctx.lineTo(x, groundY(x));
+  ctx.lineTo(X1, H + M); ctx.lineTo(X0, H + M); ctx.closePath(); ctx.fill();
 
   // worn patches + grass tufts
   ctx.fillStyle = 'rgba(180,170,120,.25)';
@@ -359,7 +362,7 @@ function drawScene() {
     ctx.beginPath(); ctx.ellipse(x, gy+26, 65, 14, Math.atan(groundNormal(x).slope), 0, Math.PI*2); ctx.fill();
   }
   ctx.strokeStyle = '#5b7a3e'; ctx.lineWidth = 2;
-  for (let x=15; x<W; x+=46) {
+  for (let x=X0+15; x<X1; x+=46) {
     const gy = groundY(x);
     ctx.beginPath(); ctx.moveTo(x, gy+2); ctx.lineTo(x-4, gy-12);
     ctx.moveTo(x, gy+2); ctx.lineTo(x+4, gy-13); ctx.stroke();

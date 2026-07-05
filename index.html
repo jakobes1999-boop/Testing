@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>KUBOWLING — Tidenes mulighet for å spille bowling med kyr</title>
+<style>
+  html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#26331f;
+               font-family:-apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+               touch-action:none; -webkit-user-select:none; user-select:none; }
+  #game { display:block; width:100vw; height:100vh; cursor:crosshair; }
+  .hud { position:fixed; z-index:5; color:#fff; pointer-events:none;
+         text-shadow:0 2px 6px rgba(0,0,0,.6); }
+  #title { top:10px; left:14px; font-size:clamp(18px,3.2vw,30px); font-weight:800; letter-spacing:1px; }
+  #title small { display:block; font-size:.45em; font-weight:500; opacity:.9; }
+  #score { top:12px; right:14px; font-size:clamp(16px,2.6vw,24px); font-weight:700; text-align:right; }
+  #hint { bottom:64px; left:50%; transform:translateX(-50%); font-size:clamp(13px,2vw,17px);
+          background:rgba(0,0,0,.45); padding:6px 14px; border-radius:20px; white-space:nowrap; }
+  #caption { bottom:14px; left:50%; transform:translateX(-50%); width:min(92vw,680px);
+             background:rgba(0,0,0,.55); color:#fff; text-align:center; font-size:clamp(13px,2.2vw,19px);
+             padding:8px 10px; }
+  #reset { position:fixed; z-index:6; top:56px; right:14px; font-size:clamp(13px,1.8vw,16px);
+           font-weight:700; color:#fff; background:rgba(0,0,0,.5); border:2px solid rgba(255,255,255,.7);
+           border-radius:10px; padding:7px 14px; cursor:pointer; }
+  #reset:hover { background:rgba(0,0,0,.75); }
+  #strike { position:fixed; z-index:7; inset:0; display:none; align-items:center; justify-content:center;
+            flex-direction:column; pointer-events:none; }
+  #strike h1 { font-size:clamp(48px,12vw,130px); color:#ffe14d; margin:0;
+               text-shadow:0 4px 0 #b8860b, 0 10px 30px rgba(0,0,0,.7);
+               animation:pop .5s cubic-bezier(.2,2,.4,1); }
+  #strike p { color:#fff; font-size:clamp(16px,3vw,26px); text-shadow:0 2px 6px rgba(0,0,0,.7); margin:8px 0 0; }
+  @keyframes pop { from { transform:scale(.2) rotate(-12deg); } to { transform:scale(1) rotate(0); } }
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="title" class="hud">🐄 KUBOWLING 🎳<small>fysikk-simulator for kuvelt</small></div>
+<div id="score" class="hud">Veltet: 0 / 7</div>
+<button id="reset">🔄 Nye kyr</button>
+<div id="hint" class="hud">Dra over en ku og slipp for å sparke den utfor bakken!</div>
+<div id="caption" class="hud">Tidenes mulighet for å spille bowling med kyr</div>
+<div id="strike"><h1>STRIKE!!! 🎳</h1><p>Alle kyrne har trillet ned bakken. Bonden er ikke imponert.</p></div>
+
+<script>
+'use strict';
+/* ============================== world setup ============================== */
+const W = 1600, H = 900;                 // world units, scaled to the canvas
+const G = 1350;                          // gravity, world units / s²
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+let view = { s:1, ox:0, oy:0 };
+
+function resize() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width  = innerWidth * dpr;
+  canvas.height = innerHeight * dpr;
+  const s = Math.min(canvas.width / W, canvas.height / H);
+  view = { s, ox:(canvas.width - W*s)/2, oy:(canvas.height - H*s)/2 };
+}
+addEventListener('resize', resize); resize();
+
+function toWorld(clientX, clientY) {
+  const dpr = canvas.width / innerWidth;
+  return { x:(clientX*dpr - view.ox)/view.s, y:(clientY*dpr - view.oy)/view.s };
+}
+
+/* ============================== terrain ============================== */
+// Hillside sloping down to the right, flattening out by the shed.
+function groundY(x) {
+  const xe = x < 1300 ? x : 1300 + (x - 1300) * 0.06;   // flatten near the shed
+  return 235 + xe*0.36 + Math.sin(xe*0.005)*26 + Math.sin(xe*0.013 + 2)*10;
+}
+function groundNormal(x) {
+  const d = (groundY(x+2) - groundY(x-2)) / 4;          // dy/dx
+  const len = Math.hypot(1, d);
+  return { nx:d/len, ny:-1/len, tx:1/len, ty:d/len, slope:d };
+}
+
+/* ============================== cows ============================== */
+// Colour schemes inspired by the photo: Simmental, Hereford-ish, Holstein, grey, tan.
+const BREEDS = [
+  { body:'#b06a2a', patch:'#f3e9d8', head:'#e8d9be', spots:null       }, // big Simmental
+  { body:'#94491c', patch:'#f3e9d8', head:'#f3e9d8', spots:null       }, // brown w/ white face
+  { body:'#f2eee6', patch:null,      head:'#f2eee6', spots:'#1d1d1d'  }, // Holstein
+  { body:'#9b8a76', patch:null,      head:'#8a7a67', spots:null       }, // grey-brown
+  { body:'#c49a6c', patch:'#efe3cd', head:'#d8b98d', spots:null       }, // tan
+];
+
+let cows = [], particles = [], texts = [], confetti = [], boot = null;
+let strikeShown = false;
+
+function spawnCows() {
+  cows = []; particles = []; texts = []; confetti = []; boot = null; strikeShown = false;
+  document.getElementById('strike').style.display = 'none';
+  const layout = [
+    { x: 150, r:46, b:0 }, { x: 330, r:38, b:1 }, { x: 500, r:34, b:2 },
+    { x: 660, r:36, b:4 }, { x: 820, r:33, b:3 }, { x: 980, r:31, b:2 },
+    { x:1140, r:30, b:1 },
+  ];
+  for (const c of layout) {
+    cows.push({
+      x:c.x, y:groundY(c.x) - c.r - c.r*0.55, r:c.r, breed:BREEDS[c.b],
+      state:'standing', vx:0, vy:0, angle:0, angVel:0,
+      graze:Math.random()*Math.PI*2, flip:Math.random()<0.3,
+    });
+  }
+  updateScore();
+}
+
+function updateScore() {
+  const down = cows.filter(c => c.state !== 'standing').length;
+  document.getElementById('score').textContent = `Veltet: ${down} / ${cows.length}`;
+}
+
+function checkStrike() {
+  if (!strikeShown && cows.length && cows.every(c => c.state === 'fallen')) {
+    strikeShown = true;
+    document.getElementById('strike').style.display = 'flex';
+    for (let i=0;i<140;i++) confetti.push({
+      x:Math.random()*W, y:-20-Math.random()*300,
+      vx:(Math.random()-.5)*120, vy:120+Math.random()*220,
+      c:`hsl(${Math.random()*360},90%,60%)`, a:Math.random()*Math.PI, av:(Math.random()-.5)*8,
+    });
+    moo(); setTimeout(moo, 250); setTimeout(moo, 500);
+  }
+}
+
+/* ============================== audio ============================== */
+let audio = null;
+function initAudio() {
+  if (audio) return;
+  try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+}
+function moo() {
+  if (!audio) return;
+  const t = audio.currentTime;
+  const o = audio.createOscillator(), g = audio.createGain(), f = audio.createBiquadFilter();
+  o.type = 'sawtooth';
+  o.frequency.setValueAtTime(170 + Math.random()*40, t);
+  o.frequency.exponentialRampToValueAtTime(85, t + 0.55);
+  f.type = 'lowpass'; f.frequency.value = 620;
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(0.22, t + 0.06);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.65);
+  o.connect(f); f.connect(g); g.connect(audio.destination);
+  o.start(t); o.stop(t + 0.7);
+}
+function thud(power) {
+  if (!audio) return;
+  const t = audio.currentTime;
+  const o = audio.createOscillator(), g = audio.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(90, t);
+  o.frequency.exponentialRampToValueAtTime(40, t + 0.12);
+  g.gain.setValueAtTime(Math.min(0.3, power/3000), t);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.15);
+  o.connect(g); g.connect(audio.destination);
+  o.start(t); o.stop(t + 0.16);
+}
+
+/* ============================== effects ============================== */
+function dust(x, y, n, spd) {
+  for (let i=0;i<n;i++) particles.push({
+    x, y, vx:(Math.random()-.5)*spd, vy:-Math.random()*spd*0.7,
+    r:4+Math.random()*7, life:0.6+Math.random()*0.5, t:0,
+  });
+}
+function floatText(x, y, str) {
+  texts.push({ x, y, str, t:0, life:1.1 });
+}
+const MOO_WORDS = ['MØØ!', 'MØØØ!!', 'RÅÅÅT!', 'MØ?!', 'BØØØ!'];
+
+/* ============================== physics ============================== */
+function knock(cow, vx, vy) {
+  cow.state = 'rolling';
+  cow.vx = vx; cow.vy = vy;
+  cow.angVel = vx / cow.r;
+  floatText(cow.x, cow.y - cow.r - 20, MOO_WORDS[Math.floor(Math.random()*MOO_WORDS.length)]);
+  moo();
+  updateScore();
+}
+
+function step(dt) {
+  for (const c of cows) {
+    if (c.state === 'standing') { c.graze += dt; continue; }
+    if (c.state === 'fallen') continue;
+
+    // settle when slow for a while, e.g. resting on a pile of other cows
+    if (Math.hypot(c.vx, c.vy) < 65) {
+      c.rest = (c.rest || 0) + dt;
+      if (c.rest > 0.8) { c.state = 'fallen'; c.vx = c.vy = c.angVel = 0; continue; }
+    } else c.rest = 0;
+
+    c.vy += G * dt;
+    c.vx *= (1 - 0.05*dt);                       // air drag
+    c.x += c.vx * dt;
+    c.y += c.vy * dt;
+    c.angle += c.angVel * dt;
+
+    // shed wall at the bottom of the hill
+    const wallX = 1408;
+    if (c.x + c.r > wallX && c.y > groundY(wallX) - 190) {
+      c.x = wallX - c.r;
+      if (c.vx > 60) { thud(Math.abs(c.vx)*2); dust(c.x + c.r, c.y, 8, 160); floatText(c.x, c.y - c.r - 16, 'DUNK!'); }
+      c.vx = -Math.abs(c.vx) * 0.35;
+      c.angVel = c.vx / c.r;
+    }
+    if (c.x - c.r < 4) { c.x = 4 + c.r; c.vx = Math.abs(c.vx) * 0.4; }
+    if (c.x + c.r > W - 6) { c.x = W - 6 - c.r; c.vx = -Math.abs(c.vx) * 0.4; }
+
+    // ground collision (height-field, resolved along the surface normal)
+    const gy = groundY(c.x);
+    if (c.y + c.r > gy) {
+      c.y = gy - c.r;
+      const n = groundNormal(c.x);
+      let vn = c.vx*n.nx + c.vy*n.ny;
+      let vt = c.vx*n.tx + c.vy*n.ty;
+      if (vn < 0) {                              // moving into the ground
+        if (vn < -130) { dust(c.x, gy, Math.min(12, -vn/60), -vn*0.5); thud(-vn); }
+        vn = -vn * 0.34;                         // restitution
+      }
+      vt *= (1 - 1.1*dt);                        // rolling friction
+      c.vx = vn*n.nx + vt*n.tx;
+      c.vy = vn*n.ny + vt*n.ty;
+      c.angVel = vt / c.r;
+
+      // come to rest only where the slope is gentle
+      if (Math.abs(vt) < 26 && Math.abs(vn) < 26 && Math.abs(n.slope) < 0.18) {
+        c.state = 'fallen'; c.vx = c.vy = c.angVel = 0;
+        dust(c.x, gy, 6, 80);
+      }
+    }
+  }
+
+  // cow-cow collisions: rolling cows bowl over standing ones
+  for (let i=0;i<cows.length;i++) for (let j=i+1;j<cows.length;j++) {
+    const a = cows[i], b = cows[j];
+    const dx = b.x-a.x, dy = b.y-a.y, dist = Math.hypot(dx,dy), min = a.r+b.r;
+    if (dist === 0 || dist >= min) continue;
+    const nx = dx/dist, ny = dy/dist, overlap = min - dist;
+    const aMoves = a.state === 'rolling', bMoves = b.state === 'rolling';
+    if (!aMoves && !bMoves) continue;
+    if (aMoves && bMoves) {
+      a.x -= nx*overlap/2; a.y -= ny*overlap/2;
+      b.x += nx*overlap/2; b.y += ny*overlap/2;
+      const rvn = (b.vx-a.vx)*nx + (b.vy-a.vy)*ny;
+      if (rvn < 0) {
+        const imp = -rvn * 0.55;
+        a.vx -= imp*nx; a.vy -= imp*ny;
+        b.vx += imp*nx; b.vy += imp*ny;
+        thud(Math.abs(rvn)*2);
+      }
+    } else {
+      const roller = aMoves ? a : b, target = aMoves ? b : a;
+      // normal pointing from the static cow towards the roller
+      const rnx = aMoves ? -nx : nx, rny = aMoves ? -ny : ny;
+      roller.x += rnx*overlap; roller.y += rny*overlap;
+      const speed = Math.hypot(roller.vx, roller.vy);
+      if (target.state === 'standing' && speed > 240) {
+        knock(target, roller.vx*0.8 + 60, Math.min(roller.vy*0.6, -140));
+        roller.vx *= 0.55; roller.vy *= 0.55;
+        dust((a.x+b.x)/2, (a.y+b.y)/2, 10, 220);
+      } else {
+        const vn = roller.vx*rnx + roller.vy*rny;
+        if (vn < 0) {                            // bounce off, restitution 0.3
+          roller.vx -= 1.3 * vn * rnx;
+          roller.vy -= 1.3 * vn * rny;
+          roller.vx *= 0.94; roller.vy *= 0.94;
+          if (speed > 220) { thud(speed); dust((a.x+b.x)/2, (a.y+b.y)/2, 5, 120); }
+        }
+      }
+    }
+  }
+
+  // particles, floating text, confetti, boot animation
+  for (const p of particles) { p.t += dt; p.x += p.vx*dt; p.y += p.vy*dt; p.vy += 60*dt; }
+  particles = particles.filter(p => p.t < p.life);
+  for (const t of texts) { t.t += dt; t.y -= 45*dt; }
+  texts = texts.filter(t => t.t < t.life);
+  for (const c of confetti) { c.x += c.vx*dt; c.y += c.vy*dt; c.a += c.av*dt; }
+  confetti = confetti.filter(c => c.y < H + 30);
+  if (boot) { boot.t += dt; if (boot.t > 0.45) boot = null; }
+  checkStrike();
+}
+
+/* ============================== input ============================== */
+let aim = null;   // { cow, sx, sy, cx, cy }
+
+canvas.addEventListener('pointerdown', e => {
+  initAudio();
+  const p = toWorld(e.clientX, e.clientY);
+  let best = null, bestD = Infinity;
+  for (const c of cows) {
+    if (c.state === 'rolling') continue;
+    const d = Math.hypot(c.x - p.x, c.y - p.y);
+    if (d < c.r*2.1 && d < bestD) { best = c; bestD = d; }
+  }
+  if (best) { aim = { cow:best, sx:p.x, sy:p.y, cx:p.x, cy:p.y }; canvas.setPointerCapture(e.pointerId); }
+});
+canvas.addEventListener('pointermove', e => {
+  if (!aim) return;
+  const p = toWorld(e.clientX, e.clientY);
+  aim.cx = p.x; aim.cy = p.y;
+});
+canvas.addEventListener('pointerup', e => {
+  if (!aim) return;
+  const dx = aim.cx - aim.sx, dy = aim.cy - aim.sy;
+  const len = Math.hypot(dx, dy);
+  let vx, vy;
+  if (len < 12) { vx = 560; vy = -330; }                    // quick tap: standard kick downhill
+  else {
+    const k = Math.min(len, 340) * 3.4;
+    vx = dx/len * k; vy = dy/len * k - 120;
+  }
+  boot = { x:aim.cow.x - aim.cow.r*1.3, y:aim.cow.y, t:0, dir:vx >= 0 ? 1 : -1 };
+  knock(aim.cow, vx, vy);
+  dust(aim.cow.x, aim.cow.y + aim.cow.r*0.6, 8, 200);
+  aim = null;
+});
+canvas.addEventListener('pointercancel', () => aim = null);
+document.getElementById('reset').addEventListener('click', spawnCows);
+
+/* ============================== drawing ============================== */
+function drawScene() {
+  // sky
+  const sky = ctx.createLinearGradient(0, 0, 0, 320);
+  sky.addColorStop(0, '#b9cdd4'); sky.addColorStop(1, '#d7e2d2');
+  ctx.fillStyle = sky; ctx.fillRect(0, 0, W, 340);
+
+  // forest along the top of the hill
+  ctx.fillStyle = '#2c4a26';
+  ctx.beginPath(); ctx.moveTo(0, 250);
+  for (let x=0; x<=W; x+=40)
+    ctx.lineTo(x, groundY(x*0.5) - 130 - Math.sin(x*0.05)*24 - (x%80===0?28:0));
+  ctx.lineTo(W, 0); ctx.lineTo(0, 0); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#3a5c30';
+  for (let x=20; x<W; x+=90) {
+    const ty = groundY(x*0.5) - 120 - Math.sin(x*0.11)*18;
+    ctx.beginPath(); ctx.arc(x, ty, 34 + (x*7)%22, 0, Math.PI*2); ctx.fill();
+  }
+
+  // power line, like in the photo
+  ctx.strokeStyle = 'rgba(40,40,40,.5)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0, 80);
+  ctx.quadraticCurveTo(W/2, 190, W, 120); ctx.stroke();
+
+  // hillside
+  const grass = ctx.createLinearGradient(0, 200, 0, H);
+  grass.addColorStop(0, '#8fa963'); grass.addColorStop(1, '#6e8f4e');
+  ctx.fillStyle = grass;
+  ctx.beginPath(); ctx.moveTo(0, groundY(0));
+  for (let x=0; x<=W; x+=16) ctx.lineTo(x, groundY(x));
+  ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.fill();
+
+  // worn patches + grass tufts
+  ctx.fillStyle = 'rgba(180,170,120,.25)';
+  for (let i=0;i<9;i++) {
+    const x = 90 + i*170, gy = groundY(x);
+    ctx.beginPath(); ctx.ellipse(x, gy+26, 65, 14, Math.atan(groundNormal(x).slope), 0, Math.PI*2); ctx.fill();
+  }
+  ctx.strokeStyle = '#5b7a3e'; ctx.lineWidth = 2;
+  for (let x=15; x<W; x+=46) {
+    const gy = groundY(x);
+    ctx.beginPath(); ctx.moveTo(x, gy+2); ctx.lineTo(x-4, gy-12);
+    ctx.moveTo(x, gy+2); ctx.lineTo(x+4, gy-13); ctx.stroke();
+  }
+
+  // the shed
+  const sx = 1412, sy = groundY(1490);
+  ctx.fillStyle = '#6b4d33'; ctx.fillRect(sx, sy-120, 170, 120);          // wall
+  ctx.fillStyle = '#4a3524'; ctx.fillRect(sx+62, sy-64, 44, 64);          // door
+  ctx.fillStyle = '#8a4c3a';                                              // roof
+  ctx.beginPath(); ctx.moveTo(sx-22, sy-114); ctx.lineTo(sx+85, sy-186);
+  ctx.lineTo(sx+192, sy-114); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 3;
+  for (let i=0;i<6;i++) {
+    ctx.beginPath(); ctx.moveTo(sx-10+i*34, sy-121-(i%2)*4);
+    ctx.lineTo(sx+85, sy-182); ctx.stroke();
+  }
+}
+
+function drawCow(c) {
+  ctx.save();
+  ctx.translate(c.x, c.y);
+  const B = c.breed, r = c.r;
+
+  if (c.state === 'standing') {
+    const bob = Math.sin(c.graze * 1.4) * 0.08;
+    // legs
+    ctx.fillStyle = B.head;
+    for (const lx of [-r*0.75, -r*0.35, r*0.35, r*0.72])
+      ctx.fillRect(lx-4, r*0.35, 9, r*0.75);
+    // body
+    ctx.fillStyle = B.body;
+    ctx.beginPath(); ctx.ellipse(0, 0, r*1.15, r*0.78, 0, 0, Math.PI*2); ctx.fill();
+    if (B.patch) { ctx.fillStyle = B.patch;
+      ctx.beginPath(); ctx.ellipse(-r*0.7, r*0.15, r*0.42, r*0.4, 0.3, 0, Math.PI*2); ctx.fill(); }
+    if (B.spots) { ctx.fillStyle = B.spots;
+      ctx.beginPath(); ctx.ellipse(-r*0.4, -r*0.15, r*0.34, r*0.26, 0.4, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(r*0.45, r*0.2, r*0.28, r*0.22, -0.3, 0, Math.PI*2); ctx.fill(); }
+    // tail
+    ctx.strokeStyle = B.body; ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(-r*1.1, -r*0.3);
+    ctx.quadraticCurveTo(-r*1.45, r*0.1, -r*1.3, r*0.6); ctx.stroke();
+    // grazing head (bobs up and down)
+    const hy = r*0.55 + bob*r;
+    ctx.fillStyle = B.head;
+    ctx.beginPath(); ctx.ellipse(r*1.1, hy, r*0.42, r*0.34, 0.9, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#e9b7c0';
+    ctx.beginPath(); ctx.ellipse(r*1.28, hy+r*0.18, r*0.17, r*0.13, 0.9, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#222';
+    ctx.beginPath(); ctx.arc(r*1.02, hy - r*0.12, 2.6, 0, Math.PI*2); ctx.fill();
+    // ear tag, like the photo
+    ctx.fillStyle = '#f6d24a';
+    ctx.fillRect(r*0.86, hy - r*0.34, 8, 8);
+  } else {
+    // rolling / fallen: a tumbling cow ball with legs sticking out
+    ctx.rotate(c.angle);
+    ctx.fillStyle = B.head;
+    for (const a of [0.7, 2.1, 3.9, 5.4]) {
+      ctx.save(); ctx.rotate(a);
+      ctx.fillRect(r*0.6, -4, r*0.6, 9);
+      ctx.restore();
+    }
+    ctx.fillStyle = B.body;
+    ctx.beginPath(); ctx.arc(0, 0, r*0.95, 0, Math.PI*2); ctx.fill();
+    if (B.patch) { ctx.fillStyle = B.patch;
+      ctx.beginPath(); ctx.ellipse(-r*0.35, r*0.25, r*0.38, r*0.3, 0.5, 0, Math.PI*2); ctx.fill(); }
+    if (B.spots) { ctx.fillStyle = B.spots;
+      ctx.beginPath(); ctx.ellipse(r*0.3, -r*0.25, r*0.32, r*0.24, 0.4, 0, Math.PI*2); ctx.fill(); }
+    // dizzy face
+    ctx.fillStyle = B.head;
+    ctx.beginPath(); ctx.arc(r*0.45, -r*0.35, r*0.32, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#222'; ctx.lineWidth = 2.4;
+    const ex = r*0.45, ey = -r*0.42, s = 4;
+    ctx.beginPath();
+    ctx.moveTo(ex-s, ey-s); ctx.lineTo(ex+s, ey+s);
+    ctx.moveTo(ex+s, ey-s); ctx.lineTo(ex-s, ey+s); ctx.stroke();
+    ctx.fillStyle = '#e9b7c0';
+    ctx.beginPath(); ctx.ellipse(r*0.62, -r*0.15, r*0.14, r*0.1, 0.5, 0, Math.PI*2); ctx.fill();
+  }
+  ctx.restore();
+
+  // stars circling a fallen cow
+  if (c.state === 'fallen') {
+    const t = performance.now()/1000;
+    ctx.fillStyle = '#ffe14d'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'center';
+    for (let i=0;i<3;i++) {
+      const a = t*2.4 + i*2.1;
+      ctx.fillText('✦', c.x + Math.cos(a)*c.r*1.1, c.y - c.r - 14 + Math.sin(a)*7);
+    }
+  }
+}
+
+function drawBoot() {
+  if (!boot) return;
+  const p = boot.t / 0.45;
+  const swing = Math.sin(p * Math.PI);
+  ctx.save();
+  ctx.translate(boot.x, boot.y);
+  ctx.rotate(boot.dir * (-0.9 + swing * 1.4));
+  ctx.scale(boot.dir, 1);
+  ctx.fillStyle = '#4a3120';
+  ctx.fillRect(-12, -55, 24, 48);          // leg
+  ctx.fillStyle = '#2b2b2b';
+  ctx.beginPath();                          // boot
+  ctx.moveTo(-14, -10); ctx.lineTo(-14, 14); ctx.lineTo(34, 14);
+  ctx.quadraticCurveTo(36, 2, 22, -2); ctx.lineTo(14, -10); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+
+function draw() {
+  ctx.setTransform(1,0,0,1,0,0);
+  ctx.fillStyle = '#26331f';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.setTransform(view.s, 0, 0, view.s, view.ox, view.oy);
+
+  drawScene();
+  for (const c of cows) drawCow(c);
+  drawBoot();
+
+  // aim arrow
+  if (aim) {
+    const dx = aim.cx - aim.sx, dy = aim.cy - aim.sy, len = Math.hypot(dx, dy);
+    if (len > 12) {
+      const k = Math.min(len, 340);
+      const ex = aim.cow.x + dx/len*k, ey = aim.cow.y + dy/len*k;
+      ctx.strokeStyle = 'rgba(255,60,60,.9)'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(aim.cow.x, aim.cow.y); ctx.lineTo(ex, ey); ctx.stroke();
+      const a = Math.atan2(dy, dx);
+      ctx.fillStyle = 'rgba(255,60,60,.9)';
+      ctx.beginPath(); ctx.moveTo(ex, ey);
+      ctx.lineTo(ex - 22*Math.cos(a-0.4), ey - 22*Math.sin(a-0.4));
+      ctx.lineTo(ex - 22*Math.cos(a+0.4), ey - 22*Math.sin(a+0.4));
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.arc(aim.cow.x, aim.cow.y, aim.cow.r*1.3, 0, Math.PI*2); ctx.stroke();
+  }
+
+  // dust
+  for (const p of particles) {
+    ctx.fillStyle = `rgba(160,140,100,${0.5*(1 - p.t/p.life)})`;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r*(1 + p.t), 0, Math.PI*2); ctx.fill();
+  }
+  // floating MØØ text
+  ctx.textAlign = 'center';
+  for (const t of texts) {
+    ctx.font = 'bold 30px sans-serif';
+    ctx.fillStyle = `rgba(255,255,255,${1 - t.t/t.life})`;
+    ctx.strokeStyle = `rgba(0,0,0,${0.6*(1 - t.t/t.life)})`;
+    ctx.lineWidth = 4;
+    ctx.strokeText(t.str, t.x, t.y); ctx.fillText(t.str, t.x, t.y);
+  }
+  // confetti
+  for (const c of confetti) {
+    ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.a);
+    ctx.fillStyle = c.c; ctx.fillRect(-6, -3, 12, 6); ctx.restore();
+  }
+}
+
+/* ============================== main loop ============================== */
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min((now - last)/1000, 0.033);
+  last = now;
+  step(dt);
+  draw();
+  requestAnimationFrame(frame);
+}
+spawnCows();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

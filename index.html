@@ -19,10 +19,12 @@
   #caption { bottom:14px; left:50%; transform:translateX(-50%); width:min(92vw,680px);
              background:rgba(0,0,0,.55); color:#fff; text-align:center; font-size:clamp(13px,2.2vw,19px);
              padding:8px 10px; }
-  #reset { position:fixed; z-index:6; top:56px; right:14px; font-size:clamp(13px,1.8vw,16px);
-           font-weight:700; color:#fff; background:rgba(0,0,0,.5); border:2px solid rgba(255,255,255,.7);
-           border-radius:10px; padding:7px 14px; cursor:pointer; }
-  #reset:hover { background:rgba(0,0,0,.75); }
+  .btn { position:fixed; z-index:6; right:14px; font-size:clamp(13px,1.8vw,16px);
+         font-weight:700; color:#fff; background:rgba(0,0,0,.5); border:2px solid rgba(255,255,255,.7);
+         border-radius:10px; padding:7px 14px; cursor:pointer; }
+  .btn:hover { background:rgba(0,0,0,.75); }
+  #reset { top:56px; }
+  #pov { top:104px; }
   .overlay { position:fixed; z-index:7; inset:0; display:none; align-items:center; justify-content:center;
              flex-direction:column; pointer-events:none; text-align:center; }
   .overlay h1 { font-size:clamp(44px,11vw,120px); margin:0;
@@ -39,7 +41,8 @@
 <canvas id="game"></canvas>
 <div id="title" class="hud">🐄 KUBOWLING 🎳<small>fysikk-simulator for kuvelt</small></div>
 <div id="score" class="hud">Veltet: 0 / 7 · Spark: 3</div>
-<button id="reset">🔄 Nye kyr</button>
+<button id="reset" class="btn">🔄 Nye kyr</button>
+<button id="pov" class="btn">👁 1. person</button>
 <div id="hint" class="hud">3 spark — dra over en ku og velt alle 7!</div>
 <div id="caption" class="hud">Tidenes mulighet for å spille bowling med kyr</div>
 <div id="strike" class="overlay"><h1>STRIKE!!! 🎳</h1><p>Alle kyrne har trillet ned bakken. Bonden er ikke imponert.</p></div>
@@ -55,6 +58,7 @@ const PI2 = Math.PI * 2;
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 let view = { s:1, ox:0, oy:0 };
+let mode = '3p';                         // '3p' side view | 'fp' first person
 
 let sceneCache = null, assetsReady = false;
 function buildSceneCache() {
@@ -62,7 +66,7 @@ function buildSceneCache() {
   sceneCache.width = canvas.width; sceneCache.height = canvas.height;
   const g = sceneCache.getContext('2d');
   g.setTransform(view.s, 0, 0, view.s, view.ox, view.oy);
-  drawScene(g);
+  if (mode === '3p') drawScene(g); else drawSceneFP(g);
 }
 function resize() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -93,6 +97,17 @@ function groundNormal(x) {
   return { nx:d/len, ny:-1/len, tx:1/len, ty:d/len, slope:d };
 }
 
+/* ============================== first-person projection ============================== */
+// Camera stands at the top of the slope (where the photo was taken).
+// (u, d): u = sideways across the slope, d = distance downhill.
+// The same terrain profile drives downhill gravity via x = 150 + d.
+const FP = { HOR:302, BOT:872, CX:800, D:620, WALL:1272 };
+function project(u, d) {
+  const k = FP.D / (d + FP.D);
+  return { x: FP.CX + u*k, y: FP.HOR + (FP.BOT - FP.HOR)*k, k };
+}
+function fpSlope(d) { return groundNormal(150 + d); }
+
 /* ============================== cows ============================== */
 // Colour schemes matched to the photo: Simmental, brown w/ white face,
 // Holstein, grey-brown, tan. light/dark drive the body shading.
@@ -104,34 +119,53 @@ const BREEDS = [
   { body:'#bd9769', light:'#d4b183', dark:'#96744b', patch:'#eadfc6', head:'#c9a97b', spots:null,      udder:true  },
 ];
 
-let cows = [], particles = [], texts = [], confetti = [], boot = null;
+let cows = [], particles = [], texts = [], confetti = [], boot = null, bootFP = null;
 let strikeShown = false, failShown = false, kicksLeft = KICKS_MAX;
 
 function spawnCows() {
-  cows = []; particles = []; texts = []; confetti = []; boot = null;
+  cows = []; particles = []; texts = []; confetti = []; boot = null; bootFP = null;
   strikeShown = false; failShown = false; kicksLeft = KICKS_MAX;
   document.getElementById('strike').style.display = 'none';
   document.getElementById('fail').style.display = 'none';
-  const layout = [
-    { x: 150, r:46, b:0 }, { x: 330, r:38, b:1 }, { x: 500, r:34, b:2 },
-    { x: 660, r:36, b:4 }, { x: 820, r:33, b:3 }, { x: 980, r:31, b:2 },
-    { x:1140, r:30, b:1 },
-  ];
-  for (const c of layout) {
-    cows.push({
+  if (mode === '3p') {
+    const layout = [
+      { x: 150, r:46, b:0 }, { x: 330, r:38, b:1 }, { x: 500, r:34, b:2 },
+      { x: 660, r:36, b:4 }, { x: 820, r:33, b:3 }, { x: 980, r:31, b:2 },
+      { x:1140, r:30, b:1 },
+    ];
+    for (const c of layout) cows.push({
       x:c.x, y:groundY(c.x) - c.r*1.5, r:c.r, breed:BREEDS[c.b],
       state:'standing', vx:0, vy:0, angle:0, angVel:0,
       home:c.x, phase:Math.random()*PI2,
       graze:Math.random()*PI2, flip:false,
     });
+  } else {
+    const layout = [                       // like the photo: big Simmental up close
+      { u:-140, d:  70, r:46, b:0 }, { u: -50, d: 250, r:40, b:1 },
+      { u:  60, d: 420, r:36, b:2 }, { u: -30, d: 570, r:36, b:4 },
+      { u: 110, d: 710, r:34, b:3 }, { u:-110, d: 860, r:33, b:2 },
+      { u:  30, d:1010, r:32, b:1 },
+    ];
+    for (const c of layout) cows.push({
+      u:c.u, d:c.d, r:c.r, breed:BREEDS[c.b],
+      state:'standing', vu:0, vd:0, angle:0,
+      homeU:c.u, homeD:c.d, phase:Math.random()*PI2,
+      graze:Math.random()*PI2, flip:false, dustT:0,
+    });
   }
   updateScore();
+  updateHint();
 }
 
 function updateScore() {
   const down = cows.filter(c => c.state !== 'standing').length;
   document.getElementById('score').textContent =
     `Veltet: ${down} / ${cows.length} · Spark: ${kicksLeft}`;
+}
+function updateHint() {
+  document.getElementById('hint').textContent = mode === '3p'
+    ? '3 spark — dra over en ku og velt alle 7!'
+    : '3 spark — dra oppover på en ku for å sparke den nedover bakken!';
 }
 
 function checkStrike() {
@@ -188,10 +222,11 @@ function thud(power) {
 }
 
 /* ============================== effects ============================== */
-function dust(x, y, n, spd) {
+function dust(x, y, n, spd, scale) {
+  scale = scale || 1;
   for (let i=0;i<n;i++) particles.push({
     x, y, vx:(Math.random()-.5)*spd, vy:-Math.random()*spd*0.7,
-    r:4+Math.random()*7, life:0.6+Math.random()*0.5, t:0,
+    r:(4+Math.random()*7)*scale, life:0.6+Math.random()*0.5, t:0,
   });
 }
 function floatText(x, y, str) {
@@ -199,19 +234,27 @@ function floatText(x, y, str) {
 }
 const MOO_WORDS = ['MØØ!', 'MØØØ!!', 'RÅÅÅT!', 'MØ?!', 'BØØØ!'];
 
+// screen-space anchor + effective radius, both modes
+function cowScreen(c) {
+  if (mode === '3p') return { x:c.x, y:c.y, re:c.r };
+  const p = project(c.u, c.d);
+  return { x:p.x, y:p.y - c.r*2.4*p.k*1.2, re:c.r*2.4*p.k };
+}
+
 /* ============================== physics ============================== */
-function knock(cow, vx, vy) {
-  cow.state = 'rolling';
-  cow.vx = vx; cow.vy = vy;
-  cow.angVel = vx / cow.r;
-  floatText(cow.x, cow.y - cow.r - 20, MOO_WORDS[Math.floor(Math.random()*MOO_WORDS.length)]);
+function knock(cow, a, b) {                    // a,b = (vx,vy) in 3p, (vu,vd) in fp
+  cow.state = 'rolling'; cow.rest = 0;
+  if (mode === '3p') { cow.vx = a; cow.vy = b; cow.angVel = a / cow.r; }
+  else { cow.vu = a; cow.vd = b; }
+  const s = cowScreen(cow);
+  floatText(s.x, s.y - s.re - 20, MOO_WORDS[Math.floor(Math.random()*MOO_WORDS.length)]);
   moo();
   updateScore();
 }
 
-function step(dt) {
+function step3P(dt) {
   for (const c of cows) {
-    if (c.state === 'standing') {           // graze and slowly wander
+    if (c.state === 'standing') {           // graze and slowly wander sideways
       c.graze += dt;
       const w = c.graze*0.35 + c.phase;
       c.x = c.home + Math.sin(w) * 48;
@@ -221,19 +264,17 @@ function step(dt) {
     }
     if (c.state === 'fallen') continue;
 
-    // settle when slow for a while, e.g. resting on a pile of other cows
     if (Math.hypot(c.vx, c.vy) < 65) {
       c.rest = (c.rest || 0) + dt;
       if (c.rest > 0.8) { c.state = 'fallen'; c.vx = c.vy = c.angVel = 0; continue; }
     } else c.rest = 0;
 
     c.vy += G * dt;
-    c.vx *= (1 - 0.05*dt);                       // air drag
+    c.vx *= (1 - 0.05*dt);
     c.x += c.vx * dt;
     c.y += c.vy * dt;
     c.angle += c.angVel * dt;
 
-    // shed wall at the bottom of the hill
     const wallX = 1408;
     if (c.x + c.r > wallX && c.y > groundY(wallX) - 190) {
       c.x = wallX - c.r;
@@ -244,24 +285,20 @@ function step(dt) {
     if (c.x - c.r < 4) { c.x = 4 + c.r; c.vx = Math.abs(c.vx) * 0.4; }
     if (c.x + c.r > W - 6) { c.x = W - 6 - c.r; c.vx = -Math.abs(c.vx) * 0.4; }
 
-    // ground collision (height-field, resolved along the surface normal)
     const gy = groundY(c.x);
     if (c.y + c.r > gy) {
       c.y = gy - c.r;
       const n = groundNormal(c.x);
       let vn = c.vx*n.nx + c.vy*n.ny;
       let vt = c.vx*n.tx + c.vy*n.ty;
-      if (vn < 0) {                              // moving into the ground
+      if (vn < 0) {
         if (vn < -130) { dust(c.x, gy, Math.min(12, -vn/60), -vn*0.5); thud(-vn); }
-        vn = -vn * 0.34;                         // restitution
+        vn = -vn * 0.34;
       }
-      vt *= (1 - 2.0*dt);                        // heavy cows: strong rolling friction
-                                                 // (terminal speed sits below knock threshold)
+      vt *= (1 - 2.0*dt);                    // heavy cows: strong rolling friction
       c.vx = vn*n.nx + vt*n.tx;
       c.vy = vn*n.ny + vt*n.ty;
       c.angVel = vt / c.r;
-
-      // come to rest only where the slope is gentle
       if (Math.abs(vt) < 26 && Math.abs(vn) < 26 && Math.abs(n.slope) < 0.18) {
         c.state = 'fallen'; c.vx = c.vy = c.angVel = 0;
         dust(c.x, gy, 6, 80);
@@ -269,7 +306,6 @@ function step(dt) {
     }
   }
 
-  // cow-cow collisions: rolling cows bowl over standing ones
   for (let i=0;i<cows.length;i++) for (let j=i+1;j<cows.length;j++) {
     const a = cows[i], b = cows[j];
     const dx = b.x-a.x, dy = b.y-a.y, dist = Math.hypot(dx,dy), min = a.r+b.r;
@@ -289,7 +325,6 @@ function step(dt) {
       }
     } else {
       const roller = aMoves ? a : b, target = aMoves ? b : a;
-      // normal pointing from the static cow towards the roller
       const rnx = aMoves ? -nx : nx, rny = aMoves ? -ny : ny;
       roller.x += rnx*overlap; roller.y += rny*overlap;
       const speed = Math.hypot(roller.vx, roller.vy);
@@ -299,7 +334,7 @@ function step(dt) {
         dust((a.x+b.x)/2, (a.y+b.y)/2, 10, 220);
       } else {
         const vn = roller.vx*rnx + roller.vy*rny;
-        if (vn < 0) {                            // bounce off, restitution 0.25
+        if (vn < 0) {
           roller.vx -= 1.25 * vn * rnx;
           roller.vy -= 1.25 * vn * rny;
           roller.vx *= 0.9; roller.vy *= 0.9;
@@ -308,8 +343,103 @@ function step(dt) {
       }
     }
   }
+}
 
-  // particles, floating text, confetti, boot animation
+function stepFP(dt) {
+  for (const c of cows) {
+    if (c.state === 'standing') {           // graze, drifting SIDEWAYS across the slope
+      c.graze += dt;
+      const w = c.graze*0.4 + c.phase;
+      c.u = c.homeU + Math.sin(w) * 115;
+      c.d = c.homeD + Math.cos(w*0.53) * 22;
+      c.flip = Math.cos(w) < 0;
+      continue;
+    }
+    if (c.state === 'fallen') continue;
+
+    const speed = Math.hypot(c.vu, c.vd);
+    const sl = fpSlope(c.d);
+    if (speed < 45 && Math.abs(sl.slope) < 0.18) {
+      c.rest = (c.rest || 0) + dt;
+      if (c.rest > 0.6) { c.state = 'fallen'; c.vu = c.vd = 0; continue; }
+    } else c.rest = 0;
+
+    c.vd += G * sl.slope / Math.hypot(1, sl.slope) * dt;   // downhill pull
+    c.vd *= (1 - 2.0*dt);                                  // rolling friction
+    c.vu *= (1 - 1.6*dt);
+    c.u += c.vu * dt;
+    c.d += c.vd * dt;
+    c.angle += (Math.hypot(c.vu, c.vd) / c.r) * dt * (c.vd >= 0 ? 1 : -1);
+
+    c.dustT += dt;
+    if (c.dustT > 0.14 && Math.hypot(c.vu, c.vd) > 250) {
+      c.dustT = 0;
+      const p = project(c.u, c.d);
+      dust(p.x, p.y, 2, 120*p.k, p.k*2);
+    }
+
+    // fence + shed line at the bottom of the field
+    if (c.d > FP.WALL - c.r) {
+      c.d = FP.WALL - c.r;
+      if (c.vd > 60) {
+        const p = project(c.u, c.d);
+        thud(Math.abs(c.vd)*2); dust(p.x, p.y, 8, 140*p.k, p.k*2);
+        floatText(p.x, p.y - 60*p.k, 'DUNK!');
+      }
+      c.vd = -Math.abs(c.vd) * 0.35;
+    }
+    if (c.d < 16) {                        // rolled back into the camera
+      c.d = 16;
+      if (Math.abs(c.vd) > 160) { thud(500); floatText(FP.CX, FP.BOT - 240, 'AU!'); }
+      c.vd = Math.abs(c.vd) * 0.3;
+    }
+    if (c.u < -720) { c.u = -720; c.vu = Math.abs(c.vu) * 0.4; }
+    if (c.u >  720) { c.u =  720; c.vu = -Math.abs(c.vu) * 0.4; }
+  }
+
+  // collisions in the (u, d) ground plane
+  for (let i=0;i<cows.length;i++) for (let j=i+1;j<cows.length;j++) {
+    const a = cows[i], b = cows[j];
+    const du = b.u-a.u, dd = b.d-a.d, dist = Math.hypot(du,dd), min = (a.r+b.r)*1.05;
+    if (dist === 0 || dist >= min) continue;
+    const nu = du/dist, nd = dd/dist, overlap = min - dist;
+    const aMoves = a.state === 'rolling', bMoves = b.state === 'rolling';
+    if (!aMoves && !bMoves) continue;
+    if (aMoves && bMoves) {
+      a.u -= nu*overlap/2; a.d -= nd*overlap/2;
+      b.u += nu*overlap/2; b.d += nd*overlap/2;
+      const rvn = (b.vu-a.vu)*nu + (b.vd-a.vd)*nd;
+      if (rvn < 0) {
+        const imp = -rvn * 0.55;
+        a.vu -= imp*nu; a.vd -= imp*nd;
+        b.vu += imp*nu; b.vd += imp*nd;
+        thud(Math.abs(rvn)*2);
+      }
+    } else {
+      const roller = aMoves ? a : b, target = aMoves ? b : a;
+      const rnu = aMoves ? -nu : nu, rnd = aMoves ? -nd : nd;
+      roller.u += rnu*overlap; roller.d += rnd*overlap;
+      const speed = Math.hypot(roller.vu, roller.vd);
+      if (target.state === 'standing' && speed > 330) {
+        knock(target, roller.vu*0.6 + (Math.random()-.5)*60, roller.vd*0.6 + 30);
+        roller.vu *= 0.45; roller.vd *= 0.45;
+        const p = project((a.u+b.u)/2, (a.d+b.d)/2);
+        dust(p.x, p.y, 8, 180*p.k, p.k*2);
+      } else {
+        const vn = roller.vu*rnu + roller.vd*rnd;
+        if (vn < 0) {
+          roller.vu -= 1.25 * vn * rnu;
+          roller.vd -= 1.25 * vn * rnd;
+          roller.vu *= 0.9; roller.vd *= 0.9;
+          if (speed > 220) thud(speed);
+        }
+      }
+    }
+  }
+}
+
+function step(dt) {
+  if (mode === '3p') step3P(dt); else stepFP(dt);
   for (const p of particles) { p.t += dt; p.x += p.vx*dt; p.y += p.vy*dt; p.vy += 60*dt; }
   particles = particles.filter(p => p.t < p.life);
   for (const t of texts) { t.t += dt; t.y -= 45*dt; }
@@ -317,6 +447,7 @@ function step(dt) {
   for (const c of confetti) { c.x += c.vx*dt; c.y += c.vy*dt; c.a += c.av*dt; }
   confetti = confetti.filter(c => c.y < H + 30);
   if (boot) { boot.t += dt; if (boot.t > 0.45) boot = null; }
+  if (bootFP) { bootFP.t += dt; if (bootFP.t > 0.5) bootFP = null; }
   checkStrike();
 }
 
@@ -330,8 +461,9 @@ canvas.addEventListener('pointerdown', e => {
   let best = null, bestD = Infinity;
   for (const c of cows) {
     if (c.state === 'rolling') continue;
-    const d = Math.hypot(c.x - p.x, c.y - p.y);
-    if (d < c.r*2.1 && d < bestD) { best = c; bestD = d; }
+    const s = cowScreen(c);
+    const d = Math.hypot(s.x - p.x, s.y - p.y);
+    if (d < s.re*2.1 && d < bestD) { best = c; bestD = d; }
   }
   if (best) { aim = { cow:best, sx:p.x, sy:p.y, cx:p.x, cy:p.y }; canvas.setPointerCapture(e.pointerId); }
 });
@@ -344,20 +476,42 @@ canvas.addEventListener('pointerup', e => {
   if (!aim) return;
   const dx = aim.cx - aim.sx, dy = aim.cy - aim.sy;
   const len = Math.hypot(dx, dy);
-  let vx, vy;
-  if (len < 12) { vx = 470; vy = -280; }                    // quick tap: standard kick downhill
-  else {
-    const k = Math.min(len, 340) * 3.4;
-    vx = dx/len * k; vy = dy/len * k - 120;
-  }
-  boot = { x:aim.cow.x - aim.cow.r*1.3, y:aim.cow.y, t:0, dir:vx >= 0 ? 1 : -1 };
   kicksLeft--;
-  knock(aim.cow, vx, vy);
-  dust(aim.cow.x, aim.cow.y + aim.cow.r*0.6, 8, 200);
+  if (mode === '3p') {
+    let vx, vy;
+    if (len < 12) { vx = 470; vy = -280; }
+    else {
+      const k = Math.min(len, 340) * 3.4;
+      vx = dx/len * k; vy = dy/len * k - 120;
+    }
+    boot = { x:aim.cow.x - aim.cow.r*1.3, y:aim.cow.y, t:0, dir:vx >= 0 ? 1 : -1 };
+    knock(aim.cow, vx, vy);
+    dust(aim.cow.x, aim.cow.y + aim.cow.r*0.6, 8, 200);
+  } else {
+    // drag up = kick downhill; drag sideways = sideways spin
+    let vu, vd;
+    if (len < 12) { vu = 0; vd = 820; }
+    else {
+      const k = Math.min(len, 340) * 3.4;
+      vd = Math.max(-dy/len * k, 60);            // upward drag drives downhill speed
+      vu = dx/len * k * 0.8;
+    }
+    const s = cowScreen(aim.cow);
+    bootFP = { x:s.x, y:s.y + s.re, t:0, k:project(aim.cow.u, aim.cow.d).k };
+    knock(aim.cow, vu, vd);
+    dust(s.x, s.y + s.re*0.8, 8, 200*s.re/40, s.re/40);
+  }
+  updateScore();
   aim = null;
 });
 canvas.addEventListener('pointercancel', () => aim = null);
 document.getElementById('reset').addEventListener('click', spawnCows);
+document.getElementById('pov').addEventListener('click', () => {
+  mode = mode === '3p' ? 'fp' : '3p';
+  document.getElementById('pov').textContent = mode === '3p' ? '👁 1. person' : '🎥 3. person';
+  spawnCows();
+  buildSceneCache();
+});
 
 /* ============================== scenery assets ============================== */
 // Everything procedural, generated once: grass texture, tree sprites,
@@ -430,9 +584,15 @@ const patches = [];
 for (let i=0;i<14;i++) patches.push({
   x: -200 + Math.random()*1700, w: 50+Math.random()*130, a: 0.08+Math.random()*0.15,
 });
+// first-person: worn patches and fence posts in (u, d) space
+const fpPatches = [];
+for (let i=0;i<26;i++) fpPatches.push({
+  u: (Math.random()-.5)*1500, d: 80 + Math.random()*1250,
+  w: 60+Math.random()*140, a: 0.08+Math.random()*0.14,
+});
 assetsReady = true;
 
-/* ============================== drawing ============================== */
+/* ============================== drawing: 3rd person scene ============================== */
 function terrainPath(g, x0, x1, yFill) {
   g.beginPath(); g.moveTo(x0, groundY(x0));
   for (let x=x0; x<=x1; x+=16) g.lineTo(x, groundY(x));
@@ -442,19 +602,15 @@ function terrainPath(g, x0, x1, yFill) {
 function drawScene(g) {
   const M = 3000, X0 = -M, X1 = W + M;
 
-  // dusk sky with haze towards the treeline
   const sky = g.createLinearGradient(0, -M, 0, 330);
   sky.addColorStop(0, '#aebcb4'); sky.addColorStop(0.75, '#ccd6c4'); sky.addColorStop(1, '#dee4d2');
   g.fillStyle = sky; g.fillRect(X0, -M, X1 - X0, 340 + M);
 
-  // dark forest mass behind the tree sprites
   g.fillStyle = '#233c1c';
   g.beginPath(); g.moveTo(X0, treeLineY(X0));
   for (let x=X0; x<=X1; x+=40) g.lineTo(x, treeLineY(x) - (x%80===0?26:0));
   g.lineTo(X1, -M); g.lineTo(X0, -M); g.closePath(); g.fill();
 
-  // deep forest texture below the treeline (clipped so it never bleeds into the sky;
-  // the hill fill covers the excess at the bottom)
   g.save();
   g.beginPath(); g.moveTo(X0, treeLineY(X0));
   for (let x=X0; x<=X1; x+=40) g.lineTo(x, treeLineY(x));
@@ -466,7 +622,6 @@ function drawScene(g) {
   g.restore();
   g.globalAlpha = 1;
 
-  // two rows of trees along the edge
   for (const t of treeSpots) if (t.back) {
     g.globalAlpha = 0.75;
     g.drawImage(treeSpritesBack[t.i], t.x - 100*t.s, treeLineY(t.x) - 218*t.s - 26, 200*t.s, 240*t.s);
@@ -475,12 +630,10 @@ function drawScene(g) {
   for (const t of treeSpots) if (!t.back)
     g.drawImage(treeSprites[t.i], t.x - 100*t.s, treeLineY(t.x) - 224*t.s, 200*t.s, 240*t.s);
 
-  // power lines, like in the photo
   g.strokeStyle = 'rgba(35,35,35,.45)'; g.lineWidth = 2;
   g.beginPath(); g.moveTo(X0, -260); g.quadraticCurveTo(W/2, 205, X1, -180); g.stroke();
   g.beginPath(); g.moveTo(X0, -300); g.quadraticCurveTo(W/2, 168, X1, -215); g.stroke();
 
-  // hillside: base gradient, then grass texture, dry patches
   const grass = g.createLinearGradient(0, 150, 0, H);
   grass.addColorStop(0, '#87a05c'); grass.addColorStop(1, '#5f7d42');
   g.fillStyle = grass;
@@ -491,7 +644,7 @@ function drawScene(g) {
   g.clip();
   g.fillStyle = grassPat;
   g.fillRect(X0, 100, X1 - X0, H + M - 100);
-  for (const p of patches) {                       // worn / dry ground
+  for (const p of patches) {
     const gy = groundY(p.x);
     g.fillStyle = `rgba(186,171,110,${p.a})`;
     g.beginPath();
@@ -500,7 +653,6 @@ function drawScene(g) {
   }
   g.restore();
 
-  // wire fence behind the cows
   g.strokeStyle = 'rgba(50,48,40,.55)'; g.lineWidth = 3; g.lineCap = 'round';
   const posts = [];
   for (let x=40; x<1310; x+=212) posts.push(x);
@@ -521,20 +673,17 @@ function drawScene(g) {
 
 function drawShed(g) {
   const sx = 1412, sy = groundY(1490);
-  // stone footing
   g.fillStyle = '#8d8578'; g.fillRect(sx - 4, sy - 10, 178, 12);
-  // weathered plank wall
   for (let i=0;i<12;i++) {
     g.fillStyle = ['#6d5138','#63492f','#7c5f42','#5e452f'][i % 4];
     g.fillRect(sx + i*14.2, sy - 118, 14.5, 110);
   }
-  g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(sx, sy - 118, 170, 14);   // eave shadow
-  g.fillStyle = '#2e2117'; g.fillRect(sx + 62, sy - 64, 44, 56);        // dark doorway
+  g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(sx, sy - 118, 170, 14);
+  g.fillStyle = '#2e2117'; g.fillRect(sx + 62, sy - 64, 44, 56);
   g.fillStyle = 'rgba(255,255,255,.06)'; g.fillRect(sx + 63, sy - 63, 6, 54);
-  // mottled tile roof, rust and lichen-white like the photo
   const tileCols = ['#8a5a44','#96654c','#c9c2b4','#9a938a','#7c4f3c','#b8ad9c'];
   for (let row=0; row<7; row++) {
-    const p = row/6;                             // 0 at eaves, 1 at ridge
+    const p = row/6;
     const y  = sy - 122 - p*62;
     const xl = sx - 20 + p*98, xr = sx + 190 - p*98;
     for (let x=xl; x<xr-6; x+=13) {
@@ -542,174 +691,306 @@ function drawShed(g) {
       g.fillRect(x, y - 10, 12, 11);
     }
   }
-  g.strokeStyle = '#5c4636'; g.lineWidth = 4;                            // ridge
+  g.strokeStyle = '#5c4636'; g.lineWidth = 4;
   g.beginPath(); g.moveTo(sx + 74, sy - 192); g.lineTo(sx + 96, sy - 192); g.stroke();
 }
 
-function drawLeg(x, top, bottom, w, col) {
-  ctx.fillStyle = col;
-  ctx.beginPath();
-  ctx.moveTo(x - w, top); ctx.lineTo(x + w, top);
-  ctx.lineTo(x + w*0.7, bottom - 4); ctx.lineTo(x - w*0.7, bottom - 4);
-  ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#2b241c';                                   // hoof
-  ctx.fillRect(x - w*0.75, bottom - 6, w*1.5, 6);
+/* ============================== drawing: first-person scene ============================== */
+function fpTreeLine(x) {
+  return 195 - (x - FP.CX)*0.025 + Math.sin(x*0.045)*20;
+}
+function drawSceneFP(g) {
+  const M = 3000, X0 = -M, X1 = W + M;
+
+  // pale dusk gap above the field edge
+  const sky = g.createLinearGradient(0, -M, 0, FP.HOR);
+  sky.addColorStop(0, '#aebcb4'); sky.addColorStop(0.8, '#ccd6c4'); sky.addColorStop(1, '#dee4d2');
+  g.fillStyle = sky; g.fillRect(X0, -M, X1 - X0, FP.HOR + M + 8);
+
+  // dense forest wall across the top, like the photo
+  g.fillStyle = '#233c1c';
+  g.beginPath(); g.moveTo(X0, fpTreeLine(X0));
+  for (let x=X0; x<=X1; x+=40) g.lineTo(x, fpTreeLine(x) - (x%80===0?24:0));
+  g.lineTo(X1, -M); g.lineTo(X0, -M); g.closePath(); g.fill();
+
+  g.save();
+  g.beginPath(); g.moveTo(X0, fpTreeLine(X0));
+  for (let x=X0; x<=X1; x+=40) g.lineTo(x, fpTreeLine(x));
+  g.lineTo(X1, FP.HOR + 40); g.lineTo(X0, FP.HOR + 40); g.closePath(); g.clip();
+  for (const s of deepSpots) {                          // reuse canopy blobs, remapped
+    const y = fpTreeLine(s.x) + (s.y - treeLineY(s.x)) * 0.55;
+    g.globalAlpha = s.a; g.fillStyle = s.c;
+    g.beginPath(); g.arc(s.x, y, s.r*0.8, 0, PI2); g.fill();
+  }
+  g.restore();
+  g.globalAlpha = 1;
+
+  for (const t of treeSpots) if (t.back) {
+    g.globalAlpha = 0.75;
+    g.drawImage(treeSpritesBack[t.i], t.x - 80*t.s, fpTreeLine(t.x) - 175*t.s - 20, 160*t.s, 192*t.s);
+  }
+  g.globalAlpha = 1;
+  for (const t of treeSpots) if (!t.back)
+    g.drawImage(treeSprites[t.i], t.x - 80*t.s, fpTreeLine(t.x) - 180*t.s, 160*t.s, 192*t.s);
+
+  // power line crossing the top, like the photo
+  g.strokeStyle = 'rgba(35,35,35,.45)'; g.lineWidth = 2;
+  g.beginPath(); g.moveTo(X0, 40); g.quadraticCurveTo(W/2, 150, X1, 70); g.stroke();
+
+  // the field: darker far, brighter near
+  const grass = g.createLinearGradient(0, FP.HOR - 10, 0, FP.BOT + 200);
+  grass.addColorStop(0, '#5c7a41'); grass.addColorStop(0.5, '#7b9755'); grass.addColorStop(1, '#8fa763');
+  g.fillStyle = grass;
+  g.fillRect(X0, FP.HOR - 6, X1 - X0, H + M);
+  g.fillStyle = grassPat;
+  g.fillRect(X0, FP.HOR - 6, X1 - X0, H + M);
+
+  // dirt track curving down towards the shed
+  g.fillStyle = 'rgba(186,175,130,.30)';
+  g.beginPath();
+  let first = true;
+  for (let d=90; d<=1240; d+=70) {
+    const p = project(-330 - d*0.06, d);
+    const wHalf = 46 * p.k;
+    if (first) { g.moveTo(p.x - wHalf, p.y); first = false; }
+    else g.lineTo(p.x - wHalf, p.y);
+  }
+  for (let d=1240; d>=90; d-=70) {
+    const p = project(-330 - d*0.06, d);
+    g.lineTo(p.x + 46*p.k, p.y);
+  }
+  g.closePath(); g.fill();
+
+  // faint contour bands across the slope: cheap depth cue
+  for (const d of [170, 350, 560, 800, 1060]) {
+    const k = FP.D/(d+FP.D);
+    g.strokeStyle = 'rgba(240,240,215,.06)'; g.lineWidth = 26*k;
+    g.beginPath();
+    for (let u=-1900; u<=1900; u+=120) {
+      const q = project(u, d + Math.sin(u*0.004 + d)*30);
+      u === -1900 ? g.moveTo(q.x, q.y) : g.lineTo(q.x, q.y);
+    }
+    g.stroke();
+  }
+
+  // worn dry patches, perspective-scaled
+  for (const p of fpPatches) {
+    const q = project(p.u, p.d);
+    g.fillStyle = `rgba(186,171,110,${p.a})`;
+    g.beginPath(); g.ellipse(q.x, q.y, p.w*q.k, p.w*q.k*0.24, 0, 0, PI2); g.fill();
+  }
+
+  // wire fence at the bottom of the field, in front of the shed
+  const fenceY = [], fenceX = [];
+  for (let u=-760; u<=760; u+=152) { const q = project(u, FP.WALL); fenceX.push(q.x); fenceY.push(q.y); }
+  g.strokeStyle = 'rgba(50,48,40,.6)'; g.lineWidth = 2.4; g.lineCap = 'round';
+  for (let i=0;i<fenceX.length;i++) {
+    g.beginPath(); g.moveTo(fenceX[i], fenceY[i]); g.lineTo(fenceX[i]-1, fenceY[i]-26); g.stroke();
+  }
+  g.lineWidth = 1;
+  for (const dy of [24, 14]) {
+    g.beginPath();
+    fenceX.forEach((x, i) => i ? g.lineTo(x, fenceY[i]-dy) : g.moveTo(x, fenceY[i]-dy));
+    g.stroke();
+  }
+
+  drawShedFP(g);
 }
 
-function bodyPath(r) {
-  ctx.beginPath();
-  ctx.moveTo(-1.32*r, 0.55*r);
-  ctx.quadraticCurveTo(-1.55*r, -0.10*r, -1.28*r, -0.62*r);   // rump
-  ctx.quadraticCurveTo(-1.05*r, -0.88*r, -0.60*r, -0.84*r);   // hip to back
-  ctx.quadraticCurveTo( 0.00*r, -0.72*r,  0.55*r, -0.80*r);   // back sag
-  ctx.quadraticCurveTo( 0.95*r, -0.88*r,  1.15*r, -0.60*r);   // withers
-  ctx.quadraticCurveTo( 1.38*r, -0.25*r,  1.30*r,  0.15*r);   // chest
-  ctx.quadraticCurveTo( 1.20*r,  0.52*r,  0.80*r,  0.62*r);   // brisket
-  ctx.quadraticCurveTo( 0.00*r,  0.82*r, -0.70*r,  0.72*r);   // belly
-  ctx.quadraticCurveTo(-1.15*r,  0.68*r, -1.32*r,  0.55*r);
-  ctx.closePath();
-}
-
-function drawCowStanding(c) {
-  const r = c.r, B = c.breed;
-  const gy = groundY(c.x) - c.y;                 // ground line in local coords
-  const bob = Math.sin(c.graze * 1.3) * 0.07 * r;
-  ctx.save();
-  ctx.translate(c.x, c.y);
-  // soft shadow
-  ctx.fillStyle = 'rgba(25,40,18,.30)';
-  ctx.beginPath(); ctx.ellipse(0, gy - 2, r*1.5, r*0.26, Math.atan(groundNormal(c.x).slope), 0, PI2); ctx.fill();
-  if (c.flip) ctx.scale(-1, 1);
-
-  // far-side legs
-  drawLeg(-0.76*r, 0.35*r, gy, 0.13*r, B.dark);
-  drawLeg( 1.02*r, 0.35*r, gy, 0.12*r, B.dark);
-  // tail
-  ctx.strokeStyle = B.dark; ctx.lineWidth = r*0.09; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(-1.3*r, -0.5*r);
-  ctx.quadraticCurveTo(-1.55*r, 0.1*r, -1.42*r, 0.75*r); ctx.stroke();
-  ctx.fillStyle = '#3a2e20';
-  ctx.beginPath(); ctx.arc(-1.42*r, 0.8*r, r*0.1, 0, PI2); ctx.fill();
-
-  // body, shaded top-light
-  const grad = ctx.createLinearGradient(0, -r, 0, 0.8*r);
-  grad.addColorStop(0, B.light); grad.addColorStop(0.55, B.body); grad.addColorStop(1, B.dark);
-  ctx.fillStyle = grad;
-  bodyPath(r); ctx.fill();
-
-  // breed markings, clipped to the body
-  ctx.save(); bodyPath(r); ctx.clip();
-  if (B.patch) {
-    ctx.fillStyle = B.patch;
-    ctx.beginPath(); ctx.ellipse(-0.95*r, 0.15*r, 0.5*r, 0.55*r, 0.25, 0, PI2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse( 0.35*r, 0.62*r, 0.5*r, 0.28*r, 0, 0, PI2); ctx.fill();
+function drawShedFP(g) {
+  const q = project(-180, 1330), k = q.k;      // down by the flat, centre-left like the photo
+  const w = 470*k, h = 300*k;
+  const x = q.x - w/2, y = q.y - h;
+  g.fillStyle = '#8d8578'; g.fillRect(x - 3*k, q.y - 9*k, w + 6*k, 9*k);
+  for (let i=0;i<12;i++) {
+    g.fillStyle = ['#6d5138','#63492f','#7c5f42','#5e452f'][i % 4];
+    g.fillRect(x + i*(w/12), y, w/12 + 1, h - 9*k);
   }
-  if (B.spots) {
-    ctx.fillStyle = B.spots;
-    ctx.beginPath(); ctx.ellipse(-0.55*r, -0.25*r, 0.48*r, 0.42*r, 0.4, 0, PI2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse( 0.55*r,  0.25*r, 0.42*r, 0.34*r, -0.3, 0, PI2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(-1.15*r,  0.45*r, 0.3*r, 0.26*r, 0, 0, PI2); ctx.fill();
-  }
-  ctx.restore();
-
-  // udder
-  if (B.udder) {
-    ctx.fillStyle = '#d8a8a0';
-    ctx.beginPath(); ctx.ellipse(-0.5*r, 0.72*r, 0.26*r, 0.18*r, 0, 0, PI2); ctx.fill();
-  }
-
-  // near-side legs
-  drawLeg(-0.98*r, 0.4*r, gy, 0.14*r, B.body);
-  drawLeg( 0.84*r, 0.4*r, gy, 0.13*r, B.body);
-
-  // lowered grazing neck and head
-  const hy = gy - 0.52*r + bob;
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.moveTo(0.95*r, -0.8*r);
-  ctx.quadraticCurveTo(1.55*r, -0.45*r, 1.78*r, hy - 0.2*r);
-  ctx.lineTo(1.5*r, hy + 0.2*r);
-  ctx.quadraticCurveTo(1.25*r, 0.0*r, 1.05*r, 0.3*r);
-  ctx.closePath(); ctx.fill();
-  ctx.fillStyle = B.head;
-  ctx.beginPath(); ctx.ellipse(1.72*r, hy, 0.44*r, 0.26*r, 1.15, 0, PI2); ctx.fill();
-  // muzzle
-  ctx.fillStyle = B.spots ? '#8f8a80' : '#c99a8c';
-  ctx.beginPath(); ctx.ellipse(1.82*r, hy + 0.34*r, 0.2*r, 0.14*r, 1.15, 0, PI2); ctx.fill();
-  ctx.fillStyle = '#3a2e26';
-  ctx.beginPath(); ctx.arc(1.87*r, hy + 0.38*r, r*0.035, 0, PI2); ctx.fill();
-  // ear + yellow tag, like the photo
-  ctx.fillStyle = B.head;
-  ctx.beginPath(); ctx.ellipse(1.5*r, hy - 0.3*r, 0.17*r, 0.09*r, -0.5, 0, PI2); ctx.fill();
-  ctx.fillStyle = '#e8c33c';
-  ctx.fillRect(1.44*r, hy - 0.3*r, 0.1*r, 0.1*r);
-  // eye
-  ctx.fillStyle = '#1e1a14';
-  ctx.beginPath(); ctx.arc(1.62*r, hy - 0.12*r, r*0.045, 0, PI2); ctx.fill();
-
-  ctx.restore();
-}
-
-function drawCowRolling(c) {
-  const B = c.breed, r = c.r;
-  ctx.save();
-  ctx.translate(c.x, c.y);
-  // shadow
-  const gy = groundY(c.x) - c.y;
-  if (gy < r*2.2) {
-    ctx.fillStyle = 'rgba(25,40,18,.28)';
-    ctx.beginPath(); ctx.ellipse(0, gy - 2, r*1.15, r*0.22, 0, 0, PI2); ctx.fill();
-  }
-  ctx.rotate(c.angle);
-  // legs sticking out
-  for (const a of [0.7, 2.1, 3.9, 5.4]) {
-    ctx.save(); ctx.rotate(a);
-    ctx.fillStyle = B.dark; ctx.fillRect(r*0.55, -r*0.09, r*0.62, r*0.18);
-    ctx.fillStyle = '#2b241c'; ctx.fillRect(r*1.05, -r*0.1, r*0.14, r*0.2);
-    ctx.restore();
-  }
-  // tumbling body ball, shaded
-  const grad = ctx.createRadialGradient(-r*0.3, -r*0.35, r*0.2, 0, 0, r);
-  grad.addColorStop(0, B.light); grad.addColorStop(0.6, B.body); grad.addColorStop(1, B.dark);
-  ctx.fillStyle = grad;
-  ctx.beginPath(); ctx.arc(0, 0, r*0.95, 0, PI2); ctx.fill();
-  ctx.save();
-  ctx.beginPath(); ctx.arc(0, 0, r*0.95, 0, PI2); ctx.clip();
-  if (B.patch) { ctx.fillStyle = B.patch;
-    ctx.beginPath(); ctx.ellipse(-r*0.35, r*0.3, r*0.45, r*0.34, 0.5, 0, PI2); ctx.fill(); }
-  if (B.spots) { ctx.fillStyle = B.spots;
-    ctx.beginPath(); ctx.ellipse(r*0.3, -r*0.28, r*0.4, r*0.3, 0.4, 0, PI2); ctx.fill();
-    ctx.beginPath(); ctx.ellipse(-r*0.45, r*0.4, r*0.3, r*0.24, 0, 0, PI2); ctx.fill(); }
-  ctx.restore();
-  // dizzy tucked head
-  ctx.fillStyle = B.head;
-  ctx.beginPath(); ctx.ellipse(r*0.45, -r*0.38, r*0.34, r*0.24, 0.5, 0, PI2); ctx.fill();
-  ctx.strokeStyle = '#221c14'; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
-  const ex = r*0.42, ey = -r*0.44, s = r*0.09;
-  ctx.beginPath();
-  ctx.moveTo(ex-s, ey-s); ctx.lineTo(ex+s, ey+s);
-  ctx.moveTo(ex+s, ey-s); ctx.lineTo(ex-s, ey+s); ctx.stroke();
-  ctx.fillStyle = '#c99a8c';
-  ctx.beginPath(); ctx.ellipse(r*0.66, -r*0.2, r*0.13, r*0.09, 0.5, 0, PI2); ctx.fill();
-  ctx.restore();
-
-  // stars circling a fallen cow
-  if (c.state === 'fallen') {
-    const t = performance.now()/1000;
-    ctx.fillStyle = '#ffe14d'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'center';
-    for (let i=0;i<3;i++) {
-      const a = t*2.4 + i*2.1;
-      ctx.fillText('✦', c.x + Math.cos(a)*c.r*1.1, c.y - c.r - 14 + Math.sin(a)*7);
+  g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(x, y, w, 32*k);
+  g.fillStyle = '#2e2117'; g.fillRect(q.x - 55*k, q.y - 150*k, 110*k, 141*k);
+  const tileCols = ['#8a5a44','#96654c','#c9c2b4','#9a938a','#7c4f3c','#b8ad9c'];
+  for (let row=0; row<6; row++) {
+    const p = row/5;
+    const ry = y - 10*k - p*150*k;
+    const xl = x - 40*k + p*(w/2 + 20*k)*0.85, xr = x + w + 40*k - p*(w/2 + 20*k)*0.85;
+    for (let tx=xl; tx<xr - 20*k; tx += 34*k) {
+      g.fillStyle = tileCols[(Math.floor(tx*0.35) + row*3) % 6];
+      g.fillRect(tx, ry - 26*k, 32*k, 27*k);
     }
   }
 }
 
-function drawCow(c) {
-  if (c.state === 'standing') drawCowStanding(c);
-  else drawCowRolling(c);
+/* ============================== drawing: cows ============================== */
+// core side-view standing cow at the origin; caller applies translate/flip/scale
+function cowBody(g, r, B, gy, bob) {
+  drawLegPart(g, -0.76*r, 0.35*r, gy, 0.13*r, B.dark);
+  drawLegPart(g,  1.02*r, 0.35*r, gy, 0.12*r, B.dark);
+  g.strokeStyle = B.dark; g.lineWidth = r*0.09; g.lineCap = 'round';
+  g.beginPath(); g.moveTo(-1.3*r, -0.5*r);
+  g.quadraticCurveTo(-1.55*r, 0.1*r, -1.42*r, 0.75*r); g.stroke();
+  g.fillStyle = '#3a2e20';
+  g.beginPath(); g.arc(-1.42*r, 0.8*r, r*0.1, 0, PI2); g.fill();
+
+  const grad = g.createLinearGradient(0, -r, 0, 0.8*r);
+  grad.addColorStop(0, B.light); grad.addColorStop(0.55, B.body); grad.addColorStop(1, B.dark);
+  g.fillStyle = grad;
+  bodyPath(g, r); g.fill();
+
+  g.save(); bodyPath(g, r); g.clip();
+  if (B.patch) {
+    g.fillStyle = B.patch;
+    g.beginPath(); g.ellipse(-0.95*r, 0.15*r, 0.5*r, 0.55*r, 0.25, 0, PI2); g.fill();
+    g.beginPath(); g.ellipse( 0.35*r, 0.62*r, 0.5*r, 0.28*r, 0, 0, PI2); g.fill();
+  }
+  if (B.spots) {
+    g.fillStyle = B.spots;
+    g.beginPath(); g.ellipse(-0.55*r, -0.25*r, 0.48*r, 0.42*r, 0.4, 0, PI2); g.fill();
+    g.beginPath(); g.ellipse( 0.55*r,  0.25*r, 0.42*r, 0.34*r, -0.3, 0, PI2); g.fill();
+    g.beginPath(); g.ellipse(-1.15*r,  0.45*r, 0.3*r, 0.26*r, 0, 0, PI2); g.fill();
+  }
+  g.restore();
+
+  if (B.udder) {
+    g.fillStyle = '#d8a8a0';
+    g.beginPath(); g.ellipse(-0.5*r, 0.72*r, 0.26*r, 0.18*r, 0, 0, PI2); g.fill();
+  }
+
+  drawLegPart(g, -0.98*r, 0.4*r, gy, 0.14*r, B.body);
+  drawLegPart(g,  0.84*r, 0.4*r, gy, 0.13*r, B.body);
+
+  const hy = gy - 0.52*r + bob;
+  g.fillStyle = grad;
+  g.beginPath();
+  g.moveTo(0.95*r, -0.8*r);
+  g.quadraticCurveTo(1.55*r, -0.45*r, 1.78*r, hy - 0.2*r);
+  g.lineTo(1.5*r, hy + 0.2*r);
+  g.quadraticCurveTo(1.25*r, 0.0*r, 1.05*r, 0.3*r);
+  g.closePath(); g.fill();
+  g.fillStyle = B.head;
+  g.beginPath(); g.ellipse(1.72*r, hy, 0.44*r, 0.26*r, 1.15, 0, PI2); g.fill();
+  g.fillStyle = B.spots ? '#8f8a80' : '#c99a8c';
+  g.beginPath(); g.ellipse(1.82*r, hy + 0.34*r, 0.2*r, 0.14*r, 1.15, 0, PI2); g.fill();
+  g.fillStyle = '#3a2e26';
+  g.beginPath(); g.arc(1.87*r, hy + 0.38*r, r*0.035, 0, PI2); g.fill();
+  g.fillStyle = B.head;
+  g.beginPath(); g.ellipse(1.5*r, hy - 0.3*r, 0.17*r, 0.09*r, -0.5, 0, PI2); g.fill();
+  g.fillStyle = '#e8c33c';
+  g.fillRect(1.44*r, hy - 0.3*r, 0.1*r, 0.1*r);
+  g.fillStyle = '#1e1a14';
+  g.beginPath(); g.arc(1.62*r, hy - 0.12*r, r*0.045, 0, PI2); g.fill();
 }
 
-function drawBoot() {
+function drawLegPart(g, x, top, bottom, w, col) {
+  g.fillStyle = col;
+  g.beginPath();
+  g.moveTo(x - w, top); g.lineTo(x + w, top);
+  g.lineTo(x + w*0.7, bottom - 4); g.lineTo(x - w*0.7, bottom - 4);
+  g.closePath(); g.fill();
+  g.fillStyle = '#2b241c';
+  g.fillRect(x - w*0.75, bottom - 6, w*1.5, 6);
+}
+
+function bodyPath(g, r) {
+  g.beginPath();
+  g.moveTo(-1.32*r, 0.55*r);
+  g.quadraticCurveTo(-1.55*r, -0.10*r, -1.28*r, -0.62*r);
+  g.quadraticCurveTo(-1.05*r, -0.88*r, -0.60*r, -0.84*r);
+  g.quadraticCurveTo( 0.00*r, -0.72*r,  0.55*r, -0.80*r);
+  g.quadraticCurveTo( 0.95*r, -0.88*r,  1.15*r, -0.60*r);
+  g.quadraticCurveTo( 1.38*r, -0.25*r,  1.30*r,  0.15*r);
+  g.quadraticCurveTo( 1.20*r,  0.52*r,  0.80*r,  0.62*r);
+  g.quadraticCurveTo( 0.00*r,  0.82*r, -0.70*r,  0.72*r);
+  g.quadraticCurveTo(-1.15*r,  0.68*r, -1.32*r,  0.55*r);
+  g.closePath();
+}
+
+// tumbling cow ball at origin; caller applies translate/rotate
+function cowBall(g, r, B) {
+  for (const a of [0.7, 2.1, 3.9, 5.4]) {
+    g.save(); g.rotate(a);
+    g.fillStyle = B.dark; g.fillRect(r*0.55, -r*0.09, r*0.62, r*0.18);
+    g.fillStyle = '#2b241c'; g.fillRect(r*1.05, -r*0.1, r*0.14, r*0.2);
+    g.restore();
+  }
+  const grad = g.createRadialGradient(-r*0.3, -r*0.35, r*0.2, 0, 0, r);
+  grad.addColorStop(0, B.light); grad.addColorStop(0.6, B.body); grad.addColorStop(1, B.dark);
+  g.fillStyle = grad;
+  g.beginPath(); g.arc(0, 0, r*0.95, 0, PI2); g.fill();
+  g.save();
+  g.beginPath(); g.arc(0, 0, r*0.95, 0, PI2); g.clip();
+  if (B.patch) { g.fillStyle = B.patch;
+    g.beginPath(); g.ellipse(-r*0.35, r*0.3, r*0.45, r*0.34, 0.5, 0, PI2); g.fill(); }
+  if (B.spots) { g.fillStyle = B.spots;
+    g.beginPath(); g.ellipse(r*0.3, -r*0.28, r*0.4, r*0.3, 0.4, 0, PI2); g.fill();
+    g.beginPath(); g.ellipse(-r*0.45, r*0.4, r*0.3, r*0.24, 0, 0, PI2); g.fill(); }
+  g.restore();
+  g.fillStyle = B.head;
+  g.beginPath(); g.ellipse(r*0.45, -r*0.38, r*0.34, r*0.24, 0.5, 0, PI2); g.fill();
+  g.strokeStyle = '#221c14'; g.lineWidth = Math.max(1.6, r*0.06); g.lineCap = 'round';
+  const ex = r*0.42, ey = -r*0.44, s = r*0.09;
+  g.beginPath();
+  g.moveTo(ex-s, ey-s); g.lineTo(ex+s, ey+s);
+  g.moveTo(ex+s, ey-s); g.lineTo(ex-s, ey+s); g.stroke();
+  g.fillStyle = '#c99a8c';
+  g.beginPath(); g.ellipse(r*0.66, -r*0.2, r*0.13, r*0.09, 0.5, 0, PI2); g.fill();
+}
+
+function drawFallenStars(x, y, r) {
+  const t = performance.now()/1000;
+  ctx.fillStyle = '#ffe14d'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'center';
+  for (let i=0;i<3;i++) {
+    const a = t*2.4 + i*2.1;
+    ctx.fillText('✦', x + Math.cos(a)*r*1.1, y + Math.sin(a)*7);
+  }
+}
+
+function drawCow3P(c) {
+  if (c.state === 'standing') {
+    const gy = groundY(c.x) - c.y;
+    const bob = Math.sin(c.graze * 1.3) * 0.07 * c.r;
+    ctx.save();
+    ctx.translate(c.x, c.y);
+    ctx.fillStyle = 'rgba(25,40,18,.30)';
+    ctx.beginPath(); ctx.ellipse(0, gy - 2, c.r*1.5, c.r*0.26, Math.atan(groundNormal(c.x).slope), 0, PI2); ctx.fill();
+    if (c.flip) ctx.scale(-1, 1);
+    cowBody(ctx, c.r, c.breed, gy, bob);
+    ctx.restore();
+  } else {
+    ctx.save();
+    ctx.translate(c.x, c.y);
+    const gy = groundY(c.x) - c.y;
+    if (gy < c.r*2.2) {
+      ctx.fillStyle = 'rgba(25,40,18,.28)';
+      ctx.beginPath(); ctx.ellipse(0, gy - 2, c.r*1.15, c.r*0.22, 0, 0, PI2); ctx.fill();
+    }
+    ctx.rotate(c.angle);
+    cowBall(ctx, c.r, c.breed);
+    ctx.restore();
+    if (c.state === 'fallen') drawFallenStars(c.x, c.y - c.r - 14, c.r);
+  }
+}
+
+function drawCowFP(c) {
+  const p = project(c.u, c.d);
+  const re = c.r * 2.4 * p.k;
+  ctx.save();
+  ctx.translate(p.x, p.y);
+  ctx.fillStyle = 'rgba(25,40,18,.30)';
+  ctx.beginPath(); ctx.ellipse(0, 0, re*1.5, re*0.24, 0, 0, PI2); ctx.fill();
+  if (c.state === 'standing') {
+    ctx.translate(0, -re*1.5);
+    if (c.flip) ctx.scale(-1, 1);
+    cowBody(ctx, re, c.breed, 1.5*re, Math.sin(c.graze*1.3)*0.07*re);
+  } else {
+    ctx.translate(0, -re*0.95);
+    ctx.rotate(c.angle);
+    cowBall(ctx, re, c.breed);
+  }
+  ctx.restore();
+  if (c.state === 'fallen') drawFallenStars(p.x, p.y - re*2.3, re);
+}
+
+function drawBoot3P() {
   if (!boot) return;
   const p = boot.t / 0.45;
   const swing = Math.sin(p * Math.PI);
@@ -718,16 +999,43 @@ function drawBoot() {
   ctx.rotate(boot.dir * (-0.9 + swing * 1.4));
   ctx.scale(boot.dir, 1);
   ctx.fillStyle = '#4a3120';
-  ctx.fillRect(-12, -55, 24, 48);          // leg
+  ctx.fillRect(-12, -55, 24, 48);
   ctx.fillStyle = '#2b2b2b';
-  ctx.beginPath();                          // boot
+  ctx.beginPath();
   ctx.moveTo(-14, -10); ctx.lineTo(-14, 14); ctx.lineTo(34, 14);
   ctx.quadraticCurveTo(36, 2, 22, -2); ctx.lineTo(14, -10); ctx.closePath(); ctx.fill();
   ctx.restore();
 }
 
+function drawBootFP() {
+  if (!bootFP) return;
+  const p = bootFP.t / 0.5;
+  const rise = Math.sin(Math.min(p*1.6, 1) * Math.PI/2);         // fast up, hold
+  const yb = (canvas.height - view.oy)/view.s + 140;
+  const x = FP.CX + (bootFP.x - FP.CX) * rise;
+  const y = yb + (bootFP.y - yb) * rise;
+  const size = 220 - 120*rise*(1 - bootFP.k);                    // shrinks towards target
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(-0.5 + rise*0.4);
+  ctx.globalAlpha = p > 0.75 ? (1-p)*4 : 1;
+  ctx.fillStyle = '#4a3120';
+  ctx.fillRect(-size*0.13, size*0.1, size*0.26, size*0.7);       // leg from below
+  ctx.fillStyle = '#2b2b2b';
+  ctx.beginPath();                                                // boot, toe up-hill
+  ctx.moveTo(-size*0.16, size*0.16);
+  ctx.lineTo(-size*0.16, -size*0.14);
+  ctx.quadraticCurveTo(-size*0.1, -size*0.3, size*0.14, -size*0.3);
+  ctx.lineTo(size*0.3, -size*0.16);
+  ctx.quadraticCurveTo(size*0.38, -size*0.05, size*0.2, size*0.02);
+  ctx.lineTo(size*0.16, size*0.16);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#c2452f';                                      // laces
+  for (let i=0;i<3;i++) ctx.fillRect(-size*0.08, -size*(0.24 - i*0.07), size*0.18, size*0.025);
+  ctx.restore();
+}
+
 function drawForegroundGrass(time) {
-  // tall dry seed-grass anchored to the bottom of the screen, like the photo
   const xl = (0 - view.ox)/view.s - 40, xr = (canvas.width - view.ox)/view.s + 40;
   const yb = (canvas.height - view.oy)/view.s + 6;
   ctx.lineCap = 'round';
@@ -754,17 +1062,23 @@ function draw(time) {
   ctx.drawImage(sceneCache, 0, 0);
   ctx.setTransform(view.s, 0, 0, view.s, view.ox, view.oy);
 
-  for (const c of cows) drawCow(c);
-  drawBoot();
+  if (mode === '3p') {
+    for (const c of cows) drawCow3P(c);
+    drawBoot3P();
+  } else {
+    // painter's order: far cows first
+    [...cows].sort((a,b) => b.d - a.d).forEach(drawCowFP);
+  }
 
   // aim arrow
   if (aim) {
+    const s = cowScreen(aim.cow);
     const dx = aim.cx - aim.sx, dy = aim.cy - aim.sy, len = Math.hypot(dx, dy);
     if (len > 12) {
       const k = Math.min(len, 340);
-      const ex = aim.cow.x + dx/len*k, ey = aim.cow.y + dy/len*k;
+      const ex = s.x + dx/len*k, ey = s.y + dy/len*k;
       ctx.strokeStyle = 'rgba(255,60,60,.9)'; ctx.lineWidth = 6; ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.moveTo(aim.cow.x, aim.cow.y); ctx.lineTo(ex, ey); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(ex, ey); ctx.stroke();
       const a = Math.atan2(dy, dx);
       ctx.fillStyle = 'rgba(255,60,60,.9)';
       ctx.beginPath(); ctx.moveTo(ex, ey);
@@ -773,7 +1087,7 @@ function draw(time) {
       ctx.closePath(); ctx.fill();
     }
     ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.arc(aim.cow.x, aim.cow.y, aim.cow.r*1.3, 0, PI2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(s.x, s.y, s.re*1.3, 0, PI2); ctx.stroke();
   }
 
   // dust
@@ -796,6 +1110,7 @@ function draw(time) {
     ctx.fillStyle = c.c; ctx.fillRect(-6, -3, 12, 6); ctx.restore();
   }
 
+  if (mode === 'fp') drawBootFP();
   drawForegroundGrass(time);
 
   // dusk vignette, screen space

@@ -10,6 +10,14 @@ resten — bowling med kyr.
 
 Åpne `index.html` i en nettleser (ingen avhengigheter, alt er én fil).
 
+Velg perspektiv med knappen oppe til høyre:
+
+- **3. person** — klassisk sidevisning av hele bakken.
+- **1. person** — du står øverst i bakken, akkurat der bildet ble tatt, med
+  den store Simmentalen rett foran deg. Kyrne beiter **sidelengs** over
+  jordet, så du må time sparket til de står på linje. Dra oppover for å
+  sparke kua nedover bakken, sidelengs for skru.
+
 - **Dra over en ku og slipp** for å sparke den i valgt retning og styrke.
 - **Trykk kort på en ku** for et standard spark utfor bakken.
 - Du har bare **3 spark** — kyrne er tunge, vandrer rundt, og en liten

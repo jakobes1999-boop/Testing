@@ -15,6 +15,8 @@ Dette repoet strukturerer innhentingen av bakgrunnsfakta og data til utvalgsarbe
 | `02-bestillingsliste-internt.md` | Konkrete databestillinger til NSF-administrasjonen og Söderberg & Partners |
 | `03-syntese-modellalternativer.md` | Syntese: problembilde, rammer og fire modellalternativer vurdert mot mandatet |
 | `04-prinsipielle-vurderinger.md` | Prinsipielle vurderinger forankret i økonomisk teori og empiri |
+| `05-rapportdisposisjon.md` | Skjelett for utvalgets sluttrapport med produksjonsplan mot 1. oktober |
+| `06-epostutkast.md` | Ferdige e-postutkast: bestillinger, innspillsrunde og arrangørintervjuer |
 | `bakgrunn/17-litteratur.md` | Verifisert referanseliste og sentrale empiriske funn til prinsippnotatet |
 | `bakgrunn/10-dagens-ordning.md` | Dagens skilisensordning: typer, priser, dekning, historikk, kritikk |
 | `bakgrunn/11-andre-saerforbund.md` | Benchmarking av lisens-/forsikringsordninger i andre norske særforbund |

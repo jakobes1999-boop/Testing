@@ -12,14 +12,19 @@ resten — bowling med kyr.
 
 - **Dra over en ku og slipp** for å sparke den i valgt retning og styrke.
 - **Trykk kort på en ku** for et standard spark utfor bakken.
-- Kyr som ligger med beina i været kan sparkes igjen.
-- Velt alle 7 for **STRIKE!**
+- Du har bare **3 spark** — kyrne er tunge, vandrer rundt, og en liten
+  bakketopp midtveis dreper farten. Bruk kjedereaksjoner!
+- Kyr som ligger med beina i været kan sparkes igjen (koster et spark).
+- Velt alle 7 for **STRIKE!** Går du tom for spark: **BOM!**
 - «Nye kyr» setter opp jordet på nytt.
 
 ## Fysikken
 
 Egenskrevet 2D-fysikk på `<canvas>`: tyngdekraft, terreng som høydefelt med
-normal-/tangentdekomponering, rullefriksjon, restitusjon, ku-mot-ku-støt og
-kjedereaksjoner nedover bakken. Pluss syntetiske «MØØ»-lyder via WebAudio.
+normal-/tangentdekomponering, rullefriksjon (terminalfarten til en rullende ku
+ligger under veltegrensen, så bare ferske spark velter), restitusjon,
+ku-mot-ku-støt og kjedereaksjoner nedover bakken. Grafikken er prosedural i
+skumringslys: teksturert gress, lagvis skog, værbitt skur og kyr med raser
+fra bildet. Pluss syntetiske «MØØ»-lyder via WebAudio.
 
 Ingen kyr ble skadet under utviklingen.

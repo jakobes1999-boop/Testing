@@ -13,7 +13,7 @@
          text-shadow:0 2px 6px rgba(0,0,0,.6); }
   #title { top:10px; left:14px; font-size:clamp(18px,3.2vw,30px); font-weight:800; letter-spacing:1px; }
   #title small { display:block; font-size:.45em; font-weight:500; opacity:.9; }
-  #score { top:12px; right:14px; font-size:clamp(16px,2.6vw,24px); font-weight:700; text-align:right; }
+  #score { top:12px; right:14px; font-size:clamp(15px,2.4vw,22px); font-weight:700; text-align:right; }
   #hint { bottom:64px; left:50%; transform:translateX(-50%); font-size:clamp(13px,2vw,17px);
           background:rgba(0,0,0,.45); padding:6px 14px; border-radius:20px; white-space:nowrap; }
   #caption { bottom:14px; left:50%; transform:translateX(-50%); width:min(92vw,680px);
@@ -23,39 +23,54 @@
            font-weight:700; color:#fff; background:rgba(0,0,0,.5); border:2px solid rgba(255,255,255,.7);
            border-radius:10px; padding:7px 14px; cursor:pointer; }
   #reset:hover { background:rgba(0,0,0,.75); }
-  #strike { position:fixed; z-index:7; inset:0; display:none; align-items:center; justify-content:center;
-            flex-direction:column; pointer-events:none; }
-  #strike h1 { font-size:clamp(48px,12vw,130px); color:#ffe14d; margin:0;
-               text-shadow:0 4px 0 #b8860b, 0 10px 30px rgba(0,0,0,.7);
-               animation:pop .5s cubic-bezier(.2,2,.4,1); }
-  #strike p { color:#fff; font-size:clamp(16px,3vw,26px); text-shadow:0 2px 6px rgba(0,0,0,.7); margin:8px 0 0; }
+  .overlay { position:fixed; z-index:7; inset:0; display:none; align-items:center; justify-content:center;
+             flex-direction:column; pointer-events:none; text-align:center; }
+  .overlay h1 { font-size:clamp(44px,11vw,120px); margin:0;
+                text-shadow:0 4px 0 rgba(0,0,0,.35), 0 10px 30px rgba(0,0,0,.7);
+                animation:pop .5s cubic-bezier(.2,2,.4,1); }
+  #strike h1 { color:#ffe14d; }
+  #fail h1 { color:#ff6b57; }
+  .overlay p { color:#fff; font-size:clamp(15px,2.8vw,24px); text-shadow:0 2px 6px rgba(0,0,0,.7);
+               margin:8px 12px 0; }
   @keyframes pop { from { transform:scale(.2) rotate(-12deg); } to { transform:scale(1) rotate(0); } }
 </style>
 </head>
 <body>
 <canvas id="game"></canvas>
 <div id="title" class="hud">🐄 KUBOWLING 🎳<small>fysikk-simulator for kuvelt</small></div>
-<div id="score" class="hud">Veltet: 0 / 7</div>
+<div id="score" class="hud">Veltet: 0 / 7 · Spark: 3</div>
 <button id="reset">🔄 Nye kyr</button>
-<div id="hint" class="hud">Dra over en ku og slipp for å sparke den utfor bakken!</div>
+<div id="hint" class="hud">3 spark — dra over en ku og velt alle 7!</div>
 <div id="caption" class="hud">Tidenes mulighet for å spille bowling med kyr</div>
-<div id="strike"><h1>STRIKE!!! 🎳</h1><p>Alle kyrne har trillet ned bakken. Bonden er ikke imponert.</p></div>
+<div id="strike" class="overlay"><h1>STRIKE!!! 🎳</h1><p>Alle kyrne har trillet ned bakken. Bonden er ikke imponert.</p></div>
+<div id="fail" class="overlay"><h1>BOM! 🥾</h1><p>Tomt for spark — bonden jager deg av jordet. Trykk «Nye kyr» og prøv igjen.</p></div>
 
 <script>
 'use strict';
 /* ============================== world setup ============================== */
 const W = 1600, H = 900;                 // world units, scaled to the canvas
 const G = 1350;                          // gravity, world units / s²
+const KICKS_MAX = 3;
+const PI2 = Math.PI * 2;
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 let view = { s:1, ox:0, oy:0 };
 
+let sceneCache = null, assetsReady = false;
+function buildSceneCache() {
+  sceneCache = document.createElement('canvas');
+  sceneCache.width = canvas.width; sceneCache.height = canvas.height;
+  const g = sceneCache.getContext('2d');
+  g.setTransform(view.s, 0, 0, view.s, view.ox, view.oy);
+  drawScene(g);
+}
 function resize() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width  = innerWidth * dpr;
   canvas.height = innerHeight * dpr;
   const s = Math.min(canvas.width / W, canvas.height / H);
   view = { s, ox:(canvas.width - W*s)/2, oy:(canvas.height - H*s)/2 };
+  if (assetsReady) buildSceneCache();
 }
 addEventListener('resize', resize); resize();
 
@@ -65,10 +80,12 @@ function toWorld(clientX, clientY) {
 }
 
 /* ============================== terrain ============================== */
-// Hillside sloping down to the right, flattening out by the shed.
+// Hillside sloping down to the right, with a momentum-killing knoll
+// two-thirds of the way down, flattening out by the shed.
 function groundY(x) {
   const xe = x < 1300 ? x : 1300 + (x - 1300) * 0.06;   // flatten near the shed
-  return 235 + xe*0.36 + Math.sin(xe*0.005)*26 + Math.sin(xe*0.013 + 2)*10;
+  return 235 + xe*0.36 + Math.sin(xe*0.005)*26 + Math.sin(xe*0.013 + 2)*10
+       - 50 * Math.exp(-Math.pow((xe - 770) / 110, 2));  // the knoll
 }
 function groundNormal(x) {
   const d = (groundY(x+2) - groundY(x-2)) / 4;          // dy/dx
@@ -77,21 +94,24 @@ function groundNormal(x) {
 }
 
 /* ============================== cows ============================== */
-// Colour schemes inspired by the photo: Simmental, Hereford-ish, Holstein, grey, tan.
+// Colour schemes matched to the photo: Simmental, brown w/ white face,
+// Holstein, grey-brown, tan. light/dark drive the body shading.
 const BREEDS = [
-  { body:'#b06a2a', patch:'#f3e9d8', head:'#e8d9be', spots:null       }, // big Simmental
-  { body:'#94491c', patch:'#f3e9d8', head:'#f3e9d8', spots:null       }, // brown w/ white face
-  { body:'#f2eee6', patch:null,      head:'#f2eee6', spots:'#1d1d1d'  }, // Holstein
-  { body:'#9b8a76', patch:null,      head:'#8a7a67', spots:null       }, // grey-brown
-  { body:'#c49a6c', patch:'#efe3cd', head:'#d8b98d', spots:null       }, // tan
+  { body:'#a8663a', light:'#c58a54', dark:'#7e4a26', patch:'#efe6d4', head:'#d9c8a9', spots:null,      udder:true  },
+  { body:'#8f4a20', light:'#aa6535', dark:'#6b3616', patch:'#ece2cf', head:'#ece2cf', spots:null,      udder:false },
+  { body:'#e8e4da', light:'#f4f1e9', dark:'#c9c4b6', patch:null,      head:'#e8e4da', spots:'#26251f', udder:true  },
+  { body:'#93836f', light:'#ab9c88', dark:'#6f6252', patch:null,      head:'#7d7060', spots:null,      udder:false },
+  { body:'#bd9769', light:'#d4b183', dark:'#96744b', patch:'#eadfc6', head:'#c9a97b', spots:null,      udder:true  },
 ];
 
 let cows = [], particles = [], texts = [], confetti = [], boot = null;
-let strikeShown = false;
+let strikeShown = false, failShown = false, kicksLeft = KICKS_MAX;
 
 function spawnCows() {
-  cows = []; particles = []; texts = []; confetti = []; boot = null; strikeShown = false;
+  cows = []; particles = []; texts = []; confetti = []; boot = null;
+  strikeShown = false; failShown = false; kicksLeft = KICKS_MAX;
   document.getElementById('strike').style.display = 'none';
+  document.getElementById('fail').style.display = 'none';
   const layout = [
     { x: 150, r:46, b:0 }, { x: 330, r:38, b:1 }, { x: 500, r:34, b:2 },
     { x: 660, r:36, b:4 }, { x: 820, r:33, b:3 }, { x: 980, r:31, b:2 },
@@ -99,9 +119,10 @@ function spawnCows() {
   ];
   for (const c of layout) {
     cows.push({
-      x:c.x, y:groundY(c.x) - c.r - c.r*0.55, r:c.r, breed:BREEDS[c.b],
+      x:c.x, y:groundY(c.x) - c.r*1.5, r:c.r, breed:BREEDS[c.b],
       state:'standing', vx:0, vy:0, angle:0, angVel:0,
-      graze:Math.random()*Math.PI*2, flip:Math.random()<0.3,
+      home:c.x, phase:Math.random()*PI2,
+      graze:Math.random()*PI2, flip:false,
     });
   }
   updateScore();
@@ -109,7 +130,8 @@ function spawnCows() {
 
 function updateScore() {
   const down = cows.filter(c => c.state !== 'standing').length;
-  document.getElementById('score').textContent = `Veltet: ${down} / ${cows.length}`;
+  document.getElementById('score').textContent =
+    `Veltet: ${down} / ${cows.length} · Spark: ${kicksLeft}`;
 }
 
 function checkStrike() {
@@ -122,6 +144,13 @@ function checkStrike() {
       c:`hsl(${Math.random()*360},90%,60%)`, a:Math.random()*Math.PI, av:(Math.random()-.5)*8,
     });
     moo(); setTimeout(moo, 250); setTimeout(moo, 500);
+  }
+  // out of kicks, everything settled, cows still standing: the farmer wins
+  if (!strikeShown && !failShown && kicksLeft === 0 &&
+      !cows.some(c => c.state === 'rolling') && cows.some(c => c.state === 'standing')) {
+    failShown = true;
+    document.getElementById('fail').style.display = 'flex';
+    moo();
   }
 }
 
@@ -182,7 +211,14 @@ function knock(cow, vx, vy) {
 
 function step(dt) {
   for (const c of cows) {
-    if (c.state === 'standing') { c.graze += dt; continue; }
+    if (c.state === 'standing') {           // graze and slowly wander
+      c.graze += dt;
+      const w = c.graze*0.35 + c.phase;
+      c.x = c.home + Math.sin(w) * 48;
+      c.y = groundY(c.x) - c.r*1.5;
+      c.flip = Math.cos(w) < 0;
+      continue;
+    }
     if (c.state === 'fallen') continue;
 
     // settle when slow for a while, e.g. resting on a pile of other cows
@@ -219,7 +255,8 @@ function step(dt) {
         if (vn < -130) { dust(c.x, gy, Math.min(12, -vn/60), -vn*0.5); thud(-vn); }
         vn = -vn * 0.34;                         // restitution
       }
-      vt *= (1 - 1.1*dt);                        // rolling friction
+      vt *= (1 - 2.0*dt);                        // heavy cows: strong rolling friction
+                                                 // (terminal speed sits below knock threshold)
       c.vx = vn*n.nx + vt*n.tx;
       c.vy = vn*n.ny + vt*n.ty;
       c.angVel = vt / c.r;
@@ -256,16 +293,16 @@ function step(dt) {
       const rnx = aMoves ? -nx : nx, rny = aMoves ? -ny : ny;
       roller.x += rnx*overlap; roller.y += rny*overlap;
       const speed = Math.hypot(roller.vx, roller.vy);
-      if (target.state === 'standing' && speed > 240) {
-        knock(target, roller.vx*0.8 + 60, Math.min(roller.vy*0.6, -140));
-        roller.vx *= 0.55; roller.vy *= 0.55;
+      if (target.state === 'standing' && speed > 330) {   // cows are heavy: needs real pace
+        knock(target, roller.vx*0.6 + 40, Math.min(roller.vy*0.5, -110));
+        roller.vx *= 0.45; roller.vy *= 0.45;
         dust((a.x+b.x)/2, (a.y+b.y)/2, 10, 220);
       } else {
         const vn = roller.vx*rnx + roller.vy*rny;
-        if (vn < 0) {                            // bounce off, restitution 0.3
-          roller.vx -= 1.3 * vn * rnx;
-          roller.vy -= 1.3 * vn * rny;
-          roller.vx *= 0.94; roller.vy *= 0.94;
+        if (vn < 0) {                            // bounce off, restitution 0.25
+          roller.vx -= 1.25 * vn * rnx;
+          roller.vy -= 1.25 * vn * rny;
+          roller.vx *= 0.9; roller.vy *= 0.9;
           if (speed > 220) { thud(speed); dust((a.x+b.x)/2, (a.y+b.y)/2, 5, 120); }
         }
       }
@@ -288,6 +325,7 @@ let aim = null;   // { cow, sx, sy, cx, cy }
 
 canvas.addEventListener('pointerdown', e => {
   initAudio();
+  if (kicksLeft <= 0) return;
   const p = toWorld(e.clientX, e.clientY);
   let best = null, bestD = Infinity;
   for (const c of cows) {
@@ -307,12 +345,13 @@ canvas.addEventListener('pointerup', e => {
   const dx = aim.cx - aim.sx, dy = aim.cy - aim.sy;
   const len = Math.hypot(dx, dy);
   let vx, vy;
-  if (len < 12) { vx = 560; vy = -330; }                    // quick tap: standard kick downhill
+  if (len < 12) { vx = 470; vy = -280; }                    // quick tap: standard kick downhill
   else {
     const k = Math.min(len, 340) * 3.4;
     vx = dx/len * k; vy = dy/len * k - 120;
   }
   boot = { x:aim.cow.x - aim.cow.r*1.3, y:aim.cow.y, t:0, dir:vx >= 0 ? 1 : -1 };
+  kicksLeft--;
   knock(aim.cow, vx, vy);
   dust(aim.cow.x, aim.cow.y + aim.cow.r*0.6, 8, 200);
   aim = null;
@@ -320,128 +359,338 @@ canvas.addEventListener('pointerup', e => {
 canvas.addEventListener('pointercancel', () => aim = null);
 document.getElementById('reset').addEventListener('click', spawnCows);
 
+/* ============================== scenery assets ============================== */
+// Everything procedural, generated once: grass texture, tree sprites,
+// foreground seed-grass. Dusk palette pulled from the photo.
+function makeGrassPattern() {
+  const t = document.createElement('canvas'); t.width = t.height = 180;
+  const g = t.getContext('2d');
+  const cols = ['#6f8f4a','#7fa055','#94ad66','#5c7a40','#4c6635','#b3a86e','#a09a62'];
+  for (let i=0;i<900;i++) {
+    const x = Math.random()*180, y = Math.random()*180, len = 3+Math.random()*8;
+    const lean = (Math.random()-.5)*4;
+    g.strokeStyle = cols[Math.floor(Math.random()*cols.length)];
+    g.globalAlpha = 0.25 + Math.random()*0.45;
+    g.lineWidth = 0.8 + Math.random()*0.9;
+    g.beginPath(); g.moveTo(x, y); g.lineTo(x+lean, y-len); g.stroke();
+  }
+  return ctx.createPattern(t, 'repeat');
+}
+function makeTreeSprite(withTrunk) {
+  const c = document.createElement('canvas'); c.width = 200; c.height = 240;
+  const g = c.getContext('2d');
+  if (withTrunk) {
+    g.strokeStyle = '#463824'; g.lineWidth = 8; g.lineCap = 'round';
+    g.beginPath(); g.moveTo(100, 232); g.lineTo(100 + (Math.random()-.5)*14, 160); g.stroke();
+  }
+  const cols = ['#2e4a24','#3a5a2c','#48663a','#557344'];
+  for (let i=0;i<15;i++) {
+    const bx = 100 + (Math.random()-.5)*115;
+    const by = 155 - Math.random()*100;
+    const br = 26 + Math.random()*28;
+    const ci = Math.min(3, Math.floor((155-by)/100*3 + Math.random()*1.4));
+    const grad = g.createRadialGradient(bx-br*0.3, by-br*0.35, br*0.15, bx, by, br);
+    grad.addColorStop(0, cols[Math.min(3, ci+1) || ci]);
+    grad.addColorStop(1, cols[Math.max(0, ci-1)]);
+    g.fillStyle = grad; g.globalAlpha = 0.9;
+    g.beginPath(); g.arc(bx, by, br, 0, PI2); g.fill();
+  }
+  return c;
+}
+const grassPat = makeGrassPattern();
+const treeSprites = [makeTreeSprite(true), makeTreeSprite(true), makeTreeSprite(true)];
+const treeSpritesBack = [makeTreeSprite(false), makeTreeSprite(false), makeTreeSprite(false)];
+function treeLineY(x) {
+  return groundY(x*0.5) - 130 - Math.sin(x*0.05)*24;
+}
+// hazy canopy filling the dark forest falling down the far slope
+const deepSpots = [];
+for (let x=-3000; x<W+3000; x+=85) for (let k=1; k<=6; k++) {
+  const y = treeLineY(x) + 20 + k*72 + (Math.random()-.5)*40;
+  deepSpots.push({ x: x + (Math.random()-.5)*70, y,
+                   r: 38+Math.random()*34, a: Math.max(0.12, 0.5 - k*0.06),
+                   c: ['#24401d','#2b4a23','#33552a'][Math.floor(Math.random()*3)] });
+}
+const treeSpots = [];
+for (let x=-3000; x<W+3000; x+=105) {
+  treeSpots.push({ x: x + (Math.random()-.5)*50, back:true,
+                   s: 0.7+Math.random()*0.5, i: Math.floor(Math.random()*3) });
+  if (Math.random() < 0.8)
+    treeSpots.push({ x: x + (Math.random()-.5)*70, back:false,
+                     s: 1.0+Math.random()*0.7, i: Math.floor(Math.random()*3) });
+}
+const fgBlades = [];
+for (let i=0;i<110;i++) fgBlades.push({
+  u: Math.random(), h: 55+Math.random()*95, lean: (Math.random()-.5)*0.7,
+  w: 2.2+Math.random()*2.4, seed: Math.random() < 0.45,
+  col: ['#a89a63','#8fa055','#6f8544','#b3a468','#7d9150'][Math.floor(Math.random()*5)],
+  ph: Math.random()*PI2,
+});
+const patches = [];
+for (let i=0;i<14;i++) patches.push({
+  x: -200 + Math.random()*1700, w: 50+Math.random()*130, a: 0.08+Math.random()*0.15,
+});
+assetsReady = true;
+
 /* ============================== drawing ============================== */
-function drawScene() {
-  // draw well past the world bounds so letterboxed screens are filled edge-to-edge
-  const M = 3000, X0 = -M, X1 = W + M;
-
-  // sky
-  const sky = ctx.createLinearGradient(0, -M, 0, 320);
-  sky.addColorStop(0, '#a7bfc9'); sky.addColorStop(1, '#d7e2d2');
-  ctx.fillStyle = sky; ctx.fillRect(X0, -M, X1 - X0, 340 + M);
-
-  // forest along the top of the hill
-  ctx.fillStyle = '#2c4a26';
-  ctx.beginPath(); ctx.moveTo(X0, groundY(X0*0.5) - 130);
-  for (let x=X0; x<=X1; x+=40)
-    ctx.lineTo(x, groundY(x*0.5) - 130 - Math.sin(x*0.05)*24 - (x%80===0?28:0));
-  ctx.lineTo(X1, -M); ctx.lineTo(X0, -M); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#3a5c30';
-  for (let x=X0+20; x<X1; x+=90) {
-    const ty = groundY(x*0.5) - 120 - Math.sin(x*0.11)*18;
-    ctx.beginPath(); ctx.arc(x, ty, 34 + Math.abs(x*7)%22, 0, Math.PI*2); ctx.fill();
-  }
-
-  // power line, like in the photo
-  ctx.strokeStyle = 'rgba(40,40,40,.5)'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(X0, -240);
-  ctx.quadraticCurveTo(W/2, 210, X1, -160); ctx.stroke();
-
-  // hillside
-  const grass = ctx.createLinearGradient(0, 200, 0, H);
-  grass.addColorStop(0, '#8fa963'); grass.addColorStop(1, '#6e8f4e');
-  ctx.fillStyle = grass;
-  ctx.beginPath(); ctx.moveTo(X0, groundY(X0));
-  for (let x=X0; x<=X1; x+=16) ctx.lineTo(x, groundY(x));
-  ctx.lineTo(X1, H + M); ctx.lineTo(X0, H + M); ctx.closePath(); ctx.fill();
-
-  // worn patches + grass tufts
-  ctx.fillStyle = 'rgba(180,170,120,.25)';
-  for (let i=0;i<9;i++) {
-    const x = 90 + i*170, gy = groundY(x);
-    ctx.beginPath(); ctx.ellipse(x, gy+26, 65, 14, Math.atan(groundNormal(x).slope), 0, Math.PI*2); ctx.fill();
-  }
-  ctx.strokeStyle = '#5b7a3e'; ctx.lineWidth = 2;
-  for (let x=X0+15; x<X1; x+=46) {
-    const gy = groundY(x);
-    ctx.beginPath(); ctx.moveTo(x, gy+2); ctx.lineTo(x-4, gy-12);
-    ctx.moveTo(x, gy+2); ctx.lineTo(x+4, gy-13); ctx.stroke();
-  }
-
-  // the shed
-  const sx = 1412, sy = groundY(1490);
-  ctx.fillStyle = '#6b4d33'; ctx.fillRect(sx, sy-120, 170, 120);          // wall
-  ctx.fillStyle = '#4a3524'; ctx.fillRect(sx+62, sy-64, 44, 64);          // door
-  ctx.fillStyle = '#8a4c3a';                                              // roof
-  ctx.beginPath(); ctx.moveTo(sx-22, sy-114); ctx.lineTo(sx+85, sy-186);
-  ctx.lineTo(sx+192, sy-114); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 3;
-  for (let i=0;i<6;i++) {
-    ctx.beginPath(); ctx.moveTo(sx-10+i*34, sy-121-(i%2)*4);
-    ctx.lineTo(sx+85, sy-182); ctx.stroke();
-  }
+function terrainPath(g, x0, x1, yFill) {
+  g.beginPath(); g.moveTo(x0, groundY(x0));
+  for (let x=x0; x<=x1; x+=16) g.lineTo(x, groundY(x));
+  g.lineTo(x1, yFill); g.lineTo(x0, yFill); g.closePath();
 }
 
-function drawCow(c) {
+function drawScene(g) {
+  const M = 3000, X0 = -M, X1 = W + M;
+
+  // dusk sky with haze towards the treeline
+  const sky = g.createLinearGradient(0, -M, 0, 330);
+  sky.addColorStop(0, '#aebcb4'); sky.addColorStop(0.75, '#ccd6c4'); sky.addColorStop(1, '#dee4d2');
+  g.fillStyle = sky; g.fillRect(X0, -M, X1 - X0, 340 + M);
+
+  // dark forest mass behind the tree sprites
+  g.fillStyle = '#233c1c';
+  g.beginPath(); g.moveTo(X0, treeLineY(X0));
+  for (let x=X0; x<=X1; x+=40) g.lineTo(x, treeLineY(x) - (x%80===0?26:0));
+  g.lineTo(X1, -M); g.lineTo(X0, -M); g.closePath(); g.fill();
+
+  // deep forest texture below the treeline (clipped so it never bleeds into the sky;
+  // the hill fill covers the excess at the bottom)
+  g.save();
+  g.beginPath(); g.moveTo(X0, treeLineY(X0));
+  for (let x=X0; x<=X1; x+=40) g.lineTo(x, treeLineY(x));
+  g.lineTo(X1, H + M); g.lineTo(X0, H + M); g.closePath(); g.clip();
+  for (const s of deepSpots) {
+    g.globalAlpha = s.a; g.fillStyle = s.c;
+    g.beginPath(); g.arc(s.x, s.y, s.r, 0, PI2); g.fill();
+  }
+  g.restore();
+  g.globalAlpha = 1;
+
+  // two rows of trees along the edge
+  for (const t of treeSpots) if (t.back) {
+    g.globalAlpha = 0.75;
+    g.drawImage(treeSpritesBack[t.i], t.x - 100*t.s, treeLineY(t.x) - 218*t.s - 26, 200*t.s, 240*t.s);
+  }
+  g.globalAlpha = 1;
+  for (const t of treeSpots) if (!t.back)
+    g.drawImage(treeSprites[t.i], t.x - 100*t.s, treeLineY(t.x) - 224*t.s, 200*t.s, 240*t.s);
+
+  // power lines, like in the photo
+  g.strokeStyle = 'rgba(35,35,35,.45)'; g.lineWidth = 2;
+  g.beginPath(); g.moveTo(X0, -260); g.quadraticCurveTo(W/2, 205, X1, -180); g.stroke();
+  g.beginPath(); g.moveTo(X0, -300); g.quadraticCurveTo(W/2, 168, X1, -215); g.stroke();
+
+  // hillside: base gradient, then grass texture, dry patches
+  const grass = g.createLinearGradient(0, 150, 0, H);
+  grass.addColorStop(0, '#87a05c'); grass.addColorStop(1, '#5f7d42');
+  g.fillStyle = grass;
+  terrainPath(g, X0, X1, H + M);
+  g.fill();
+  g.save();
+  terrainPath(g, X0, X1, H + M);
+  g.clip();
+  g.fillStyle = grassPat;
+  g.fillRect(X0, 100, X1 - X0, H + M - 100);
+  for (const p of patches) {                       // worn / dry ground
+    const gy = groundY(p.x);
+    g.fillStyle = `rgba(186,171,110,${p.a})`;
+    g.beginPath();
+    g.ellipse(p.x, gy + 24, p.w, p.w*0.22, Math.atan(groundNormal(p.x).slope), 0, PI2);
+    g.fill();
+  }
+  g.restore();
+
+  // wire fence behind the cows
+  g.strokeStyle = 'rgba(50,48,40,.55)'; g.lineWidth = 3; g.lineCap = 'round';
+  const posts = [];
+  for (let x=40; x<1310; x+=212) posts.push(x);
+  for (const x of posts) {
+    const gy = groundY(x);
+    g.beginPath(); g.moveTo(x, gy); g.lineTo(x - 3, gy - 54); g.stroke();
+  }
+  g.lineWidth = 1.2; g.strokeStyle = 'rgba(60,60,55,.5)';
+  for (const dy of [50, 32]) {
+    g.beginPath();
+    posts.forEach((x, i) => { const y = groundY(x) - dy;
+      i ? g.quadraticCurveTo((posts[i-1]+x)/2, y+5, x, y) : g.moveTo(x, y); });
+    g.stroke();
+  }
+
+  drawShed(g);
+}
+
+function drawShed(g) {
+  const sx = 1412, sy = groundY(1490);
+  // stone footing
+  g.fillStyle = '#8d8578'; g.fillRect(sx - 4, sy - 10, 178, 12);
+  // weathered plank wall
+  for (let i=0;i<12;i++) {
+    g.fillStyle = ['#6d5138','#63492f','#7c5f42','#5e452f'][i % 4];
+    g.fillRect(sx + i*14.2, sy - 118, 14.5, 110);
+  }
+  g.fillStyle = 'rgba(0,0,0,.25)'; g.fillRect(sx, sy - 118, 170, 14);   // eave shadow
+  g.fillStyle = '#2e2117'; g.fillRect(sx + 62, sy - 64, 44, 56);        // dark doorway
+  g.fillStyle = 'rgba(255,255,255,.06)'; g.fillRect(sx + 63, sy - 63, 6, 54);
+  // mottled tile roof, rust and lichen-white like the photo
+  const tileCols = ['#8a5a44','#96654c','#c9c2b4','#9a938a','#7c4f3c','#b8ad9c'];
+  for (let row=0; row<7; row++) {
+    const p = row/6;                             // 0 at eaves, 1 at ridge
+    const y  = sy - 122 - p*62;
+    const xl = sx - 20 + p*98, xr = sx + 190 - p*98;
+    for (let x=xl; x<xr-6; x+=13) {
+      g.fillStyle = tileCols[(Math.floor(x*0.61) + row*3) % 6];
+      g.fillRect(x, y - 10, 12, 11);
+    }
+  }
+  g.strokeStyle = '#5c4636'; g.lineWidth = 4;                            // ridge
+  g.beginPath(); g.moveTo(sx + 74, sy - 192); g.lineTo(sx + 96, sy - 192); g.stroke();
+}
+
+function drawLeg(x, top, bottom, w, col) {
+  ctx.fillStyle = col;
+  ctx.beginPath();
+  ctx.moveTo(x - w, top); ctx.lineTo(x + w, top);
+  ctx.lineTo(x + w*0.7, bottom - 4); ctx.lineTo(x - w*0.7, bottom - 4);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#2b241c';                                   // hoof
+  ctx.fillRect(x - w*0.75, bottom - 6, w*1.5, 6);
+}
+
+function bodyPath(r) {
+  ctx.beginPath();
+  ctx.moveTo(-1.32*r, 0.55*r);
+  ctx.quadraticCurveTo(-1.55*r, -0.10*r, -1.28*r, -0.62*r);   // rump
+  ctx.quadraticCurveTo(-1.05*r, -0.88*r, -0.60*r, -0.84*r);   // hip to back
+  ctx.quadraticCurveTo( 0.00*r, -0.72*r,  0.55*r, -0.80*r);   // back sag
+  ctx.quadraticCurveTo( 0.95*r, -0.88*r,  1.15*r, -0.60*r);   // withers
+  ctx.quadraticCurveTo( 1.38*r, -0.25*r,  1.30*r,  0.15*r);   // chest
+  ctx.quadraticCurveTo( 1.20*r,  0.52*r,  0.80*r,  0.62*r);   // brisket
+  ctx.quadraticCurveTo( 0.00*r,  0.82*r, -0.70*r,  0.72*r);   // belly
+  ctx.quadraticCurveTo(-1.15*r,  0.68*r, -1.32*r,  0.55*r);
+  ctx.closePath();
+}
+
+function drawCowStanding(c) {
+  const r = c.r, B = c.breed;
+  const gy = groundY(c.x) - c.y;                 // ground line in local coords
+  const bob = Math.sin(c.graze * 1.3) * 0.07 * r;
   ctx.save();
   ctx.translate(c.x, c.y);
-  const B = c.breed, r = c.r;
+  // soft shadow
+  ctx.fillStyle = 'rgba(25,40,18,.30)';
+  ctx.beginPath(); ctx.ellipse(0, gy - 2, r*1.5, r*0.26, Math.atan(groundNormal(c.x).slope), 0, PI2); ctx.fill();
+  if (c.flip) ctx.scale(-1, 1);
 
-  if (c.state === 'standing') {
-    const bob = Math.sin(c.graze * 1.4) * 0.08;
-    // legs
-    ctx.fillStyle = B.head;
-    for (const lx of [-r*0.75, -r*0.35, r*0.35, r*0.72])
-      ctx.fillRect(lx-4, r*0.35, 9, r*0.75);
-    // body
-    ctx.fillStyle = B.body;
-    ctx.beginPath(); ctx.ellipse(0, 0, r*1.15, r*0.78, 0, 0, Math.PI*2); ctx.fill();
-    if (B.patch) { ctx.fillStyle = B.patch;
-      ctx.beginPath(); ctx.ellipse(-r*0.7, r*0.15, r*0.42, r*0.4, 0.3, 0, Math.PI*2); ctx.fill(); }
-    if (B.spots) { ctx.fillStyle = B.spots;
-      ctx.beginPath(); ctx.ellipse(-r*0.4, -r*0.15, r*0.34, r*0.26, 0.4, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(r*0.45, r*0.2, r*0.28, r*0.22, -0.3, 0, Math.PI*2); ctx.fill(); }
-    // tail
-    ctx.strokeStyle = B.body; ctx.lineWidth = 5;
-    ctx.beginPath(); ctx.moveTo(-r*1.1, -r*0.3);
-    ctx.quadraticCurveTo(-r*1.45, r*0.1, -r*1.3, r*0.6); ctx.stroke();
-    // grazing head (bobs up and down)
-    const hy = r*0.55 + bob*r;
-    ctx.fillStyle = B.head;
-    ctx.beginPath(); ctx.ellipse(r*1.1, hy, r*0.42, r*0.34, 0.9, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = '#e9b7c0';
-    ctx.beginPath(); ctx.ellipse(r*1.28, hy+r*0.18, r*0.17, r*0.13, 0.9, 0, Math.PI*2); ctx.fill();
-    ctx.fillStyle = '#222';
-    ctx.beginPath(); ctx.arc(r*1.02, hy - r*0.12, 2.6, 0, Math.PI*2); ctx.fill();
-    // ear tag, like the photo
-    ctx.fillStyle = '#f6d24a';
-    ctx.fillRect(r*0.86, hy - r*0.34, 8, 8);
-  } else {
-    // rolling / fallen: a tumbling cow ball with legs sticking out
-    ctx.rotate(c.angle);
-    ctx.fillStyle = B.head;
-    for (const a of [0.7, 2.1, 3.9, 5.4]) {
-      ctx.save(); ctx.rotate(a);
-      ctx.fillRect(r*0.6, -4, r*0.6, 9);
-      ctx.restore();
-    }
-    ctx.fillStyle = B.body;
-    ctx.beginPath(); ctx.arc(0, 0, r*0.95, 0, Math.PI*2); ctx.fill();
-    if (B.patch) { ctx.fillStyle = B.patch;
-      ctx.beginPath(); ctx.ellipse(-r*0.35, r*0.25, r*0.38, r*0.3, 0.5, 0, Math.PI*2); ctx.fill(); }
-    if (B.spots) { ctx.fillStyle = B.spots;
-      ctx.beginPath(); ctx.ellipse(r*0.3, -r*0.25, r*0.32, r*0.24, 0.4, 0, Math.PI*2); ctx.fill(); }
-    // dizzy face
-    ctx.fillStyle = B.head;
-    ctx.beginPath(); ctx.arc(r*0.45, -r*0.35, r*0.32, 0, Math.PI*2); ctx.fill();
-    ctx.strokeStyle = '#222'; ctx.lineWidth = 2.4;
-    const ex = r*0.45, ey = -r*0.42, s = 4;
-    ctx.beginPath();
-    ctx.moveTo(ex-s, ey-s); ctx.lineTo(ex+s, ey+s);
-    ctx.moveTo(ex+s, ey-s); ctx.lineTo(ex-s, ey+s); ctx.stroke();
-    ctx.fillStyle = '#e9b7c0';
-    ctx.beginPath(); ctx.ellipse(r*0.62, -r*0.15, r*0.14, r*0.1, 0.5, 0, Math.PI*2); ctx.fill();
+  // far-side legs
+  drawLeg(-0.76*r, 0.35*r, gy, 0.13*r, B.dark);
+  drawLeg( 1.02*r, 0.35*r, gy, 0.12*r, B.dark);
+  // tail
+  ctx.strokeStyle = B.dark; ctx.lineWidth = r*0.09; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(-1.3*r, -0.5*r);
+  ctx.quadraticCurveTo(-1.55*r, 0.1*r, -1.42*r, 0.75*r); ctx.stroke();
+  ctx.fillStyle = '#3a2e20';
+  ctx.beginPath(); ctx.arc(-1.42*r, 0.8*r, r*0.1, 0, PI2); ctx.fill();
+
+  // body, shaded top-light
+  const grad = ctx.createLinearGradient(0, -r, 0, 0.8*r);
+  grad.addColorStop(0, B.light); grad.addColorStop(0.55, B.body); grad.addColorStop(1, B.dark);
+  ctx.fillStyle = grad;
+  bodyPath(r); ctx.fill();
+
+  // breed markings, clipped to the body
+  ctx.save(); bodyPath(r); ctx.clip();
+  if (B.patch) {
+    ctx.fillStyle = B.patch;
+    ctx.beginPath(); ctx.ellipse(-0.95*r, 0.15*r, 0.5*r, 0.55*r, 0.25, 0, PI2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse( 0.35*r, 0.62*r, 0.5*r, 0.28*r, 0, 0, PI2); ctx.fill();
   }
+  if (B.spots) {
+    ctx.fillStyle = B.spots;
+    ctx.beginPath(); ctx.ellipse(-0.55*r, -0.25*r, 0.48*r, 0.42*r, 0.4, 0, PI2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse( 0.55*r,  0.25*r, 0.42*r, 0.34*r, -0.3, 0, PI2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-1.15*r,  0.45*r, 0.3*r, 0.26*r, 0, 0, PI2); ctx.fill();
+  }
+  ctx.restore();
+
+  // udder
+  if (B.udder) {
+    ctx.fillStyle = '#d8a8a0';
+    ctx.beginPath(); ctx.ellipse(-0.5*r, 0.72*r, 0.26*r, 0.18*r, 0, 0, PI2); ctx.fill();
+  }
+
+  // near-side legs
+  drawLeg(-0.98*r, 0.4*r, gy, 0.14*r, B.body);
+  drawLeg( 0.84*r, 0.4*r, gy, 0.13*r, B.body);
+
+  // lowered grazing neck and head
+  const hy = gy - 0.52*r + bob;
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.moveTo(0.95*r, -0.8*r);
+  ctx.quadraticCurveTo(1.55*r, -0.45*r, 1.78*r, hy - 0.2*r);
+  ctx.lineTo(1.5*r, hy + 0.2*r);
+  ctx.quadraticCurveTo(1.25*r, 0.0*r, 1.05*r, 0.3*r);
+  ctx.closePath(); ctx.fill();
+  ctx.fillStyle = B.head;
+  ctx.beginPath(); ctx.ellipse(1.72*r, hy, 0.44*r, 0.26*r, 1.15, 0, PI2); ctx.fill();
+  // muzzle
+  ctx.fillStyle = B.spots ? '#8f8a80' : '#c99a8c';
+  ctx.beginPath(); ctx.ellipse(1.82*r, hy + 0.34*r, 0.2*r, 0.14*r, 1.15, 0, PI2); ctx.fill();
+  ctx.fillStyle = '#3a2e26';
+  ctx.beginPath(); ctx.arc(1.87*r, hy + 0.38*r, r*0.035, 0, PI2); ctx.fill();
+  // ear + yellow tag, like the photo
+  ctx.fillStyle = B.head;
+  ctx.beginPath(); ctx.ellipse(1.5*r, hy - 0.3*r, 0.17*r, 0.09*r, -0.5, 0, PI2); ctx.fill();
+  ctx.fillStyle = '#e8c33c';
+  ctx.fillRect(1.44*r, hy - 0.3*r, 0.1*r, 0.1*r);
+  // eye
+  ctx.fillStyle = '#1e1a14';
+  ctx.beginPath(); ctx.arc(1.62*r, hy - 0.12*r, r*0.045, 0, PI2); ctx.fill();
+
+  ctx.restore();
+}
+
+function drawCowRolling(c) {
+  const B = c.breed, r = c.r;
+  ctx.save();
+  ctx.translate(c.x, c.y);
+  // shadow
+  const gy = groundY(c.x) - c.y;
+  if (gy < r*2.2) {
+    ctx.fillStyle = 'rgba(25,40,18,.28)';
+    ctx.beginPath(); ctx.ellipse(0, gy - 2, r*1.15, r*0.22, 0, 0, PI2); ctx.fill();
+  }
+  ctx.rotate(c.angle);
+  // legs sticking out
+  for (const a of [0.7, 2.1, 3.9, 5.4]) {
+    ctx.save(); ctx.rotate(a);
+    ctx.fillStyle = B.dark; ctx.fillRect(r*0.55, -r*0.09, r*0.62, r*0.18);
+    ctx.fillStyle = '#2b241c'; ctx.fillRect(r*1.05, -r*0.1, r*0.14, r*0.2);
+    ctx.restore();
+  }
+  // tumbling body ball, shaded
+  const grad = ctx.createRadialGradient(-r*0.3, -r*0.35, r*0.2, 0, 0, r);
+  grad.addColorStop(0, B.light); grad.addColorStop(0.6, B.body); grad.addColorStop(1, B.dark);
+  ctx.fillStyle = grad;
+  ctx.beginPath(); ctx.arc(0, 0, r*0.95, 0, PI2); ctx.fill();
+  ctx.save();
+  ctx.beginPath(); ctx.arc(0, 0, r*0.95, 0, PI2); ctx.clip();
+  if (B.patch) { ctx.fillStyle = B.patch;
+    ctx.beginPath(); ctx.ellipse(-r*0.35, r*0.3, r*0.45, r*0.34, 0.5, 0, PI2); ctx.fill(); }
+  if (B.spots) { ctx.fillStyle = B.spots;
+    ctx.beginPath(); ctx.ellipse(r*0.3, -r*0.28, r*0.4, r*0.3, 0.4, 0, PI2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(-r*0.45, r*0.4, r*0.3, r*0.24, 0, 0, PI2); ctx.fill(); }
+  ctx.restore();
+  // dizzy tucked head
+  ctx.fillStyle = B.head;
+  ctx.beginPath(); ctx.ellipse(r*0.45, -r*0.38, r*0.34, r*0.24, 0.5, 0, PI2); ctx.fill();
+  ctx.strokeStyle = '#221c14'; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
+  const ex = r*0.42, ey = -r*0.44, s = r*0.09;
+  ctx.beginPath();
+  ctx.moveTo(ex-s, ey-s); ctx.lineTo(ex+s, ey+s);
+  ctx.moveTo(ex+s, ey-s); ctx.lineTo(ex-s, ey+s); ctx.stroke();
+  ctx.fillStyle = '#c99a8c';
+  ctx.beginPath(); ctx.ellipse(r*0.66, -r*0.2, r*0.13, r*0.09, 0.5, 0, PI2); ctx.fill();
   ctx.restore();
 
   // stars circling a fallen cow
@@ -453,6 +702,11 @@ function drawCow(c) {
       ctx.fillText('✦', c.x + Math.cos(a)*c.r*1.1, c.y - c.r - 14 + Math.sin(a)*7);
     }
   }
+}
+
+function drawCow(c) {
+  if (c.state === 'standing') drawCowStanding(c);
+  else drawCowRolling(c);
 }
 
 function drawBoot() {
@@ -472,13 +726,34 @@ function drawBoot() {
   ctx.restore();
 }
 
-function draw() {
+function drawForegroundGrass(time) {
+  // tall dry seed-grass anchored to the bottom of the screen, like the photo
+  const xl = (0 - view.ox)/view.s - 40, xr = (canvas.width - view.ox)/view.s + 40;
+  const yb = (canvas.height - view.oy)/view.s + 6;
+  ctx.lineCap = 'round';
+  for (const b of fgBlades) {
+    const x = xl + b.u * (xr - xl);
+    const sway = Math.sin(time*1.1 + b.ph) * 0.06;
+    const tipX = x + (b.lean + sway) * b.h, tipY = yb - b.h;
+    ctx.strokeStyle = b.col; ctx.lineWidth = b.w;
+    ctx.beginPath(); ctx.moveTo(x, yb);
+    ctx.quadraticCurveTo(x + (b.lean+sway)*b.h*0.3, yb - b.h*0.6, tipX, tipY);
+    ctx.stroke();
+    if (b.seed) {
+      ctx.fillStyle = '#c2b075';
+      ctx.beginPath();
+      ctx.ellipse(tipX, tipY, b.w*0.9, b.h*0.13, (b.lean+sway)*0.9, 0, PI2);
+      ctx.fill();
+    }
+  }
+}
+
+function draw(time) {
   ctx.setTransform(1,0,0,1,0,0);
-  ctx.fillStyle = '#26331f';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  if (!sceneCache) buildSceneCache();
+  ctx.drawImage(sceneCache, 0, 0);
   ctx.setTransform(view.s, 0, 0, view.s, view.ox, view.oy);
 
-  drawScene();
   for (const c of cows) drawCow(c);
   drawBoot();
 
@@ -498,13 +773,13 @@ function draw() {
       ctx.closePath(); ctx.fill();
     }
     ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.arc(aim.cow.x, aim.cow.y, aim.cow.r*1.3, 0, Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(aim.cow.x, aim.cow.y, aim.cow.r*1.3, 0, PI2); ctx.stroke();
   }
 
   // dust
   for (const p of particles) {
     ctx.fillStyle = `rgba(160,140,100,${0.5*(1 - p.t/p.life)})`;
-    ctx.beginPath(); ctx.arc(p.x, p.y, p.r*(1 + p.t), 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r*(1 + p.t), 0, PI2); ctx.fill();
   }
   // floating MØØ text
   ctx.textAlign = 'center';
@@ -520,6 +795,18 @@ function draw() {
     ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(c.a);
     ctx.fillStyle = c.c; ctx.fillRect(-6, -3, 12, 6); ctx.restore();
   }
+
+  drawForegroundGrass(time);
+
+  // dusk vignette, screen space
+  ctx.setTransform(1,0,0,1,0,0);
+  const vg = ctx.createRadialGradient(
+    canvas.width/2, canvas.height*0.45, Math.min(canvas.width, canvas.height)*0.45,
+    canvas.width/2, canvas.height*0.5,  Math.max(canvas.width, canvas.height)*0.78);
+  vg.addColorStop(0, 'rgba(15,25,10,0)');
+  vg.addColorStop(1, 'rgba(15,25,10,.28)');
+  ctx.fillStyle = vg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
 /* ============================== main loop ============================== */
@@ -528,7 +815,7 @@ function frame(now) {
   const dt = Math.min((now - last)/1000, 0.033);
   last = now;
   step(dt);
-  draw();
+  draw(now/1000);
   requestAnimationFrame(frame);
 }
 spawnCows();

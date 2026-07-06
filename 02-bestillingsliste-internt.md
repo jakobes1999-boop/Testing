@@ -58,6 +58,23 @@ Format: Excel/CSV der det er tallserier. Aggregerte tall — ingen persondata.
 
 ---
 
+## 8. Restliste etter researchfasen (tillegg, juli 2026)
+
+Identifisert i `bakgrunn/`-notatene som gjenstående hull:
+
+8.1 **Tingprotokollen fra Skitinget 2026** — det formelle vedtaket i sak 11.3, utvalgets mandat og frist (NSF sekretariat). *Alt utvalget gjør hviler på denne.*
+8.2 **Lisensundersøkelsen våren 2026** — full rapport med datagrunnlag, ikke bare oppsummeringen i tingpapirene (NSF adm.).
+8.3 **Innspillsdokumentene** fra Hordaland skikrets (2024) og Troms skikrets' kartlegging (2025) (kretsene/NSF).
+8.4 **Status for forsikringsanbudet** NSF varslet i november 2025: utlyst? tilbud mottatt? Dette kan endre premiegrunnlaget midt i utvalgsperioden (NSF adm./megler).
+8.5 **Status for NIF-arbeidet om forsikringssynergier** mellom særforbund (varslet 2025) og utfallet av Bedriftsidrettsforbundets forslag til Idrettstinget 2025 om forsikringskrav (NIF).
+8.6 **Churn-/fornyelsesdata og kjøpstidspunkt** fra EQ Timing/iSonen/Vipps: når på sesongen kjøpes lisens, hvor mange faller fra i betalingssteget, andel som kjøper engangs flere ganger samme sesong (burde vært helår). Dette er empirien for friksjonsargumentet.
+8.7 **Kartlegging av skirenn utenfor NSFs terminliste** (Kondis'/turrenn-kalendere vs. NSFs terminliste): hvor stort er «exit-markedet» allerede? Måler den reelle arrangørrisikoen (jf. Styrkeprøven-presedensen).
+8.8 **Avklaring av langrennsprisen 24/25 → 25/26** (740/2 600 → 650/2 400?) og aldersgrense-avviket (70 vs. 80 år) mellom Fellesreglementet og FAQ (NSF adm.).
+8.9 **Söderberg & Partners' formelle rolle** — megleravtale og hvorfor S&P ikke fremgår av forsikringsbeviset (NSF adm.).
+8.10 **Juridiske avklaringer** (NSF jurist/eksternt): (a) er lisensprinsippet forankret i NSFs lov eller bare fellesreglementet — Skitinget eller Skistyret som vedtaksorgan? (b) krever NSFs forsikringsformidling registrering hos Finanstilsynet (ansvarsdekning + 600-euro-grensen)? Se `bakgrunn/16`, spørsmål 1–5.
+8.11 **Svenske/finske premienivåer som referanse**: hva betaler Folksam-ordningen per aktiv (RF/SSF), og Pohjola-prisene per finsk lisens — gir benchmark for hva dekningen «bør» koste (megler kan innhente).
+8.12 **Siste årsrapport fra Norske alpinanlegg og fjelldestinasjoner** («Skader i norske alpinanlegg», inkl. skader per 1 000 skidager per år) — post@alpinogfjell.no.
+
 ### Utkast til bestillings-e-post (kan tilpasses)
 
 > Emne: Databestilling – hurtigarbeidende utvalg for Skilisens (frist [dato])

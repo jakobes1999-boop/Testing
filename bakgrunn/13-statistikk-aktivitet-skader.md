@@ -34,7 +34,7 @@ Kilde: NIF Nøkkeltallsrapport 2024, vedlegg 9.7–9.10:
 | 2023 | 39 863 | 19 075 | 6 821 | 40 089 |
 | 2024 | 38 708 | 19 281 | 7 070 | 39 972 |
 
-- Barn 6–12 år: –25,0 % 2018–2024; mer enn **halvert fra 2014 (59 806) til 2024 (38 708)**.
+- Barn 6–12 år: –25,0 % 2018–2024; **redusert med ca. en tredjedel (–35 %) fra 2014 (59 806) til 2024 (38 708)**.
 - Ungdom 13–19 år (lisenspliktig gruppe): –13,9 % 2018–2024, men +1,1 % siste år.
 - Aktive kvinner: 62 420 (2018) → 46 459 (2024), –25,6 % (vedlegg 9.12).
 

@@ -8,11 +8,11 @@ Fra tingpapirene (sak 11.3), lisensundersøkelsen våren 2026 og mediedekningen 
 
 1. **Prisnivå og prisvekst** — utvidet alpinlisens +173 % på to år (1 900 → 5 200 kr); også langrenn (+126 %) og telemark (+136 %) fikk hopp i 2024.
 2. **Manglende differensiering** — én felles ordning på tvers av grener med svært ulik skaderisiko oppleves urettferdig; alpint bærer de største økningene.
-3. **Engangslisensen svekker turrenn/lavterskel** — 300 kr for voksne oppleves som barriere; forslagstiller (Hordaland Skikrets) peker eksplisitt på dette.
+3. **Engangslisensen hevdes å svekke turrenn/lavterskel** — 300 kr for voksne oppleves som barriere ifølge forslagsstiller (Hordaland Skikrets) og lisensundersøkelsen. Merk: dette er interessentenes vurdering, ikke dokumentert kausalitet — Kondis' egen analyse av turrennfallet 2015–2016 nevner ikke lisens som årsak, og ingen skirenn har forlatt terminlisten pga. lisenskravet (jf. `bakgrunn/14`). Premisset må testes mot lisensundersøkelsens data.
 4. **Økonomisk ubalanse** — ordningen skal være selvfinansiert, men NSF har subsidiert med 4,2 MNOK akkumulert (2019–2024), 1,6 MNOK i 2025, forventet 2 MNOK i 2026. Forsikringspremien har økt ca. 40 %.
 5. **Uavklart prinsipielt mandat** — dekningsomfanget har vokst uten prinsippavklaring fra Skitinget; kritikere (bl.a. to overleger i Vedlegg 7) mener ordningen finansierer privat helsevesen for tilstander det offentlige dekker.
 
-**Volumkontekst:** ~6 700 helårslisenser (2023/24) mot ~110 000 aktive medlemmer — lisensen når en liten del av medlemsmassen, og volumtoppen (10 400 i 2012/13) falt sammen med turrenn-toppen. Lisensinntekt 12,9 MNOK (2024). NSF har hatt størst medlemsfall av alle særforbund 2018–2024 (–25,6 %).
+**Volumkontekst:** ~6 700 lisenser (2023/24; det er **ikke verifisert** om tallet omfatter engangslisenser — avklares i bestillingen) mot ~110 000 aktive medlemmer — lisensen når uansett en liten del av medlemsmassen, og volumtoppen (10 400 i 2012/13) falt sammen med turrenn-toppen. Lisensinntekt 12,9 MNOK (2024). NSF har hatt størst medlemsfall av alle særforbund 2018–2024 (–25,6 %).
 
 ## 2. Rammer en revidert ordning må holde seg innenfor
 
@@ -52,6 +52,13 @@ Lisensen som egen konstruksjon avvikles; forsikring dekkes kollektivt via forbun
 - **Motforestillinger:** 12,9 MNOK i lisensinntekt må finansieres over kontingent/andre kilder; kollektiv premie for ~110 000 aktive kan bli dyr hvis dekningen skal ligne dagens; stor omlegging på kort frist (1. oktober); FIS-dokumentasjon må løses for FIS-renn.
 - **Risiko:** høy — trolig mer enn et hurtigarbeidende utvalg kan lande, men bør beskrives som langsiktig retning.
 
+### E. NIF-samordnet fellesforsikring (parallelt løp — må koordineres)
+NSF opplyste i november 2025 at det er igangsatt et NIF-arbeid for kostnadssynergier mellom særforbundenes lisensforsikringer. En felles pool på tvers av forbund (à la fotball/håndballs Gjensidige-ordninger i forstørret skala) ville gi større volum, lavere premie og sterkere forhandlingsmakt — og kan i ytterste konsekvens gjøre en NSF-spesifikk omlegging overflødig eller i konflikt med et sentralt løp.
+
+- **Løser:** premienivå (poolstørrelse) og forhandlingsmakt; potensielt 1 og 4.
+- **Motforestillinger:** utenfor utvalgets kontroll og tidshorisont; krever flerforbunds-enighet; grendifferensiering på tvers av forbund er krevende.
+- **Handling nå:** dette er primært en *koordineringsrisiko* — utvalget må avklare status og tidslinje med NIF (restliste 8.5) før endelig modellvalg, og utforme anbefalingen slik at den er kompatibel med en senere NIF-samordning.
+
 ## 4. Vurdering mot mandatets prinsipper
 
 | Prinsipp (Skistyret) | A Justert | B Minimum+valg | C Todelt | D Medlemskap |
@@ -64,7 +71,7 @@ Lisensen som egen konstruksjon avvikles; forsikring dekkes kollektivt via forbun
 | Selvfinansiering/proveny | **++** | ? (modelleres) | ? (modelleres) | – |
 | Gjennomførbart til 1. okt. | **++** | + | + | – |
 
-**Foreløpig vurdering:** B, eventuelt B+C i kombinasjon (minimumslisens for konkurranse + arrangørkollektiv for turrenn), treffer mandatets fem prinsipper best og har direkte internasjonale forbilder (Frankrike, Finland, Vasaloppet). A er fallback hvis forsikringsteknisk prising av B/C ikke går opp. D beskrives som mulig langsiktig retning, ikke som leveranse til 1. oktober.
+**Foreløpig vurdering:** B, eventuelt B+C i kombinasjon (minimumslisens for konkurranse + arrangørkollektiv for turrenn), treffer mandatets fem prinsipper best og har direkte internasjonale forbilder (Frankrike, Finland, Vasaloppet) — men dette er en **hypotese med eksplisitte beslutningsporter**, ikke en konklusjon: hvis meglersvarene viser at opt-in-graden blir for lav (antiseleksjon) eller at ~6 700 lisenser er for tynt volum for differensiert prising, er **A riktig anbefaling** — A løser tre av fem problemer raskt og billig og må behandles med samme analytiske grundighet (jf. `07-panelvurdering.md`). D beskrives som mulig langsiktig retning; E (NIF-samordning) er primært en koordineringsrisiko som må avklares før valget.
 
 ## 5. Hva som må på plass før utvalget kan velge
 

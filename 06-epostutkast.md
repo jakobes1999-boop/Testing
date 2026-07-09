@@ -24,7 +24,9 @@ Med vennlig hilsen
 
 ---
 
-## 2. Til NSF-administrasjonen (økonomi/lisens) og Söderberg & Partners
+## 2. Til NSF-administrasjonen (økonomi/lisens) og NSFs forsikringsmegler
+
+> NB: Styresaken omtaler Söderberg & Partners som megler, men rollen fremgår ikke av forsikringsbeviset (kun If, avtale SP 1976261) — bekreft meglerforholdet med NSF-adm. før utsendelse (restliste 8.9). Suppler bestillingen med punktene 9.1–9.5 i bestillingslisten (aktuarisk minimumsprodukt, kollektiv turrennpolise, opt-in-empiri, poolstørrelse, Ifs premiebegrunnelse).
 
 **Emne:** Databestilling — utvalg for Skilisens (svarfrist [dato])
 

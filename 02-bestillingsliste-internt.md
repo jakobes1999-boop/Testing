@@ -75,6 +75,19 @@ Identifisert i `bakgrunn/`-notatene som gjenstående hull:
 8.11 **Svenske/finske premienivåer som referanse**: hva betaler Folksam-ordningen per aktiv (RF/SSF), og Pohjola-prisene per finsk lisens — gir benchmark for hva dekningen «bør» koste (megler kan innhente).
 8.12 **Siste årsrapport fra Norske alpinanlegg og fjelldestinasjoner** («Skader i norske alpinanlegg», inkl. skader per 1 000 skidager per år) — post@alpinogfjell.no.
 
+## 9. Tillegg etter panelvurderingen (jf. `07-panelvurdering.md`)
+
+9.1 **Aktuarisk pris på isolert minimumsprodukt** (til megler/If): hva koster en dekning med kun ansvar + akutt/redning + invaliditet/død + tannskader, uten behandlingsdekning — per gren? *Det avgjørende tallet for modell B.*
+9.2 **Kalkyle på kollektiv turrennforsikring per deltaker** (til megler): Vasaloppet-type polise tegnet av arrangør — pris per deltaker ved ulike dekningsnivåer og volumer. *Det avgjørende tallet for modell C.*
+9.3 **Opt-in-empiri fra andre forbund** (via megler/Gjensidige/NHF): faktisk fordeling mellom LISE/LISE Pluss/LISE Super i håndball — beste norske empiri for tilslutningsgrad til frivillige nivåer og antiseleksjonsrisiko.
+9.4 **Minste bærekraftige poolstørrelse** (megler): hvor små celler (gren × nivå × alder) tåler stabil prising, gitt ~6 700 lisenser?
+9.5 **Ifs egen begrunnelse for premieøkningen** (via megler): skyldes 40 %-økningen skadefrekvens/-alvorlighet eller produktstruktur/reprising? Avgjør om omlegging faktisk løser prisproblemet eller bare flytter det.
+9.6 **Administrasjonskostnad ved flere lisensnivåer** (NSF IT/adm.): system-, kundeservice- og kommunikasjonskostnad ved 2–3 valgfrie nivåer vs. dagens struktur; fast vs. variabel del.
+9.7 **Kretsenes andel av lisensinntekten** (NSF økonomi): mottar kretser/grener noen andel i dag, og hva skjer med den i hver modell?
+9.8 **Skadetelefonens finansiering** (NSF/Idrettens Helsesenter): kostnad per år og hvordan den skal dekkes i en modell med krympet obligatorisk del.
+9.9 **Para, TD-er og toppidrett**: dagens dekning og volum for para-utøvere/ledsagere, TD-er/funksjonærer og landslagsutøvere — må konsekvensvurderes særskilt i alle modeller.
+9.10 **Klubbenes kontingentnivå** (NIF/idrettsregistreringen el. utvalg): referansepunkt for modell D/E.
+
 ### Utkast til bestillings-e-post (kan tilpasses)
 
 > Emne: Databestilling – hurtigarbeidende utvalg for Skilisens (frist [dato])

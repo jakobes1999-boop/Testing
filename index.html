@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Norge – England · Live odds-dashbord</title>
+<style>
+  :root {
+    --surface-1: #fcfcfb;
+    --page: #f9f9f7;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --grid: #e1e0d9;
+    --baseline: #c3c2b7;
+    --border: rgba(11, 11, 11, 0.10);
+    --s-nor: #e34948;   /* Norge  – rød  (kategorisk slot 6, validert) */
+    --s-draw: #eda100;  /* Uavgjort – gul (slot 3, validert; krever synlige etiketter) */
+    --s-eng: #2a78d6;   /* England – blå (slot 1, validert) */
+    --live: #d03b3b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --surface-1: #1a1a19;
+      --page: #0d0d0d;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted: #898781;
+      --grid: #2c2c2a;
+      --baseline: #383835;
+      --border: rgba(255, 255, 255, 0.10);
+      --s-nor: #e66767;
+      --s-draw: #c98500;
+      --s-eng: #3987e5;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.45;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 24px 16px 48px; }
+
+  header.match { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 4px; }
+  header.match h1 { font-size: 20px; font-weight: 600; margin: 0; }
+  .badge-live[hidden] { display: none; }
+  .badge-live {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12px; font-weight: 600; color: var(--live);
+    border: 1px solid var(--border); border-radius: 999px; padding: 2px 10px;
+  }
+  .badge-live .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--live); }
+  .meta { color: var(--text-muted); font-size: 13px; margin: 0 0 20px; }
+
+  .scoreline { display: flex; align-items: baseline; gap: 14px; margin: 8px 0 2px; }
+  .scoreline .score { font-size: 44px; font-weight: 650; letter-spacing: 0.01em; }
+  .scoreline .teams { font-size: 16px; color: var(--text-secondary); }
+  .scoreline .clock { font-size: 15px; color: var(--text-secondary); font-weight: 600; }
+
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-top: 16px;
+  }
+  .card h2 { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin: 0 0 10px; text-transform: none; }
+
+  .hero { display: flex; flex-wrap: wrap; gap: 8px 40px; align-items: baseline; }
+  .hero .big { font-size: 34px; font-weight: 650; }
+  .hero .big .pct { color: var(--text-secondary); font-weight: 500; font-size: 22px; margin-left: 8px; }
+  .hero .sub { color: var(--text-secondary); font-size: 14px; }
+  .hero .sub strong { color: var(--text-primary); font-weight: 650; }
+
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+  @media (max-width: 560px) { .tiles { grid-template-columns: 1fr; } }
+  .tile {
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px;
+  }
+  .tile .label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary); }
+  .tile .key { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .tile .value { font-size: 30px; font-weight: 650; margin-top: 4px; }
+  .tile .odds { font-size: 13px; color: var(--text-muted); margin-top: 2px; font-variant-numeric: tabular-nums; }
+
+  /* 100 %-stablet sannsynlighetsstolpe: 2 px flategap skiller segmentene, aldri strek */
+  .probbar { display: flex; gap: 2px; height: 20px; margin-top: 4px; }
+  .probbar .seg {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; overflow: visible; white-space: nowrap;
+    transition: flex-grow 0.5s ease;
+  }
+  .probbar .seg:first-child { border-radius: 4px 0 0 4px; }
+  .probbar .seg:last-child { border-radius: 0 4px 4px 0; }
+  .barlegend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 10px; font-size: 13px; color: var(--text-secondary); }
+  .barlegend .item { display: inline-flex; align-items: center; gap: 6px; }
+  .barlegend .key { width: 10px; height: 10px; border-radius: 50%; }
+  .barlegend strong { color: var(--text-primary); font-weight: 650; }
+
+  .chartwrap { position: relative; }
+  .chartwrap svg { display: block; width: 100%; height: auto; }
+  .chartwrap:focus-visible { outline: 2px solid var(--s-eng); outline-offset: 2px; border-radius: 6px; }
+  .tooltip {
+    position: absolute; pointer-events: none; display: none;
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 10px; font-size: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    min-width: 130px; z-index: 2;
+  }
+  .tooltip .t { color: var(--text-muted); margin-bottom: 4px; }
+  .tooltip .row { display: flex; align-items: center; gap: 7px; margin-top: 2px; }
+  .tooltip .linekey { width: 12px; height: 0; border-top: 2px solid; flex: none; }
+  .tooltip .v { font-weight: 650; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+  .tooltip .n { color: var(--text-secondary); }
+
+  table.oddstable { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  table.oddstable th { text-align: left; color: var(--text-muted); font-weight: 500; padding: 6px 8px; border-bottom: 1px solid var(--grid); }
+  table.oddstable td { padding: 7px 8px; border-bottom: 1px solid var(--grid); font-variant-numeric: tabular-nums; }
+  table.oddstable tr:last-child td { border-bottom: none; }
+  table.oddstable td.name { display: flex; align-items: center; gap: 8px; }
+  table.oddstable .key { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  table.oddstable td.num { text-align: right; }
+  table.oddstable th.num { text-align: right; }
+
+  .status { font-size: 12px; color: var(--text-muted); margin-top: 14px; }
+  .status .err { color: var(--live); font-weight: 600; }
+  footer { color: var(--text-muted); font-size: 12px; margin-top: 20px; }
+  footer a { color: inherit; }
+  .stale { opacity: 0.6; transition: opacity 0.3s; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="match">
+    <h1>Norge – England</h1>
+    <span class="badge-live" id="liveBadge" hidden><span class="dot"></span><span id="liveText">LIVE</span></span>
+  </header>
+  <p class="meta">VM 2026 · Kvartfinale · Hard Rock Stadium, Miami · <span id="statusDetail">–</span></p>
+
+  <div class="scoreline">
+    <span class="score" id="score">–</span>
+    <span class="clock" id="clock"></span>
+  </div>
+  <div class="scoreline"><span class="teams" id="teams"></span></div>
+
+  <section class="card" id="heroCard">
+    <h2>Forventet resultat basert på markedsodds</h2>
+    <div class="hero">
+      <div class="big"><span id="expOutcome">–</span><span class="pct" id="expPct"></span></div>
+      <div class="sub">Mest sannsynlige sluttresultat: <strong id="expScore">–</strong><br>
+        Forventet antall mål: <span id="expGoals">–</span></div>
+    </div>
+  </section>
+
+  <div class="tiles" id="tiles">
+    <div class="tile"><div class="label"><span class="key" style="background:var(--s-nor)"></span>Norge vinner</div>
+      <div class="value" id="pNor">–</div><div class="odds" id="oNor"></div></div>
+    <div class="tile"><div class="label"><span class="key" style="background:var(--s-draw)"></span>Uavgjort</div>
+      <div class="value" id="pDraw">–</div><div class="odds" id="oDraw"></div></div>
+    <div class="tile"><div class="label"><span class="key" style="background:var(--s-eng)"></span>England vinner</div>
+      <div class="value" id="pEng">–</div><div class="odds" id="oEng"></div></div>
+  </div>
+
+  <section class="card">
+    <h2>Sannsynlighetsfordeling nå (ordinær tid, margin fjernet)</h2>
+    <div class="probbar" id="probbar">
+      <div class="seg" id="segNor" style="background:var(--s-nor)"></div>
+      <div class="seg" id="segDraw" style="background:var(--s-draw)"></div>
+      <div class="seg" id="segEng" style="background:var(--s-eng)"></div>
+    </div>
+    <div class="barlegend">
+      <span class="item"><span class="key" style="background:var(--s-nor)"></span>Norge <strong id="lNor">–</strong></span>
+      <span class="item"><span class="key" style="background:var(--s-draw)"></span>Uavgjort <strong id="lDraw">–</strong></span>
+      <span class="item"><span class="key" style="background:var(--s-eng)"></span>England <strong id="lEng">–</strong></span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Utvikling i vinnersannsynlighet</h2>
+    <div class="chartwrap" id="chartwrap" tabindex="0" role="img"
+         aria-label="Linjediagram: vinnersannsynlighet for Norge, uavgjort og England over tid. Verdiene finnes også i tabellen under.">
+      <svg id="chart" viewBox="0 0 840 260" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="tooltip" id="tooltip"></div>
+    </div>
+    <div class="barlegend" id="chartLegend"></div>
+  </section>
+
+  <section class="card">
+    <h2>Oddsgrunnlag (DraftKings via ESPN, resultat etter 90 min)</h2>
+    <table class="oddstable">
+      <thead><tr>
+        <th>Utfall</th><th class="num">Åpning</th><th class="num">Nå (am.)</th>
+        <th class="num">Desimalodds</th><th class="num">Implisitt</th><th class="num">Uten margin</th>
+      </tr></thead>
+      <tbody id="oddsBody"><tr><td colspan="6">Venter på data …</td></tr></tbody>
+    </table>
+    <div class="status">Bookmakermargin nå: <span id="vig">–</span></div>
+  </section>
+
+  <div class="status"><span id="updated">Henter data …</span> <span class="err" id="fetchErr"></span></div>
+
+  <footer>
+    Kilde: ESPN scoreboard-API (odds fra DraftKings). Oppdateres automatisk hvert 30. sekund.
+    «Uten margin» = implisitte sannsynligheter normalisert til 100 %. Forventet sluttresultat er
+    beregnet med en Poisson-modell for gjenstående mål, kalibrert mot markedets 1X2-sannsynligheter
+    gitt stillingen nå. Odds er markedspriser, ikke fasit.
+  </footer>
+</div>
+
+<script>
+"use strict";
+const API = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard";
+const EVENT_ID = "760512";              // Norge–England 11.07.2026 (fallback: søk på lagnavn)
+const HOME = "Norway", AWAY = "England";
+const POLL_MS = 30000;
+const HIST_KEY = "oddshist-" + EVENT_ID;
+const MAXH = 600;
+
+const $ = id => document.getElementById(id);
+const fmtPct = p => (p * 100).toLocaleString("nb-NO", { maximumFractionDigits: 0 }) + " %";
+const fmtPct1 = p => (p * 100).toLocaleString("nb-NO", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " %";
+const fmtDec = d => d.toLocaleString("nb-NO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtTime = t => new Date(t).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+
+let history = [];
+try { history = JSON.parse(localStorage.getItem(HIST_KEY)) || []; } catch (e) { history = []; }
+let last = null;          // siste vellykkede tolkning av API-svaret
+let pollTimer = null;
+
+function americanToDecimal(s) {
+  if (s == null) return null;
+  const str = String(s).trim().toUpperCase();
+  if (str === "EVEN") return 2;
+  const a = parseFloat(str.replace("+", ""));
+  if (!isFinite(a) || a === 0) return null;
+  return a > 0 ? 1 + a / 100 : 1 + 100 / Math.abs(a);
+}
+function pickLine(m) {
+  if (!m) return null;
+  for (const k of ["current", "close", "open"]) {
+    const d = americanToDecimal(m[k] && m[k].odds);
+    if (d) return { dec: d, us: m[k].odds, phase: k };
+  }
+  return null;
+}
+
+/* Poisson-modell: finn forventet antall gjenstående mål (lh, la) slik at
+   sluttresultat-sannsynlighetene matcher markedets 1X2 gitt stillingen nå. */
+function poisArr(lambda, n) {
+  const out = [Math.exp(-lambda)];
+  for (let k = 1; k <= n; k++) out.push(out[k - 1] * lambda / k);
+  return out;
+}
+function outcomeProbs(lh, la, curH, curA) {
+  const N = 10, ph = poisArr(lh, N), pa = poisArr(la, N);
+  let H = 0, D = 0, A = 0;
+  for (let x = 0; x <= N; x++) for (let y = 0; y <= N; y++) {
+    const p = ph[x] * pa[y], d = (curH + x) - (curA + y);
+    if (d > 0) H += p; else if (d === 0) D += p; else A += p;
+  }
+  return [H, D, A];
+}
+function fitPoisson(pH, pD, pA, curH, curA) {
+  let best = { err: Infinity, lh: 1, la: 1 };
+  const scan = (lo1, hi1, lo2, hi2, step) => {
+    for (let lh = lo1; lh <= hi1; lh += step) for (let la = lo2; la <= hi2; la += step) {
+      const [H, D, A] = outcomeProbs(lh, la, curH, curA);
+      const err = (H - pH) ** 2 + (D - pD) ** 2 + (A - pA) ** 2;
+      if (err < best.err) best = { err, lh, la };
+    }
+  };
+  scan(0.02, 3.52, 0.02, 3.52, 0.1);
+  scan(Math.max(0.01, best.lh - 0.12), best.lh + 0.12,
+       Math.max(0.01, best.la - 0.12), best.la + 0.12, 0.02);
+  return best;
+}
+function mostLikelyScore(lh, la, curH, curA) {
+  const N = 10, ph = poisArr(lh, N), pa = poisArr(la, N);
+  let bp = -1, bx = 0, by = 0;
+  for (let x = 0; x <= N; x++) for (let y = 0; y <= N; y++)
+    if (ph[x] * pa[y] > bp) { bp = ph[x] * pa[y]; bx = x; by = y; }
+  return [curH + bx, curA + by];
+}
+
+function parseEvent(data) {
+  const events = (data && data.events) || [];
+  let ev = events.find(e => e.id === EVENT_ID);
+  if (!ev) ev = events.find(e => {
+    const names = (e.competitions?.[0]?.competitors || []).map(c => c.team?.displayName);
+    return names.includes(HOME) && names.includes(AWAY);
+  });
+  if (!ev) return null;
+  const comp = ev.competitions[0];
+  const home = comp.competitors.find(c => c.homeAway === "home");
+  const away = comp.competitors.find(c => c.homeAway === "away");
+  const st = comp.status || ev.status || {};
+  const ml = comp.odds?.[0]?.moneyline;
+  const provider = comp.odds?.[0]?.provider?.displayName || "DraftKings";
+  const lines = ml ? { H: pickLine(ml.home), D: pickLine(ml.draw), A: pickLine(ml.away) } : null;
+  const opens = ml ? {
+    H: ml.home?.open?.odds, D: ml.draw?.open?.odds, A: ml.away?.open?.odds
+  } : null;
+  const noName = n => n === "Norway" ? "Norge" : n;
+  return {
+    date: ev.date,
+    homeName: noName(home?.team?.displayName || HOME),
+    awayName: noName(away?.team?.displayName || AWAY),
+    hScore: parseInt(home?.score ?? "0", 10) || 0,
+    aScore: parseInt(away?.score ?? "0", 10) || 0,
+    state: st.type?.state || "pre",
+    detail: st.displayClock && st.type?.state === "in" ? st.displayClock : (st.type?.shortDetail || ""),
+    lines, opens, provider,
+  };
+}
+
+function computeProbs(lines) {
+  if (!lines || !lines.H || !lines.D || !lines.A) return null;
+  const iH = 1 / lines.H.dec, iD = 1 / lines.D.dec, iA = 1 / lines.A.dec;
+  const s = iH + iD + iA;
+  return { pH: iH / s, pD: iD / s, pA: iA / s, vig: s - 1, imp: { iH, iD, iA } };
+}
+
+function render(ev, probs, fetchedAt) {
+  $("score").textContent = ev.hScore + " – " + ev.aScore;
+  $("teams").textContent = ev.homeName + " (hjemme) mot " + ev.awayName;
+  $("clock").textContent = ev.state === "in" ? ev.detail : "";
+  const badge = $("liveBadge");
+  if (ev.state === "in") { badge.hidden = false; $("liveText").textContent = "LIVE"; }
+  else if (ev.state === "post") { badge.hidden = false; $("liveText").textContent = "SLUTT"; }
+  else badge.hidden = true;
+  $("statusDetail").textContent = ev.state === "pre"
+    ? "Avspark " + new Date(ev.date).toLocaleString("nb-NO", { timeZone: "Europe/Oslo", hour: "2-digit", minute: "2-digit" }) + " norsk tid"
+    : (ev.state === "post" ? "Kampen er ferdigspilt" : "Kampen pågår");
+
+  if (ev.state === "post") {
+    const res = ev.hScore > ev.aScore ? "Norge vant" : ev.hScore < ev.aScore ? "England vant" : "Uavgjort etter ordinær tid";
+    $("expOutcome").textContent = res;
+    $("expPct").textContent = "";
+    $("expScore").textContent = ev.hScore + " – " + ev.aScore + " (faktisk)";
+    $("expGoals").textContent = "–";
+  }
+
+  if (!probs) return;
+  const { pH, pD, pA, vig, imp } = probs;
+
+  if (ev.state !== "post") {
+    const outcomes = [
+      { n: "Norge vinner", p: pH }, { n: "Uavgjort", p: pD }, { n: "England vinner", p: pA },
+    ].sort((a, b) => b.p - a.p);
+    $("expOutcome").textContent = outcomes[0].n;
+    $("expPct").textContent = fmtPct(outcomes[0].p);
+    const fit = fitPoisson(pH, pD, pA, ev.hScore, ev.aScore);
+    const [mh, ma] = mostLikelyScore(fit.lh, fit.la, ev.hScore, ev.aScore);
+    $("expScore").textContent = mh + " – " + ma;
+    $("expGoals").textContent =
+      "Norge " + (ev.hScore + fit.lh).toLocaleString("nb-NO", { maximumFractionDigits: 1 }) +
+      ", England " + (ev.aScore + fit.la).toLocaleString("nb-NO", { maximumFractionDigits: 1 });
+  }
+
+  $("pNor").textContent = fmtPct(pH); $("pDraw").textContent = fmtPct(pD); $("pEng").textContent = fmtPct(pA);
+  const hasLines = ev.lines && ev.lines.H && ev.lines.D && ev.lines.A;
+  if (hasLines) {
+    $("oNor").textContent = "odds " + fmtDec(ev.lines.H.dec);
+    $("oDraw").textContent = "odds " + fmtDec(ev.lines.D.dec);
+    $("oEng").textContent = "odds " + fmtDec(ev.lines.A.dec);
+  }
+  renderBar(pH, pD, pA);
+  if (hasLines && isFinite(vig)) {
+    renderTable(ev, probs);
+    $("vig").textContent = fmtPct1(vig);
+  }
+  $("updated").textContent = "Sist oppdatert " + fmtTime(fetchedAt) + " · kilde " + ev.provider;
+}
+
+function renderBar(pH, pD, pA) {
+  const segs = [[$("segNor"), pH], [$("segDraw"), pD], [$("segEng"), pA]];
+  for (const [el, p] of segs) {
+    el.style.flexGrow = Math.max(p, 0.001);
+    el.textContent = fmtPct(p);
+  }
+  $("lNor").textContent = fmtPct(pH); $("lDraw").textContent = fmtPct(pD); $("lEng").textContent = fmtPct(pA);
+  // Etikett inne i segmentet bare når den får plass med luft – ellers bærer legenden verdien
+  requestAnimationFrame(() => {
+    for (const [el, p] of segs) {
+      const fits = el.offsetWidth >= 52;
+      el.style.color = fits ? labelInk(el) : "transparent";
+      el.textContent = fits ? fmtPct(p) : "";
+    }
+  });
+}
+function labelInk(el) {
+  const rgb = getComputedStyle(el).backgroundColor.match(/\d+/g).map(Number);
+  const lum = (0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]) / 255;
+  return lum > 0.6 ? "#0b0b0b" : "#ffffff";
+}
+
+function renderTable(ev, probs) {
+  const body = $("oddsBody");
+  body.textContent = "";
+  const rows = [
+    ["Norge vinner", "--s-nor", ev.opens?.H, ev.lines.H, probs.imp.iH, probs.pH],
+    ["Uavgjort", "--s-draw", ev.opens?.D, ev.lines.D, probs.imp.iD, probs.pD],
+    ["England vinner", "--s-eng", ev.opens?.A, ev.lines.A, probs.imp.iA, probs.pA],
+  ];
+  for (const [name, colorVar, open, line, imp, fair] of rows) {
+    const tr = document.createElement("tr");
+    const td0 = document.createElement("td"); td0.className = "name";
+    const key = document.createElement("span"); key.className = "key";
+    key.style.background = "var(" + colorVar + ")";
+    td0.appendChild(key); td0.appendChild(document.createTextNode(name));
+    tr.appendChild(td0);
+    for (const v of [open ?? "–", line.us, fmtDec(line.dec), fmtPct1(imp), fmtPct1(fair)]) {
+      const td = document.createElement("td"); td.className = "num"; td.textContent = v; tr.appendChild(td);
+    }
+    body.appendChild(tr);
+  }
+}
+
+/* Linjediagram: sannsynlighet over tid, 2 px linjer, krysshår + tooltip */
+const SVGNS = "http://www.w3.org/2000/svg";
+const CW = 840, CH = 260, M = { l: 44, r: 16, t: 12, b: 28 };
+const SERIES = [
+  { k: "h", name: "Norge", cv: "--s-nor" },
+  { k: "d", name: "Uavgjort", cv: "--s-draw" },
+  { k: "e", name: "England", cv: "--s-eng" },
+];
+let hoverIdx = -1;
+
+function el(tag, attrs) {
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  return n;
+}
+function renderChart() {
+  const svg = $("chart");
+  svg.textContent = "";
+  if (history.length < 2) {
+    const t = el("text", { x: CW / 2, y: CH / 2, "text-anchor": "middle", fill: "var(--text-muted)", "font-size": "14" });
+    t.textContent = "Historikk bygges opp etter hvert som odds hentes …";
+    svg.appendChild(t);
+    renderChartLegend();
+    return;
+  }
+  const t0 = history[0].t, t1 = history[history.length - 1].t;
+  const x = t => M.l + (t - t0) / Math.max(t1 - t0, 1) * (CW - M.l - M.r);
+  const y = p => M.t + (1 - p) * (CH - M.t - M.b);
+
+  for (const g of [0, 0.25, 0.5, 0.75, 1]) {
+    svg.appendChild(el("line", { x1: M.l, x2: CW - M.r, y1: y(g), y2: y(g), stroke: g === 0 ? "var(--baseline)" : "var(--grid)", "stroke-width": 1 }));
+    const lbl = el("text", { x: M.l - 8, y: y(g) + 4, "text-anchor": "end", fill: "var(--text-muted)", "font-size": "11" });
+    lbl.textContent = Math.round(g * 100);
+    svg.appendChild(lbl);
+  }
+  const nTicks = Math.min(5, history.length);
+  for (let i = 0; i < nTicks; i++) {
+    const tt = t0 + (t1 - t0) * i / (nTicks - 1 || 1);
+    const lbl = el("text", { x: x(tt), y: CH - 8, "text-anchor": "middle", fill: "var(--text-muted)", "font-size": "11" });
+    lbl.textContent = new Date(tt).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" });
+    svg.appendChild(lbl);
+  }
+  for (const s of SERIES) {
+    const pts = history.map(hh => x(hh.t) + "," + y(hh[s.k])).join(" ");
+    svg.appendChild(el("polyline", {
+      points: pts, fill: "none", stroke: "var(" + s.cv + ")",
+      "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round",
+    }));
+    const lastPt = history[history.length - 1];
+    // endemarkør med 2 px flatering så den er lesbar der linjer krysser
+    svg.appendChild(el("circle", { cx: x(lastPt.t), cy: y(lastPt[s.k]), r: 5, fill: "var(" + s.cv + ")", stroke: "var(--surface-1)", "stroke-width": 2 }));
+  }
+  if (hoverIdx >= 0 && hoverIdx < history.length) {
+    const hx = x(history[hoverIdx].t);
+    svg.appendChild(el("line", { x1: hx, x2: hx, y1: M.t, y2: CH - M.b, stroke: "var(--baseline)", "stroke-width": 1 }));
+  }
+  renderChartLegend();
+}
+function renderChartLegend() {
+  const lg = $("chartLegend");
+  lg.textContent = "";
+  const cur = history[history.length - 1];
+  for (const s of SERIES) {
+    const item = document.createElement("span"); item.className = "item";
+    const key = document.createElement("span");
+    key.style.cssText = "width:14px;height:0;border-top:2px solid var(" + s.cv + ");display:inline-block";
+    item.appendChild(key);
+    item.appendChild(document.createTextNode(s.name + " "));
+    const strong = document.createElement("strong");
+    strong.textContent = cur ? fmtPct(cur[s.k]) : "–";
+    item.appendChild(strong);
+    lg.appendChild(item);
+  }
+}
+function showTooltip(idx, clientX) {
+  hoverIdx = idx;
+  renderChart();
+  const tip = $("tooltip"), wrapEl = $("chartwrap"), h = history[idx];
+  if (!h) { tip.style.display = "none"; return; }
+  tip.textContent = "";
+  const t = document.createElement("div"); t.className = "t"; t.textContent = fmtTime(h.t);
+  tip.appendChild(t);
+  for (const s of SERIES) {
+    const row = document.createElement("div"); row.className = "row";
+    const key = document.createElement("span"); key.className = "linekey";
+    key.style.borderTopColor = getComputedStyle(document.body).getPropertyValue(s.cv);
+    const v = document.createElement("span"); v.className = "v"; v.textContent = fmtPct1(h[s.k]);
+    const n = document.createElement("span"); n.className = "n"; n.textContent = s.name;
+    row.appendChild(key); row.appendChild(v); row.appendChild(n);
+    tip.appendChild(row);
+  }
+  tip.style.display = "block";
+  const r = wrapEl.getBoundingClientRect();
+  const px = clientX != null ? clientX - r.left : (M.l + (history[idx].t - history[0].t) / Math.max(history[history.length - 1].t - history[0].t, 1) * (CW - M.l - M.r)) / CW * r.width;
+  tip.style.left = Math.min(Math.max(px + 12, 0), r.width - tip.offsetWidth - 4) + "px";
+  tip.style.top = "12px";
+}
+function hideTooltip() { hoverIdx = -1; $("tooltip").style.display = "none"; renderChart(); }
+
+$("chartwrap").addEventListener("pointermove", e => {
+  if (history.length < 2) return;
+  const r = $("chartwrap").getBoundingClientRect();
+  const vx = (e.clientX - r.left) / r.width * CW;
+  const t0 = history[0].t, t1 = history[history.length - 1].t;
+  const tt = t0 + (vx - M.l) / (CW - M.l - M.r) * (t1 - t0);
+  let best = 0, bd = Infinity;
+  history.forEach((h, i) => { const d = Math.abs(h.t - tt); if (d < bd) { bd = d; best = i; } });
+  showTooltip(best, e.clientX);
+});
+$("chartwrap").addEventListener("pointerleave", hideTooltip);
+$("chartwrap").addEventListener("keydown", e => {
+  if (history.length < 2) return;
+  if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+    e.preventDefault();
+    const d = e.key === "ArrowRight" ? 1 : -1;
+    const idx = hoverIdx < 0 ? history.length - 1 : Math.min(Math.max(hoverIdx + d, 0), history.length - 1);
+    showTooltip(idx, null);
+  } else if (e.key === "Escape") hideTooltip();
+});
+$("chartwrap").addEventListener("blur", hideTooltip);
+
+async function poll() {
+  try {
+    const res = await fetch(API, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    const ev = parseEvent(data);
+    if (!ev) throw new Error("Fant ikke kampen i API-svaret");
+    const probs = computeProbs(ev.lines);
+    const now = Date.now();
+    if (probs) {
+      history.push({ t: now, h: probs.pH, d: probs.pD, e: probs.pA });
+      if (history.length > MAXH) history = history.slice(-MAXH);
+      try { localStorage.setItem(HIST_KEY, JSON.stringify(history)); } catch (e) {}
+    }
+    last = { ev, probs, at: now };
+    $("fetchErr").textContent = probs ? "" : "Oddsmarkedet er suspendert akkurat nå – viser sist kjente tall.";
+    document.querySelector(".wrap").classList.remove("stale");
+    render(ev, probs || lastKnownProbs(), now);
+    renderChart();
+    if (ev.state === "post") { clearInterval(pollTimer); pollTimer = null; }
+  } catch (err) {
+    $("fetchErr").textContent = "Klarte ikke å hente oppdaterte odds (" + err.message + ") – viser sist kjente tall.";
+    document.querySelector(".wrap").classList.add("stale");
+  }
+}
+function lastKnownProbs() {
+  const h = history[history.length - 1];
+  return h ? { pH: h.h, pD: h.d, pA: h.e, vig: NaN, imp: { iH: h.h, iD: h.d, iA: h.e } } : null;
+}
+
+poll();
+pollTimer = setInterval(poll, POLL_MS);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) poll(); });
+</script>
+</body>
+</html>

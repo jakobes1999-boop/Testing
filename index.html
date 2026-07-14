@@ -141,10 +141,11 @@ function spawnCows() {
     });
   } else {
     const layout = [                       // like the photo: big Simmental up close
-      { u:-140, d:  70, r:46, b:0 }, { u: -50, d: 250, r:40, b:1 },
-      { u:  60, d: 420, r:36, b:2 }, { u: -30, d: 570, r:36, b:4 },
-      { u: 110, d: 710, r:34, b:3 }, { u:-110, d: 860, r:33, b:2 },
-      { u:  30, d:1010, r:32, b:1 },
+      // lanes kept tight so chains connect about as often as in 3rd person
+      { u: -60, d:  70, r:46, b:0 }, { u: -15, d: 250, r:40, b:1 },
+      { u:  45, d: 420, r:36, b:2 }, { u: -35, d: 570, r:36, b:4 },
+      { u:  65, d: 710, r:34, b:3 }, { u: -55, d: 860, r:33, b:2 },
+      { u:  25, d:1010, r:32, b:1 },
     ];
     for (const c of layout) cows.push({
       u:c.u, d:c.d, r:c.r, breed:BREEDS[c.b],
@@ -350,8 +351,8 @@ function stepFP(dt) {
     if (c.state === 'standing') {           // graze, drifting SIDEWAYS across the slope
       c.graze += dt;
       const w = c.graze*0.4 + c.phase;
-      c.u = c.homeU + Math.sin(w) * 115;
-      c.d = c.homeD + Math.cos(w*0.53) * 22;
+      c.u = c.homeU + Math.sin(w) * 85;
+      c.d = c.homeD + Math.cos(w*0.53) * 30;
       c.flip = Math.cos(w) < 0;
       continue;
     }
@@ -400,7 +401,8 @@ function stepFP(dt) {
   // collisions in the (u, d) ground plane
   for (let i=0;i<cows.length;i++) for (let j=i+1;j<cows.length;j++) {
     const a = cows[i], b = cows[j];
-    const du = b.u-a.u, dd = b.d-a.d, dist = Math.hypot(du,dd), min = (a.r+b.r)*1.05;
+    // wider than in 3p: a cow body is long, so clipping hits still connect
+    const du = b.u-a.u, dd = b.d-a.d, dist = Math.hypot(du,dd), min = (a.r+b.r)*1.22;
     if (dist === 0 || dist >= min) continue;
     const nu = du/dist, nd = dd/dist, overlap = min - dist;
     const aMoves = a.state === 'rolling', bMoves = b.state === 'rolling';
@@ -490,7 +492,7 @@ canvas.addEventListener('pointerup', e => {
   } else {
     // drag up = kick downhill; drag sideways = sideways spin
     let vu, vd;
-    if (len < 12) { vu = 0; vd = 820; }
+    if (len < 12) { vu = 0; vd = 560; }    // tap: same punch as the 3p tap kick
     else {
       const k = Math.min(len, 340) * 3.4;
       vd = Math.max(-dy/len * k, 60);            // upward drag drives downhill speed

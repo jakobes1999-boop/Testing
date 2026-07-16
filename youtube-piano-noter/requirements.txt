@@ -1,0 +1,15 @@
+# Kjerneavhengigheter for youtube_piano_noter.py
+# Tips: På maskiner uten NVIDIA-GPU kan du spare mye plass med:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+yt-dlp[default]>=2025.1.1
+yt-dlp-ejs                        # løser YouTubes JS-utfordringer (krever node eller deno)
+torch>=2.0
+piano_transcription_inference     # ByteDance-modellen (standardmotor)
+music21>=9.0                      # MIDI -> MusicXML-noteark
+pretty_midi                       # noteliste
+soundfile
+numpy
+
+# Valgfritt – installer ved behov:
+# basic-pitch                     # alternativ transkripsjonsmotor (--motor basic-pitch)
+# demucs                          # isoler pianoet fra bandet (--isoler-piano)

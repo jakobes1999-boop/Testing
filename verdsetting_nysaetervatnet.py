@@ -115,3 +115,32 @@ N_HYTTER = 700
 for verdi, andel in [(3.0, 0.03), (3.0, 0.05), (3.0, 0.08)]:
     print(f"{N_HYTTER} hytter x {verdi:.1f} MNOK x {andel*100:.0f} % amenity-verdi: "
           f"{N_HYTTER*verdi*andel:.0f} MNOK")
+
+# ------------------------- 5) Konsesjonsverdi og windfall -------------------------
+# Verifisert mot: Tussa aarsrapport 2023 (fusjon vedtatt 27.01.2023, Ampere Finans,
+# konsern-EK ca. 4,3 mrd kr, Stranda kommune 3,6 %), KT-melding 21.04.2023.
+# Grunnrenteskatt: generatorytelse 5,0+3,5+0,85 = 9,35 MVA < 10 MVA -> fritatt.
+# Konsesjonskraft: inntil 10 % av kraftgrunnlaget til om lag sjoelvkost (~13 oere).
+print("=== 5) Konsesjonsverdi for Tussa (etter skatt, 40 aar / evig) ===")
+PROD, OPEX, ESKATT, SKATT = 40.5e6, 0.10, 1.0e6, 0.22
+ann40, evig = (1 - 1.04 ** -40) / 0.04, 1 / 0.04
+for navn, P in [("44 oere (fusjonsregimet, NO3-snitt 2023)", 0.44),
+                ("80 oere (etter kobling, forsiktig)", 0.80),
+                ("113 oere (etter kobling, observert snitt)", 1.13)]:
+    kk = 0.10 * PROD * max(P - 0.13, 0)
+    cf = (PROD * (P - OPEX) - ESKATT - kk) * (1 - SKATT)
+    print(f"{navn}: {cf*ann40/1e6:.0f} MNOK ({cf*evig/1e6:.0f} evig)")
+
+print()
+print("=== 6) Fusjonsoppgjoer og fordeling av windfall ===")
+print(f"Stranda kommunes oppgjoer: 3,6 % x 4,3 mrd = {0.036*4300:.0f} MNOK (hele holdingselskapet)")
+for P in (0.80, 1.13):
+    up = 0.90 * PROD * (P - 0.44) * (1 - SKATT) * ann40
+    print(f"Windfall Fausa ved {P*100:.0f} oere: {up/1e6:.0f} MNOK; Strandas 3,6 %: {0.036*up/1e6:.0f} MNOK")
+
+# ------------------------- 7) Robusthetsbaand (foersteprinsipp-revisjon) ---------
+# Energiekvivalent 0,72-0,81 kWh/m3 (eta 0,80-0,90). Massebalanse-kontroll:
+# 40,5 GWh / 0,76 = 53 mill m3/aar tilsig-behov; slukeevne 2,5 m3/s = 79 mill m3/aar;
+# nedboerfelt 31-40 km2 x 1,3-1,7 m avrenning = 40-68 mill m3/aar -> konsistent.
+# Hypsometri-baand for mertapping 1,5->5,5 m: lineaer 7,0 / kvadratisk 7,7 /
+# konstant areal 9,4 mill m3 -> 5,0-7,5 GWh; lineaer antakelse er konservativ.

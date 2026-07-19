@@ -235,3 +235,32 @@ for P in (0.67, 0.80, 1.13):
 sentral_aarlig = 0.45 * 5.3 * (0.4*1.15 + 0.6*0.35) * (1 - T)
 print(f"\nAvtalekostnad som andel av konsesjonsverdi: "
       f"{sentral_aarlig*A40/380:.1%} (40 aar/380) - {sentral_aarlig*AEV/480:.1%} (evig/480)")
+
+# ------------------------- 10) NVE-verifiserte parametre (runde 2) ----------------
+# Kilde: NVE vannkraftdatabase-API (GetHydroPowerPlantsInOperation), verifisert direkte:
+# Fausa II (VannKraftverkID 81): MaksYtelse 7,0 MW; MidProd_91_20 = 40,536 GWh
+# (loeser "40,5 vs 37/42": NVEs referanseproduksjon 1991-2020); BruttoFallhoyde 330 m;
+# Slukeevne 2,5 m3/s; EnEkv 0,678 kWh/m3 (implisitt virkningsgrad ~75 %, UNDER vaart
+# tidligere baand 0,72-0,81 -> alle energitall justeres ned ~11 %).
+# Konsesjoner: KdbID 9 (overfoering Svartaaa/Auskargrova - forklarer 40 vs 31 km2
+# nedboerfelt), KdbID 145 (originalkonsesjon 24. juni 1938: KUN 2 m regulering,
+# manoevrering "efter Stranda Elektrisitetsverks behov", konsesjonskraft til
+# selvkost + 6 % rente + 20 %), KdbID 151 (1952: ytterligere regulering til 11 m).
+print("=== 10) Justerte hovedtall med NVEs energiekvivalent 0,678 kWh/m3 ===")
+ENEKV = 0.678
+for navn, v in [("lineaer", 7.04), ("kvadratisk", 7.74), ("konstant areal", 9.44)]:
+    print(f"Mertapping 1,5->5,5 m, {navn}: {v:.2f} mill m3 = {v*ENEKV:.1f} GWh")
+scen10 = [("lavt", 4.8, 0.2, 1.10, 0.80, 0.30),
+          ("sentralt", 5.0, 0.4, 1.15, 0.80, 0.45),
+          ("hoyt", 6.4, 0.8, 1.30, 0.85, 0.60)]
+for navn, E, a, pv, ps, pb in scen10:
+    G = E * (a * pv + (1 - a) * (pv - ps)); Gt = G * 0.78; aarlig = pb * Gt
+    print(f"{navn}: hendelsesverdi {Gt:.1f} etter skatt; avtalekostnad "
+          f"{aarlig*19.79:.0f} MNOK (40 aar) / {aarlig*27.97:.0f} (evig)")
+print("-> Avtalekostnad 10-95 MNOK, sentralt 23-33; ca. 6 % av konsesjonsverdien.")
+print()
+print("Codex runde 2 (FORELOEPIG, proxyhydrologi - LP-magasinmodell, etter skatt):")
+print("  Sommergulv 1,5 m: 20,4 / 28,8 MNOK (40 aar / forlenget R-109)")
+print("  Full pakke (sommer+vinterregime): 38,5 / 54,4 MNOK; +standstill: 40,2 / 56,1")
+print("  Monte Carlo: P(vern > full pakke) = 32 % (50/50 kanal); K1: 3 %; K2: 60 %")
+print("  Konvergens: LP-sommergulv 20-29 vs identitetsmetoden 23-33 - konsistent.")

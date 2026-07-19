@@ -144,3 +144,43 @@ for P in (0.80, 1.13):
 # nedboerfelt 31-40 km2 x 1,3-1,7 m avrenning = 40-68 mill m3/aar -> konsistent.
 # Hypsometri-baand for mertapping 1,5->5,5 m: lineaer 7,0 / kvadratisk 7,7 /
 # konstant areal 9,4 mill m3 -> 5,0-7,5 GWh; lineaer antakelse er konservativ.
+
+# ------------------------- 8) Reberegning etter raadets kritikk -------------------
+# Konsistent verdistruktur (metodikerens innvending: hendelsesgevinst og avtale-
+# kostnad maa bygge paa samme logikk). Vannet gaar ikke tapt - verdien av aa tappe
+# dypt er (i) full kraftverdi for andelen alfa som ellers ville gaatt i flomtap
+# ved vaarflom (slukeevne 2,5 m3/s << flomtilsig), og (ii) prisdifferansen
+# vinter/senere for resten som bare flyttes i tid.
+print("=== 8) Reberegnede verdier (konsistent modell) ===")
+ANN = (1 - 1.04 ** -40) / 0.04
+
+def hendelsesverdi(E_gwh, alfa, p_vinter, p_senere):
+    """MNOK: E * [alfa*P_vinter + (1-alfa)*(P_vinter-P_senere)]"""
+    return E_gwh * (alfa * p_vinter + (1 - alfa) * (p_vinter - p_senere))
+
+# alfa-grunnlag: vaartilsig apr-jun ~21-27 mill m3, slukekapasitet samme periode
+# ~19,7 mill m3, ekstra lagringsrom ved dyp tapping 7,1 mill m3 -> alfa ~0,2-0,6
+lav  = hendelsesverdi(5.0, 0.2, 1.10, 0.80)
+sen  = hendelsesverdi(5.3, 0.4, 1.15, 0.80)
+hoy  = hendelsesverdi(7.5, 0.6, 1.30, 0.85)
+ren_spread = hendelsesverdi(5.0, 0.0, 1.10, 0.80)  # metodikerens spesialtilfelle
+print(f"Hendelsesverdi 2025/26: {lav:.1f}-{hoy:.1f} MNOK, sentralt {sen:.1f}"
+      f" (rent tidsskift, alfa=0: {ren_spread:.1f})")
+
+# Avtalekostnad = bindingssannsynlighet x hendelsesverdi i bindende aar.
+# p_bind: sommerkravet binder vinterdisponeringen bare naar hoye vinterpriser
+# moeter usikker gjenfylling (toerr vaar); empirisk 2 av 4 siste aar.
+for navn, p, g in [("lavt", 0.30, lav), ("sentralt", 0.45, sen), ("hoyt", 0.60, hoy)]:
+    print(f"Avtalekostnad {navn}: {p:.2f} x {g:.1f} = {p*g:.1f} MNOK/aar"
+          f" -> naaverdi {p*g*ANN:.0f} MNOK")
+
+# Verneverdi, marginal (to kanaler):
+# K1 forventet bruksverditap: 700 hytter x p(skadet sommer) x tap per sesong,
+#    der aarlig amenity-stroem = 4 % av 3-8 % av 3,0 MNOK hytteverdi.
+for p_skade, tap_andel in [(0.2, 0.3), (0.3, 0.45), (0.4, 0.6)]:
+    aarlig_amenity = 0.04 * 0.055 * 3.0e6          # sentralt 6 600 kr/aar
+    tap = 700 * p_skade * tap_andel * aarlig_amenity
+    print(f"Vern K1 (bruk): p={p_skade}, tap {tap_andel:.0%}: {tap/1e6:.2f} MNOK/aar"
+          f" -> naaverdi {tap*ANN/1e6:.0f} MNOK")
+# K2 kapitalisert regimerisiko: 3-8 % av hytteverdi = 60-170 MNOK (oevre anker).
+print("Vern K2 (kapitalisert regimerisiko): 60-170 MNOK; sentral samlet vurdering 40-90 MNOK")

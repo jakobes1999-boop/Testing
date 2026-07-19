@@ -87,7 +87,7 @@ print(f"Ovre grense - vann som ellers ville gaatt til flomtap (113 ore): "
 print()
 
 # ------------------------- 2) Aarlig opsjonsverdi -------------------------
-print("=== 2) Aarlig opsjonsverdi av full fleksibilitet vs. avtalen ===")
+print("=== 2) [HISTORISK - erstattet av seksjon 8/9] Aarlig opsjonsverdi ===")
 # For kabelen: sesongspread ~10-15 ore, dyp tapping aktuelt ~1 av 3 aar
 for navn, spread, sanns, e in [
     ("For kabelen (19 ore-regime)", 0.125, 1/3, E_MER),
@@ -103,7 +103,7 @@ print()
 r = 0.04
 T = 40
 ann = (1 - (1 + r) ** -T) / r
-print(f"=== 3) Kapitalisert verdi, 4 % rente, 40 aar (annuitetsfaktor {ann:.2f}) ===")
+print(f"=== 3) [HISTORISK - erstattet av seksjon 8/9] Kapitalisert verdi (faktor {ann:.2f}) ===")
 for navn, aarlig in [("For kabelen", 0.24), ("Etter kabelen, lavt", 1.1),
                      ("Etter kabelen, sentralt", 2.5), ("Etter kabelen, hoyt", 7.3)]:
     print(f"{navn}: {aarlig:.1f} MNOK/aar -> naaverdi {aarlig*ann:.0f} MNOK")
@@ -184,3 +184,54 @@ for p_skade, tap_andel in [(0.2, 0.3), (0.3, 0.45), (0.4, 0.6)]:
           f" -> naaverdi {tap*ANN/1e6:.0f} MNOK")
 # K2 kapitalisert regimerisiko: 3-8 % av hytteverdi = 60-170 MNOK (oevre anker).
 print("Vern K2 (kapitalisert regimerisiko): 60-170 MNOK; sentral samlet vurdering 40-90 MNOK")
+
+# ------------------------- 9) Korreksjoner etter ekstern verifikasjon -------------
+# (i) Eierandel: Tussa aarsrapport 2023, note 26 (layout-korrigert uttrekk):
+#     Stranda kommune 6,6 % eigar- og stemmeandel - IKKE 3,6 % som foerst lest.
+# (ii) Konsistent horisont: R-109/21 gir 4 % (aar 0-40), 3 % (40-75), 2 % (75+).
+#      Forlenget faktor for varig realstroem: 19,79 + 4,48 + 3,70 = 27,97.
+# (iii) Konsistent skattebasis: eiertall etter 22 % skatt (som konsesjonsverdien).
+# (iv) alfa-intervall utvidet til 0,8 hoyt: massebalansen gir alfa naer 1 ved
+#      50 % vaartilsigsandel, saa 0,6 var for lavt som tak.
+print("=== 9) Korrigerte hovedtall (etter skatt der eier er perspektivet) ===")
+A40 = (1 - 1.04 ** -40) / 0.04
+A75 = A40 + ((1 - 1.03 ** -35) / 0.03) * 1.04 ** -40
+AEV = A75 + (1 / 0.02) * (1.04 ** -40) * (1.03 ** -35)
+print(f"Diskonteringsfaktorer: 40 aar {A40:.2f}, 75 aar {A75:.2f}, evig {AEV:.2f}")
+
+T = 0.22
+scen = [("lavt", 5.0, 0.2, 1.10, 0.80, 0.30),
+        ("sentralt", 5.3, 0.4, 1.15, 0.80, 0.45),
+        ("hoyt", 7.5, 0.8, 1.30, 0.85, 0.60)]
+for navn, E, a, pv, ps, pb in scen:
+    G = E * (a * pv + (1 - a) * (pv - ps))          # foer skatt, MNOK
+    Gt = G * (1 - T)
+    aarlig = pb * Gt
+    print(f"{navn}: hendelsesverdi {G:.1f} foer / {Gt:.1f} etter skatt; "
+          f"avtalekostnad {aarlig:.2f}/aar -> {aarlig*A40:.0f} MNOK (40 aar) / {aarlig*AEV:.0f} (evig)")
+
+print()
+print("Vern K1 (bruksverditap, evig faktor):")
+for p_sk, tap in [(0.2, 0.3), (0.3, 0.45), (0.4, 0.6)]:
+    aarlig = 700 * p_sk * tap * (0.04 * 0.055 * 3.0e6) / 1e6
+    print(f"  p={p_sk}, tap {tap:.0%}: {aarlig*A40:.0f} MNOK (40 aar) / {aarlig*AEV:.0f} (evig)")
+print("Vern K2 (kapitalisert regimerisiko, evig av natur): 63-168 MNOK")
+print("K1 og K2 er ALTERNATIVE verdsettingskanaler - aldri additive.")
+print()
+
+print("Konsesjonsverdi paa NVEs prisbane (dokumenterer notatets nedre verdier):")
+PROD2, OPEX2, ESK2 = 40.5e6, 0.10, 1.0e6
+for P in (0.60, 0.67, 0.80, 1.13):
+    kk = 0.10 * PROD2 * (P - 0.13)
+    cf = (PROD2 * (P - OPEX2) - ESK2 - kk) * (1 - T)
+    print(f"  {P*100:.0f} oere: {cf*A40/1e6:.0f} MNOK (40 aar) / {cf*AEV/1e6:.0f} (evig)")
+print()
+
+print("Fusjon og fordeling, korrigert eierandel 6,6 %:")
+print(f"  Stranda kommunes oppgjoer: 6,6 % x 4,3 mrd = {0.066*4300:.0f} MNOK")
+for P in (0.67, 0.80, 1.13):
+    up = 0.90 * PROD2 * (P - 0.44) * (1 - T) * A40
+    print(f"  Windfall Fausa {P*100:.0f} oere: {up/1e6:.0f} MNOK; Strandas 6,6 %: {0.066*up/1e6:.0f} MNOK")
+sentral_aarlig = 0.45 * 5.3 * (0.4*1.15 + 0.6*0.35) * (1 - T)
+print(f"\nAvtalekostnad som andel av konsesjonsverdi: "
+      f"{sentral_aarlig*A40/380:.1%} (40 aar/380) - {sentral_aarlig*AEV/480:.1%} (evig/480)")

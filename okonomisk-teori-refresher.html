@@ -136,9 +136,24 @@
     .prefs select { max-width: 46vw; }
   }
   .tts-note { background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent);
-    border-radius: 8px; padding: 0.8rem 1rem; font-family: var(--sans);
+    border-radius: 8px; padding: 0.85rem 1rem; font-family: var(--sans);
     font-size: 0.83rem; color: var(--muted); margin: 1.4rem 0 0; }
   .tts-note strong { color: var(--ink); }
+  .tts-note em { color: var(--ink); font-style: normal; font-weight: 600; }
+  .note-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin: 0.8rem 0 0; }
+  .note-hint { margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px solid var(--line); font-size: 0.79rem; }
+  .btn-note { font-size: 0.79rem; padding: 0.42rem 0.9rem; color: var(--accent-strong); }
+  .note-status { font-size: 0.78rem; }
+  .note-status.ready { color: var(--accent-strong); font-weight: 600; }
+  .seek-row { display: none; max-width: 44rem; margin: 0 auto; padding: 0.55rem 1.25rem 0;
+    align-items: center; gap: 0.6rem; font-family: var(--sans); }
+  .player.audio-mode .seek-row { display: flex; }
+  .player.audio-mode #sel-voice { display: none; }
+  .seek-bar { flex: 1; min-width: 0; accent-color: var(--accent); height: 1.15rem; cursor: pointer; }
+  .seek-bar:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .time { font-variant-numeric: tabular-nums; font-size: 0.74rem; color: var(--muted);
+    min-width: 2.9rem; text-align: center; }
+  .btn-route { padding: 0.36rem 0.62rem; color: var(--accent-strong); }
   footer.colophon { border-top: 1px solid var(--line); margin-top: 3rem; padding: 1.4rem 0 1rem;
     font-family: var(--sans); font-size: 0.78rem; color: var(--muted); }
 </style>
@@ -165,13 +180,20 @@
     <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zm.5 3v4.2l3 1.8-.5.9L7.5 8.8V4z" fill="currentColor"/></svg>
     Total lyttetid: ca. 82 minutter
   </div>
-  <div class="tts-note"><strong>Slik lytter du:</strong> Trykk «Lytt» på en episode, eller klikk et avsnitt
-    for å starte derfra. Opplesningen bruker nettleserens innebygde stemmer — velg en norsk stemme i menyen
-    nederst hvis den ikke er valgt automatisk. Stemmekvaliteten varierer med nettleser og operativsystem
-    (Edge og Safari har gjerne de beste norske stemmene). Avspillingen fortsetter når du bytter til en annen
-    app — siden holder en stille lydstrøm i gang, og på de fleste mobiler får du spill/pause-knapper på
-    låseskjermen. Skulle systemet likevel stoppe opplesningen, fortsetter den automatisk der du slapp når du
-    åpner siden igjen. Teksten kan selvsagt også bare leses.</div>
+  <div class="tts-note"><strong>To måter å lytte.</strong> Trykk «Lytt» på en episode for å bruke nettleserens
+    innebygde talesyntese. Det krever ingen forberedelser, men den kan <em>ikke</em> sendes til AirPlay,
+    Chromecast eller en valgt høyttaler — nettleseren spiller talesyntese utenfor sidens egen lydstrøm, og
+    ingen nettside kan rute den. Skal du lytte på høyttaler, last inn lydfilene: da spiller siden ekte lyd,
+    og AirPlay, Bluetooth og Chromecast fungerer som for en vanlig podkast, med teksten markert underveis.
+    <div class="note-actions">
+      <button class="btn btn-note" id="btn-files">Last inn lydfiler …</button>
+      <input type="file" id="file-input" accept="audio/*" multiple hidden>
+      <span class="note-status" id="note-status">Ingen lydfiler lastet — bruker talesyntese</span>
+    </div>
+    <div class="note-hint">Vil du likevel ha talesyntesen på en ekstern høyttaler, må du rute hele enheten
+      og ikke bare nettleserfanen: på iPhone og iPad via Kontrollsenter, på Mac via lydutgang i
+      Systeminnstillinger, på Windows via lydinnstillingene. Da følger talesyntesen med. Teksten kan
+      selvsagt også bare leses.</div></div>
 </header>
 
 <nav class="toc wrap" aria-label="Episodeoversikt">
@@ -658,6 +680,11 @@
 </main>
 
 <div class="player" id="player">
+  <div class="seek-row">
+    <span class="time" id="time-cur">0:00</span>
+    <input type="range" class="seek-bar" id="seek" min="0" max="1000" value="0" step="1" aria-label="Spoleposisjon">
+    <span class="time" id="time-dur">0:00</span>
+  </div>
   <div class="player-inner">
     <div class="transport">
       <button class="btn btn-round" id="btn-prev" aria-label="Forrige avsnitt" title="Forrige avsnitt">
@@ -677,6 +704,12 @@
         <span class="now-pos" id="now-pos"></span></div>
     </div>
     <div class="prefs">
+      <button class="btn btn-route" id="btn-airplay" title="Send til AirPlay" aria-label="Send til AirPlay" style="display:none">
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M2 2h12v9H10l-2-2.5L6 11H2z" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M8 10l3.5 4.5h-7z" fill="currentColor"/></svg>
+      </button>
+      <button class="btn btn-route" id="btn-sink" title="Velg lydutgang" aria-label="Velg lydutgang" style="display:none">
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M8.5 2v12l-4-3H2V5h2.5z" fill="currentColor"/><path d="M11 5.5a3.5 3.5 0 010 5M13 3.5a6 6 0 010 9" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+      </button>
       <select id="sel-voice" aria-label="Stemme"><option>Laster stemmer …</option></select>
       <select id="sel-rate" aria-label="Tempo">
         <option value="0.85">0,85×</option>
@@ -693,52 +726,114 @@
 <script>
 (function () {
   'use strict';
-  var synth = window.speechSynthesis;
+
+  var AUDIO_INDEX = {"0":{"fil":"00-om-denne-serien.mp3","lengde":125.38,"avsnitt":[[0,3.02],[1,9.48],[2,29.48],[3,56.87],[4,69.87],[5,123.97]]},"1":{"fil":"01-den-mikrookonomiske-verktoykassa.mp3","lengde":528.14,"avsnitt":[[6,7.17],[7,13.23],[8,33.27],[9,60.04],[10,67.22],[11,90.93],[12,106.7],[13,130.43],[14,143.56],[15,162.07],[16,194.71],[17,201.37],[18,238.87],[19,261.07],[20,272.7],[21,286.83],[22,312.19],[23,335.84],[24,351.98],[25,375.1],[26,407.48],[27,442.97],[28,456.6],[29,466.47],[30,483.9],[31,490.06],[32,511.92]]},"2":{"fil":"02-markedsmakt-og-strategisk-interaksjon.mp3","lengde":433.26,"avsnitt":[[33,6.8],[34,15.1],[35,38.99],[36,59.04],[37,88.22],[38,105.4],[39,138.45],[40,144.53],[41,167.69],[42,199.29],[43,223.25],[44,240.54],[45,280.75],[46,301.72],[47,328.82],[48,333.13],[49,358.67],[50,391.34],[51,413.06]]},"3":{"fil":"03-konkurransepolitikk-i-praksis.mp3","lengde":586.36,"avsnitt":[[52,6.54],[53,11.07],[54,38.97],[55,58.47],[56,85.21],[57,97.56],[58,125.27],[59,128.42],[60,157.19],[61,181.69],[62,215.04],[63,231.74],[64,258.29],[65,278.91],[66,287.8],[67,311.11],[68,332.63],[69,351.63],[70,356.89],[71,372.3],[72,386.33],[73,404.17],[74,425.42],[75,442.22],[76,477.0],[77,481.64],[78,497.95],[79,532.45],[80,554.32]]},"4":{"fil":"04-regulering-av-markeder.mp3","lengde":516.28,"avsnitt":[[81,6.58],[82,28.14],[83,47.7],[84,71.85],[85,95.63],[86,122.99],[87,136.8],[88,159.09],[89,190.7],[90,203.91],[91,239.23],[92,261.12],[93,297.84],[94,317.47],[95,347.16],[96,362.85],[97,401.64],[98,436.04],[99,460.84],[100,480.29],[101,503.6]]},"5":{"fil":"05-statsstotte-og-offentlige-anskaffelser.mp3","lengde":267.39,"avsnitt":[[102,6.99],[103,29.41],[104,57.45],[105,75.99],[106,101.44],[107,116.67],[108,152.36],[109,171.61],[110,197.03],[111,214.99],[112,239.28]]},"6":{"fil":"06-helseokonomi-og-regulerte-kvasimarkeder.mp3","lengde":291.14,"avsnitt":[[113,7.56],[114,44.44],[115,85.66],[116,116.46],[117,134.83],[118,177.13],[119,232.55],[120,259.76]]},"7":{"fil":"07-fra-teori-til-sak.mp3","lengde":324.62,"avsnitt":[[121,5.79],[122,27.25],[123,42.28],[124,46.56],[125,61.48],[126,70.98],[127,86.74],[128,97.33],[129,107.44],[130,125.05],[131,155.58],[132,174.21],[133,210.69],[134,220.39],[135,223.04],[136,229.42],[137,240.08],[138,253.44],[139,261.84],[140,274.25],[141,282.0],[142,318.11]]},"8":{"fil":"08-kanonen-skolene-som-formet-faget.mp3","lengde":718.23,"avsnitt":[[143,7.38],[144,39.03],[145,73.44],[146,98.94],[147,119.48],[148,146.54],[149,182.68],[150,224.14],[151,243.18],[152,265.07],[153,306.09],[154,325.62],[155,354.77],[156,385.58],[157,404.18],[158,441.43],[159,482.94],[160,504.2],[161,521.89],[162,554.11],[163,572.34],[164,599.12],[165,624.22],[166,654.83],[167,690.96]]},"9":{"fil":"09-verkene-og-hva-du-skal-hente-fra-hvert.mp3","lengde":647.89,"avsnitt":[[168,5.81],[169,21.22],[170,45.17],[171,59.3],[172,80.59],[173,106.67],[174,121.76],[175,139.28],[176,169.61],[177,188.57],[178,207.93],[179,233.91],[180,253.18],[181,291.16],[182,307.65],[183,343.37],[184,363.74],[185,397.16],[186,427.43],[187,446.75],[188,481.67],[189,485.14],[190,513.03],[191,555.26],[192,571.01],[193,575.22],[194,585.48],[195,597.43],[196,607.38],[197,621.26]]}};
+  var EP_TITLES = {"0": "Om denne serien", "1": "Den mikroøkonomiske verktøykassa", "2": "Markedsmakt og strategisk interaksjon", "3": "Konkurransepolitikk i praksis", "4": "Regulering av markeder", "5": "Statsstøtte og offentlige anskaffelser", "6": "Helseøkonomi og regulerte kvasimarkeder", "7": "Fra teori til sak", "8": "Kanonen — skolene som formet faget", "9": "Verkene — og hva du skal hente fra hvert"};
+
   var paras = Array.prototype.slice.call(document.querySelectorAll('.para'));
-  var epTitles = {"0": "Om denne serien", "1": "Den mikroøkonomiske verktøykassa", "2": "Markedsmakt og strategisk interaksjon", "3": "Konkurransepolitikk i praksis", "4": "Regulering av markeder", "5": "Statsstøtte og offentlige anskaffelser", "6": "Helseøkonomi og regulerte kvasimarkeder", "7": "Fra teori til sak", "8": "Kanonen — skolene som formet faget", "9": "Verkene — og hva du skal hente fra hvert"};
-  var epFirst = {};
-  paras.forEach(function (p) {
-    var ep = p.getAttribute('data-ep');
-    if (!(ep in epFirst)) epFirst[ep] = +p.getAttribute('data-i');
-  });
+  if (!paras.length) return;
+  var paraEp = paras.map(function (p) { return p.getAttribute('data-ep'); });
 
-  var state = 'idle'; // idle | playing | paused
+  var $ = function (id) { return document.getElementById(id); };
+  var playerEl = $('player'), btnPlay = $('btn-play'), icPlay = $('ic-play'), icPause = $('ic-pause');
+  var nowBox = $('now'), nowLabel = $('now-label'), nowTitle = $('now-title'), nowPos = $('now-pos');
+  var selVoice = $('sel-voice'), selRate = $('sel-rate');
+  var seek = $('seek'), timeCur = $('time-cur'), timeDur = $('time-dur');
+  var btnAir = $('btn-airplay'), btnSink = $('btn-sink');
+  var fileInput = $('file-input'), btnFiles = $('btn-files'), noteStatus = $('note-status');
+
+  var synth = window.speechSynthesis;
+  var ttsOk = !!(synth && typeof SpeechSynthesisUtterance !== 'undefined');
+
+  var mode = 'tts';        // 'tts' = nettleserstemme, 'audio' = ekte lydfiler
+  var state = 'idle';      // 'idle' | 'playing' | 'paused'
   var cur = { p: 0, c: 0 };
-  var chunkCache = {};
-  var gen = 0; // generasjonsteller: gjør gamle onend-callbacks ufarlige
-  var errStreak = 0; // stopper pent hvis stemmen feiler gjentatte ganger
+  var files = {};          // episodenummer -> objekt-URL
 
-  // Stille lydsløyfe: holder lydsesjonen aktiv så opplesningen overlever app-bytte,
-  // og gir Media Session-kontroller på låseskjerm/i varselsenter der det støttes.
+  // Ekte lydspor. Et mediaelement KAN sendes til AirPlay, Bluetooth og Chromecast
+  // — i motsetning til talesyntesen, som nettleseren spiller utenfor sidens
+  // lydstrøm, og som derfor ingen nettside kan rute noe sted.
+  var track = new Audio();
+  track.preload = 'metadata';
+  track.setAttribute('playsinline', '');
+  track.setAttribute('x-webkit-airplay', 'allow');
+  var trackEp = null, pendingSeek = null, seeking = false;
+
+  // Stille sløyfe som holder talesyntesen i gang når du bytter app. Fjernavspilling
+  // blokkeres eksplisitt: ellers er det denne tomme strømmen AirPlay-velgeren griper,
+  // og resultatet er stillhet på høyttaleren.
   var keepAlive = new Audio('data:audio/wav;base64,UklGRmQfAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YUAfAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==');
   keepAlive.loop = true;
-  keepAlive.preload = 'auto';
   keepAlive.volume = 0.01;
   keepAlive.setAttribute('playsinline', '');
+  keepAlive.setAttribute('x-webkit-airplay', 'deny');
+  try { keepAlive.disableRemotePlayback = true; } catch (e) {}
 
-  var btnPlay = document.getElementById('btn-play');
-  var icPlay = document.getElementById('ic-play');
-  var icPause = document.getElementById('ic-pause');
-  var nowBox = document.getElementById('now');
-  var nowLabel = document.getElementById('now-label');
-  var nowTitle = document.getElementById('now-title');
-  var nowPos = document.getElementById('now-pos');
-  var selVoice = document.getElementById('sel-voice');
-  var selRate = document.getElementById('sel-rate');
-
-  if (!synth || typeof SpeechSynthesisUtterance === 'undefined') {
-    nowLabel.textContent = 'Opplesning støttes ikke i denne nettleseren';
-    nowTitle.textContent = 'Teksten kan fortsatt leses som vanlig.';
-    return;
+  function fmt(t) {
+    if (!isFinite(t) || t < 0) t = 0;
+    var m = Math.floor(t / 60), s = Math.floor(t % 60);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+  function epParasOf(ep) {
+    return paras.filter(function (q) { return q.getAttribute('data-ep') === ep; });
+  }
+  function firstParaOf(ep) {
+    for (var i = 0; i < paras.length; i++) if (paraEp[i] === ep) return i;
+    return -1;
   }
 
-  // --- Stemmer ---------------------------------------------------------------
-  var voices = [];
+  // ---------- Felles grensesnitt mot brukerflaten ----------
+  function setActive(idx) {
+    paras.forEach(function (p) { p.classList.remove('active'); });
+    var p = paras[idx];
+    if (!p) return;
+    p.classList.add('active');
+    var r = p.getBoundingClientRect();
+    if (r.top < 70 || r.bottom > window.innerHeight - 160) p.scrollIntoView({ block: 'center' });
+    var ep = paraEp[idx];
+    var list = epParasOf(ep);
+    var pos = list.indexOf(p) + 1;
+    nowTitle.textContent = 'Episode ' + ep + ': ' + EP_TITLES[ep];
+    nowPos.textContent = ' · avsnitt ' + pos + '/' + list.length;
+    if ('mediaSession' in navigator && typeof MediaMetadata !== 'undefined') {
+      try {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: 'Episode ' + ep + ': ' + EP_TITLES[ep],
+          artist: 'Økonomisk teori før høsten',
+          album: 'Avsnitt ' + pos + ' av ' + list.length
+        });
+      } catch (e) {}
+    }
+  }
+  function setState(s) {
+    state = s;
+    nowBox.classList.toggle('playing', s === 'playing');
+    icPlay.style.display = s === 'playing' ? 'none' : '';
+    icPause.style.display = s === 'playing' ? '' : 'none';
+    nowLabel.textContent = s === 'playing'
+      ? (mode === 'audio' ? 'Spiller av lydfil' : 'Spiller av talesyntese')
+      : (s === 'paused' ? 'Pause' : 'Klar til avspilling');
+    if (mode === 'tts' && s === 'playing') keepAlive.play().catch(function () {});
+    else keepAlive.pause();
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.playbackState =
+        s === 'playing' ? 'playing' : (s === 'paused' ? 'paused' : 'none');
+    }
+    if (s === 'idle') {
+      paras.forEach(function (p) { p.classList.remove('active'); });
+      nowTitle.textContent = 'Velg en episode eller klikk et avsnitt';
+      nowPos.textContent = '';
+    }
+  }
+
+  // ---------- Motor 1: nettleserens talesyntese ----------
+  var voices = [], gen = 0, errStreak = 0, chunkCache = {}, stalled = 0;
+
   function loadVoices() {
+    if (!ttsOk) return;
     voices = synth.getVoices();
     if (!voices.length) return;
-    var opts = [];
-    var pick = -1;
+    var opts = [], pick = -1;
     voices.forEach(function (v, i) {
       var lang = (v.lang || '').toLowerCase();
       if (pick === -1 && (lang.indexOf('nb') === 0 || lang.indexOf('no') === 0 || lang.indexOf('nn') === 0)) pick = i;
@@ -752,20 +847,15 @@
     }
     selVoice.innerHTML = opts.join('');
     if (pick >= 0) selVoice.value = String(pick);
-    if (state === 'idle') {
-      nowLabel.textContent = (pick >= 0 && (voices[pick].lang || '').toLowerCase().indexOf('n') === 0)
-        ? 'Klar til avspilling · norsk stemme funnet'
-        : 'Klar til avspilling · velg gjerne stemme manuelt';
-    }
   }
-  loadVoices();
-  if (typeof synth.onvoiceschanged !== 'undefined') synth.onvoiceschanged = loadVoices;
+  if (ttsOk) {
+    loadVoices();
+    if (typeof synth.onvoiceschanged !== 'undefined') synth.onvoiceschanged = loadVoices;
+  }
 
-  // --- Tekst-oppdeling (korte ytringer unngår avbrudd i enkelte nettlesere) ---
   function splitLong(s) {
     if (s.length <= 300) return [s];
-    var mid = Math.floor(s.length / 2);
-    var best = -1;
+    var mid = Math.floor(s.length / 2), best = -1;
     for (var i = 0; i < s.length; i++) {
       if (',;:—'.indexOf(s[i]) >= 0 && Math.abs(i - mid) < Math.abs(best - mid)) best = i;
     }
@@ -778,11 +868,9 @@
     var sents = text.match(/[^.!?…]+[.!?…]+[»"”)]?\s*/g) || [text];
     var rest = text.replace(/[\s\S]*[.!?…][»"”)]?\s*/, '');
     if (rest.trim()) sents.push(rest);
-    var out = [];
-    var buf = '';
+    var out = [], buf = '';
     sents.forEach(function (s) {
-      if (buf && (buf + s).length > 200) { out.push(buf.trim()); buf = s; }
-      else buf += s;
+      if (buf && (buf + s).length > 200) { out.push(buf.trim()); buf = s; } else buf += s;
     });
     if (buf.trim()) out.push(buf.trim());
     var final = [];
@@ -790,106 +878,197 @@
     chunkCache[idx] = final.length ? final : [text];
     return chunkCache[idx];
   }
-
-  // --- UI-oppdatering ---------------------------------------------------------
-  function setActive(idx) {
-    paras.forEach(function (p) { p.classList.remove('active'); });
-    var p = paras[idx];
-    if (!p) return;
-    p.classList.add('active');
-    var r = p.getBoundingClientRect();
-    if (r.top < 70 || r.bottom > window.innerHeight - 140) {
-      p.scrollIntoView({ block: 'center' });
-    }
-    var ep = p.getAttribute('data-ep');
-    var epParas = paras.filter(function (q) { return q.getAttribute('data-ep') === ep; });
-    var pos = epParas.indexOf(p) + 1;
-    nowTitle.textContent = 'Episode ' + ep + ': ' + epTitles[ep];
-    nowPos.textContent = ' · avsnitt ' + pos + '/' + epParas.length;
-    if ('mediaSession' in navigator && typeof MediaMetadata !== 'undefined') {
-      try {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: 'Episode ' + ep + ': ' + epTitles[ep],
-          artist: 'Økonomisk teori før høsten',
-          album: 'Avsnitt ' + pos + ' av ' + epParas.length
-        });
-      } catch (e) {}
-    }
-  }
-  function setState(s) {
-    state = s;
-    nowBox.classList.toggle('playing', s === 'playing');
-    icPlay.style.display = s === 'playing' ? 'none' : '';
-    icPause.style.display = s === 'playing' ? '' : 'none';
-    nowLabel.textContent = s === 'playing' ? 'Spiller av' : (s === 'paused' ? 'Pause' : 'Klar til avspilling');
-    if (s === 'playing') { keepAlive.play().catch(function () {}); }
-    else { keepAlive.pause(); }
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.playbackState = s === 'playing' ? 'playing' : (s === 'paused' ? 'paused' : 'none');
-    }
-    if (s === 'idle') {
-      paras.forEach(function (p) { p.classList.remove('active'); });
-      nowTitle.textContent = 'Velg en episode eller klikk et avsnitt';
-      nowPos.textContent = '';
-    }
-  }
-
-  // --- Avspillingsmotor --------------------------------------------------------
   function speakCurrent() {
-    var myGen = gen;
-    var list = chunksFor(cur.p);
+    var myGen = gen, list = chunksFor(cur.p);
     if (cur.c >= list.length) {
       if (cur.p + 1 < paras.length) { cur = { p: cur.p + 1, c: 0 }; setActive(cur.p); speakCurrent(); }
-      else { setState('idle'); }
+      else setState('idle');
       return;
     }
     var u = new SpeechSynthesisUtterance(list[cur.c]);
     var vi = parseInt(selVoice.value, 10);
-    if (voices[vi]) { u.voice = voices[vi]; u.lang = voices[vi].lang; } else { u.lang = 'nb-NO'; }
+    if (voices[vi]) { u.voice = voices[vi]; u.lang = voices[vi].lang; } else u.lang = 'nb-NO';
     u.rate = parseFloat(selRate.value) || 1;
     u.onstart = function () { if (myGen === gen) errStreak = 0; };
     u.onend = function () {
       if (myGen !== gen || state !== 'playing') return;
-      cur.c += 1;
-      speakCurrent();
+      cur.c += 1; speakCurrent();
     };
     u.onerror = function () {
       if (myGen !== gen || state !== 'playing') return;
       errStreak += 1;
       if (errStreak > 3) {
-        gen += 1; synth.cancel();
-        setState('paused');
-        nowLabel.textContent = 'Opplesningen stoppet — prøv en annen stemme eller nettleser';
+        gen += 1; synth.cancel(); setState('paused');
+        nowLabel.textContent = 'Opplesningen stoppet — prøv en annen stemme eller last inn lydfiler';
         return;
       }
-      cur.c += 1;
-      speakCurrent();
+      cur.c += 1; speakCurrent();
     };
     synth.speak(u);
   }
-  function hardStop() { gen += 1; synth.cancel(); }
-  function playFrom(pIdx, cIdx) {
+  function hardStop() { gen += 1; if (ttsOk) synth.cancel(); }
+  function ttsPlayFrom(pIdx, cIdx) {
+    if (!ttsOk) {
+      setState('paused');
+      nowLabel.textContent = 'Talesyntese støttes ikke — last inn lydfiler for å lytte';
+      return;
+    }
     hardStop();
     cur = { p: pIdx, c: cIdx || 0 };
     setState('playing');
     setActive(cur.p);
-    // liten forsinkelse etter cancel() gjør oppstarten stabil i Chrome
     var myGen = gen;
     setTimeout(function () { if (myGen === gen && state === 'playing') speakCurrent(); }, 60);
   }
-  function pausePlayback() { hardStop(); setState('paused'); }
-  function resumePlayback() { playFrom(cur.p, cur.c); }
 
-  // --- Hendelser ---------------------------------------------------------------
+  // ---------- Motor 2: ekte lydfiler ----------
+  function offsetsFor(ep) { var e = AUDIO_INDEX[ep]; return (e && e.avsnitt) || null; }
+  function offsetOf(idx) {
+    var offs = offsetsFor(paraEp[idx]);
+    if (!offs) return 0;
+    for (var i = 0; i < offs.length; i++) if (offs[i][0] === idx) return offs[i][1];
+    return 0;
+  }
+  function updateSeekUI() {
+    if (seeking) return;
+    var d = track.duration || 0;
+    timeCur.textContent = fmt(track.currentTime);
+    timeDur.textContent = fmt(d);
+    seek.value = d ? Math.round((track.currentTime / d) * 1000) : 0;
+  }
+  function syncPara() {
+    var offs = offsetsFor(trackEp);
+    if (!offs) return;
+    var t = track.currentTime, best = -1;
+    for (var i = 0; i < offs.length; i++) {
+      if (offs[i][1] <= t + 0.05) best = offs[i][0]; else break;
+    }
+    if (best >= 0 && best !== cur.p) { cur.p = best; setActive(best); }
+  }
+  function audioPlayFrom(idx) {
+    var ep = paraEp[idx];
+    if (!files[ep]) { ttsPlayFrom(idx); return; }
+    cur = { p: idx, c: 0 };
+    setActive(idx);
+    var t = offsetOf(idx);
+    if (trackEp !== ep) { trackEp = ep; pendingSeek = t; track.src = files[ep]; track.load(); }
+    else { try { track.currentTime = t; } catch (e) { pendingSeek = t; } }
+    setState('playing');
+    track.playbackRate = parseFloat(selRate.value) || 1;
+    track.play().catch(function () {
+      setState('paused');
+      nowLabel.textContent = 'Trykk spill av for å starte';
+    });
+  }
+  track.addEventListener('loadedmetadata', function () {
+    if (pendingSeek != null) { try { track.currentTime = pendingSeek; } catch (e) {} pendingSeek = null; }
+    track.playbackRate = parseFloat(selRate.value) || 1;
+    updateSeekUI();
+  });
+  track.addEventListener('timeupdate', function () { updateSeekUI(); syncPara(); });
+  track.addEventListener('ended', function () {
+    var next = String((+trackEp) + 1);
+    var first = files[next] ? firstParaOf(next) : -1;
+    if (first >= 0) audioPlayFrom(first); else setState('idle');
+  });
+  seek.addEventListener('input', function () {
+    seeking = true;
+    timeCur.textContent = fmt((track.duration || 0) * seek.value / 1000);
+  });
+  seek.addEventListener('change', function () {
+    var d = track.duration || 0;
+    seeking = false;
+    if (d) { try { track.currentTime = d * seek.value / 1000; } catch (e) {} syncPara(); }
+  });
+
+  // ---------- Modus og filinnlasting ----------
+  function setMode(m) {
+    if (m === mode) return;
+    if (state === 'playing') {
+      if (mode === 'audio') track.pause(); else hardStop();
+      setState('paused');
+    }
+    mode = m;
+    playerEl.classList.toggle('audio-mode', m === 'audio');
+    updateRouteButtons();
+  }
+  function handleFiles(list) {
+    var arr = Array.prototype.slice.call(list).filter(function (f) {
+      return /^audio\//.test(f.type) || /\.(mp3|m4a|aac|ogg|opus|wav|flac)$/i.test(f.name);
+    }).sort(function (a, b) { return a.name.localeCompare(b.name, 'no'); });
+    if (!arr.length) return;
+    arr.forEach(function (f, i) {
+      var m = f.name.match(/(\d{1,2})/);
+      var ep = m ? String(parseInt(m[1], 10)) : String(i);
+      if (!(ep in EP_TITLES)) ep = String(i);
+      if (!(ep in EP_TITLES)) return;
+      if (files[ep]) URL.revokeObjectURL(files[ep]);
+      files[ep] = URL.createObjectURL(f);
+    });
+    var n = Object.keys(files).length, tot = Object.keys(EP_TITLES).length;
+    noteStatus.textContent = n + ' av ' + tot + ' episoder lastet — spiller ekte lyd, klar for AirPlay';
+    noteStatus.classList.add('ready');
+    setMode('audio');
+  }
+  btnFiles.addEventListener('click', function () { fileInput.click(); });
+  fileInput.addEventListener('change', function () { handleFiles(fileInput.files); });
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    document.addEventListener(ev, function (e) { e.preventDefault(); });
+  });
+  document.addEventListener('drop', function (e) {
+    if (!e.dataTransfer || !e.dataTransfer.files || !e.dataTransfer.files.length) return;
+    e.preventDefault();
+    handleFiles(e.dataTransfer.files);
+  });
+
+  // ---------- Ruting til AirPlay og valgt lydutgang ----------
+  var airAvailable = false;
+  var sinkSupported = typeof track.setSinkId === 'function' &&
+    !!(navigator.mediaDevices && navigator.mediaDevices.selectAudioOutput);
+  function updateRouteButtons() {
+    btnAir.style.display = (mode === 'audio' && airAvailable) ? '' : 'none';
+    btnSink.style.display = (mode === 'audio' && sinkSupported) ? '' : 'none';
+  }
+  if (window.WebKitPlaybackTargetAvailabilityEvent) {
+    track.addEventListener('webkitplaybacktargetavailabilitychanged', function (e) {
+      airAvailable = (e.availability === 'available');
+      updateRouteButtons();
+    });
+  }
+  btnAir.addEventListener('click', function () {
+    if (track.webkitShowPlaybackTargetPicker) track.webkitShowPlaybackTargetPicker();
+  });
+  btnSink.addEventListener('click', function () {
+    navigator.mediaDevices.selectAudioOutput().then(function (d) {
+      return track.setSinkId(d.deviceId);
+    }).then(function () {
+      nowLabel.textContent = 'Lydutgang valgt';
+    }).catch(function () {});
+  });
+
+  // ---------- Betjening ----------
+  function playFrom(idx, cIdx) {
+    if (mode === 'audio') audioPlayFrom(idx); else ttsPlayFrom(idx, cIdx);
+  }
+  function pausePlayback() {
+    if (mode === 'audio') { track.pause(); setState('paused'); }
+    else { hardStop(); setState('paused'); }
+  }
+  function resumePlayback() {
+    if (mode === 'audio') {
+      setState('playing');
+      track.play().catch(function () { setState('paused'); });
+    } else ttsPlayFrom(cur.p, cur.c);
+  }
   btnPlay.addEventListener('click', function () {
     if (state === 'playing') pausePlayback();
     else if (state === 'paused') resumePlayback();
     else playFrom(0, 0);
   });
-  document.getElementById('btn-next').addEventListener('click', function () {
+  $('btn-next').addEventListener('click', function () {
     if (cur.p + 1 < paras.length) playFrom(cur.p + 1, 0);
   });
-  document.getElementById('btn-prev').addEventListener('click', function () {
+  $('btn-prev').addEventListener('click', function () {
     playFrom(cur.c > 0 || state === 'idle' ? cur.p : Math.max(0, cur.p - 1), 0);
   });
   paras.forEach(function (p) {
@@ -905,11 +1084,14 @@
       playFrom(+b.getAttribute('data-play-ep'), 0);
     });
   });
-  selRate.addEventListener('change', function () { if (state === 'playing') playFrom(cur.p, cur.c); });
-  selVoice.addEventListener('change', function () { if (state === 'playing') playFrom(cur.p, cur.c); });
-  window.addEventListener('beforeunload', function () { synth.cancel(); });
+  selRate.addEventListener('change', function () {
+    if (mode === 'audio') track.playbackRate = parseFloat(selRate.value) || 1;
+    else if (state === 'playing') ttsPlayFrom(cur.p, cur.c);
+  });
+  selVoice.addEventListener('change', function () {
+    if (mode === 'tts' && state === 'playing') ttsPlayFrom(cur.p, cur.c);
+  });
 
-  // Kontroller på låseskjerm/i varselsenter der Media Session støttes.
   if ('mediaSession' in navigator) {
     try {
       navigator.mediaSession.setActionHandler('play', function () { if (state !== 'playing') resumePlayback(); });
@@ -923,21 +1105,25 @@
     } catch (e) {}
   }
 
-  // Vaktbikkje: enkelte systemer dreper talesyntesen ved app-bytte uten å si fra.
-  // Står vi i «playing» uten at noe faktisk leses over to tikk, gjenopptas
-  // opplesningen fra gjeldende setning — også når fanen blir synlig igjen.
-  var stalled = 0;
+  // Vaktbikkje: noen systemer dreper talesyntesen ved app-bytte uten å si fra.
+  // Gjelder bare talesyntese — ekte lydfiler håndterer nettleseren selv.
   setInterval(function () {
-    if (state !== 'playing') { stalled = 0; return; }
+    if (mode !== 'tts' || state !== 'playing' || !ttsOk) { stalled = 0; return; }
     if (synth.paused) { synth.resume(); return; }
     if (synth.speaking || synth.pending) { stalled = 0; return; }
     stalled += 1;
-    if (stalled >= 2) { stalled = 0; playFrom(cur.p, cur.c); }
+    if (stalled >= 2) { stalled = 0; ttsPlayFrom(cur.p, cur.c); }
   }, 3000);
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden || state !== 'playing') return;
+    if (document.hidden || mode !== 'tts' || state !== 'playing' || !ttsOk) return;
     if (synth.paused) { synth.resume(); return; }
-    if (!synth.speaking && !synth.pending) { stalled = 0; playFrom(cur.p, cur.c); }
+    if (!synth.speaking && !synth.pending) { stalled = 0; ttsPlayFrom(cur.p, cur.c); }
   });
+  window.addEventListener('beforeunload', function () { if (ttsOk) synth.cancel(); });
+
+  if (!ttsOk) {
+    nowLabel.textContent = 'Talesyntese støttes ikke i denne nettleseren';
+    nowTitle.textContent = 'Last inn lydfiler for å lytte, eller les teksten';
+  }
 })();
 </script>

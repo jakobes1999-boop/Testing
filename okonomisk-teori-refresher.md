@@ -1,8 +1,8 @@
 # Økonomisk teori før høsten
 
-## En refresher i sju episoder — mikroøkonomi, konkurranse og regulering
+## En refresher i ni episoder — mikroøkonomi, konkurranse og regulering
 
-Dette er et podkastmanus skrevet for å lyttes til, men det fungerer også som lesestoff. Episodene er på mellom fem og tolv minutter i opplesningstempo. Episodene kan tas i rekkefølge eller hver for seg, men episode én legger grunnlaget de andre bygger på.
+Dette er et podkastmanus skrevet for å lyttes til, men det fungerer også som lesestoff. Episodene er på mellom fem og femten minutter i opplesningstempo. Episodene kan tas i rekkefølge eller hver for seg, men episode én legger grunnlaget de andre bygger på.
 
 ## Episode 0: Om denne serien
 
@@ -14,7 +14,7 @@ For det andre: hva er mest bærende i den typen oppdrag som venter? For en samfu
 
 For det tredje: intuisjon foran utledning. Du trenger ikke å kunne utlede førsteordensbetingelsene i en Cournot-modell på stående fot, men du trenger å vite hva modellen forutsetter, hva den predikerer, og når den er feil verktøy. Serien er lagt opp deretter.
 
-Strukturen er slik. Episode én frisker opp den mikroøkonomiske verktøykassa — begrepene alt annet hviler på. Episode to handler om markedsmakt og strategisk interaksjon, altså industriell organisering. Episode tre tar konkurransepolitikken i praksis: fusjoner, karteller og misbruk av dominans, med norsk og europeisk rettslig ramme. Episode fire handler om regulering av markeder — fra naturlig monopol til insentivregulering, miljøregulering og anbudskonkurranser. Episode fem dekker statsstøtte og offentlige anskaffelser — to felt der økonomifaget og EØS-retten møtes i det daglige. Episode seks tar helseøkonomien og de regulerte kvasimarkedene. Og episode sju knytter det hele til saksarbeid: kontrafaktisk tenkning, den empiriske verktøykassa og det norske institusjonskartet.
+Strukturen er slik. Episode én frisker opp den mikroøkonomiske verktøykassa — begrepene alt annet hviler på. Episode to handler om markedsmakt og strategisk interaksjon, altså industriell organisering. Episode tre tar konkurransepolitikken i praksis: fusjoner, karteller og misbruk av dominans, med norsk og europeisk rettslig ramme. Episode fire handler om regulering av markeder — fra naturlig monopol til insentivregulering, miljøregulering og anbudskonkurranser. Episode fem dekker statsstøtte og offentlige anskaffelser — to felt der økonomifaget og EØS-retten møtes i det daglige. Episode seks tar helseøkonomien og de regulerte kvasimarkedene. Episode sju knytter det hele til saksarbeid: kontrafaktisk tenkning, den empiriske verktøykassa og det norske institusjonskartet. Og de to siste episodene tar litteraturen: episode åtte følger den industrielle økonomiens skoler og skolestrider fra Cournot til i dag, med portretter av dem som formet faget, mens episode ni går gjennom verkene selv og hva du konkret skal hente fra hvert av dem.
 
 Da setter vi i gang.
 
@@ -406,8 +406,164 @@ Fire: brutto for netto — å presentere omfordelt aktivitet som verdiskaping, e
 
 Fem: å behandle modellen som virkeligheten. Cournot, Bertrand, GUPPI og DEA er linser. Kraften ligger i å vite hva linsen forstørrer, hva den forminsker, og når den skal byttes.
 
-### Hvis du vil fordype deg
+### Og så til litteraturen
 
-Til slutt, et lite bibliotek for høsten. For industriell organisering: Tiroles klassiker The Theory of Industrial Organization, og Belleflamme og Peitz' Industrial Organization: Markets and Strategies som en mer moderne lærebok. For konkurransepolitikk: Mottas Competition Policy: Theory and Practice. For regulering: Viscusi, Harrington og Sappingtons Economics of Regulation and Antitrust, og Deckers Modern Economic Regulation. For auksjoner og anskaffelser: Klemperers Auctions: Theory and Practice. For helseøkonomi: Drummond og medforfatteres Methods for the Economic Evaluation of Health Care Programmes. For statsstøtte er ESAs og Kommisjonens retningslinjer selv den beste innføringen i den økonomiske testlogikken. Og for norsk metode: DFØs veileder i samfunnsøkonomiske analyser med tilhørende rundskriv.
+Der stopper gjennomgangen av selve håndverket. Men én ting mangler, og den er verdt to egne episoder: litteraturen faget hviler på.
 
-Det var serien. Sju episoder, én rød tråd: nesten alt i anvendt samfunnsøkonomi — fra fusjonssaker via statsstøtte til helseprioritering — er variasjoner over et lite sett ideer: marginaltenkning, elastisiteter, strategisk interaksjon, asymmetrisk informasjon og det kontrafaktiske spørsmålet. Har du dem klart for deg, er du klar for høsten. God oppstart!
+Grunnen er ikke akademisk pynt. I en konkurransesak møter du sjelden argumenter som er nye — du møter posisjoner som har vært utkjempet i litteraturen i sytti år, ofte fremført av motparten uten at kildene nevnes. Når en advokat argumenterer for at markedet vil korrigere seg selv fordi nyetablering er lett, er det Chicago-skolen som taler. Når Konkurransetilsynet vektlegger markedsstruktur og etableringsbarrierer, hører du Harvard-tradisjonen. Og når diskusjonen dreier seg om hvorvidt en dominerende plattform kan stenge ut konkurrenter uten å tape penger på det, er det den spillteoretiske revolusjonen fra åttitallet som er rammen. Kjenner du posisjonene, gjenkjenner du argumentet — og du vet hva som er dets svakeste punkt.
+
+Så: episode åtte er skolene og menneskene bak dem. Episode ni er verkene, og hva du konkret skal hente fra hvert.
+
+## Episode 8: Kanonen — skolene som formet faget
+
+### Grunnleggerne: Cournot, Bertrand og Hotelling
+
+Industriell økonomi har en uvanlig presis fødselsattest: 1838, da franskmannen Antoine Augustin Cournot ga ut sine matematiske undersøkelser av rikdommens teori. Cournot var matematiker og filosof, ikke økonom, og han gjorde noe ingen hadde gjort før: han skrev ned en modell av hva to bedrifter gjør når de begge påvirker prisen. Der fant han likevekten vi i dag kaller Nash-likevekt — over hundre år før John Nash formaliserte begrepet. Boken ble praktisk talt ignorert i hans levetid, og Cournot døde nesten blind og bitter over det. I dag er kvantumskonkurranse oppkalt etter ham.
+
+Innvendingen kom i 1883, fra en annen fransk matematiker: Joseph Bertrand skrev en anmeldelse av Cournot der han stilte det åpenbare spørsmålet — hvorfor skulle bedrifter velge mengder når de i praksis setter priser? Svaret hans, at priskonkurranse driver prisen ned til kostnaden, ble det vi kaller Bertrand-modellen. Legg merke til at den ble født som en kritikk på et par sider, ikke som et forskningsprogram. Francis Ysidro Edgeworth fulgte opp i 1897 og viste at med kapasitetsbegrensninger finnes det ingen stabil prislikevekt i det hele tatt — prisene svinger. Spenningen mellom disse tre er fremdeles den samme spenningen du håndterer når du velger modell i en fusjonssak.
+
+Den fjerde grunnsteinen kom i 1929, fra amerikaneren Harold Hotelling — egentlig statistiker, med matematisk økonomi som sidespor. Hans artikkel om stabilitet i konkurranse ga oss den lineære byen og innsikten om at nærhet i produktrommet er nærhet i konkurransen. Fra Hotelling stammer hele den moderne behandlingen av differensierte produkter, og dermed diversjonsratene du regner på i dag.
+
+### 1933: Chamberlin, Robinson og det ufullkomne markedet
+
+To bøker samme år brøt monopolets og frikonkurransens tvangstrøye. Edward Chamberlin ved Harvard ga ut sin teori om monopolistisk konkurranse, og Joan Robinson i Cambridge sin økonomi for ufullkommen konkurranse. Poenget de delte: de fleste markeder er verken monopol eller frikonkurranse, men mange selgere med hver sin lille markedsmakt fordi produktene er forskjellige.
+
+Chamberlin ga oss produktdifferensiering og reklame som økonomiske fenomener. Robinson systematiserte prisdiskriminering og ga oss begrepet monopsoni — kjøpermakt — som først de siste tiårene har fått den plassen i konkurransepolitikken det fortjener. Robinson selv er verdt et ord: hun var en av 1900-tallets skarpeste økonomer, sentral i Cambridge-miljøet rundt Keynes, og hun fikk aldri Nobelprisen — noe mange regner som en av prisens tydeligste utelatelser.
+
+### Harvard-skolen: struktur, atferd og resultat
+
+Så kommer faget som forskningsprogram. Edward Mason ved Harvard skisserte i 1939 rammeverket, og hans student Joe Bain — senere professor i Berkeley — bygde det ut i Barriers to New Competition fra 1956. Bain regnes gjerne som industriøkonomiens far, og han ga oss to varige ting: en systematisk taksonomi over etableringsbarrierer, og et paradigme kalt struktur–atferd–resultat: markedsstrukturen bestemmer bedriftenes atferd, som bestemmer resultatet i form av priser og lønnsomhet. F. M. Scherer samlet tradisjonen i læreboken Industrial Market Structure and Economic Performance fra 1970, som var feltets standardverk i en generasjon.
+
+Metoden var å kjøre regresjoner på tvers av bransjer: er konsentrerte bransjer mer lønnsomme? Svaret var gjennomgående ja, og konklusjonen ble at konsentrasjon er skadelig. Denne empirien har ikke holdt, og det er verdt å vite hvorfor: sammenhengen kan gå andre veien. Effektive bedrifter vinner markedsandeler og tjener penger — konsentrasjon kan altså være resultatet av god ytelse, ikke årsaken til høye priser. Det er endogenitetsproblemet i sin reneste form. Men strukturen i tenkningen overlevde, og du bruker den daglig: markedsandeler, etableringsbarrierer og strukturelle indikatorer er fremdeles inngangen til enhver konkurranseanalyse — nå som screening og hypotesegenerering, ikke som bevis.
+
+### Chicago-motrevolusjonen: Director, Stigler, Demsetz og Bork
+
+Fra femtitallet vokste det frem en motposisjon ved University of Chicago, og den snudde amerikansk konkurransepolitikk på hodet. Opphavsmannen underviste i juss, ikke økonomi: Aaron Director ved Chicago Law School skrev lite, men lærte opp en generasjon jurister i å spørre det ubehagelige spørsmålet — hva er egentlig mekanismen, og tjener bedriften faktisk penger på dette?
+
+George Stigler, Nobelprisvinner i 1982, ga skolen sitt analytiske fundament. Hans artikkel om oligopolteori fra 1964 flyttet fokus fra struktur til informasjon: karteller er vanskelige å opprettholde fordi avvik er vanskelig å oppdage, og det er overvåkingsproblemet, ikke antall aktører i seg selv, som avgjør. Samme Stigler ga oss senere teorien om reguleringsfangst — den vi møtte i episode fire.
+
+Harold Demsetz ved UCLA leverte i 1973 den empiriske dolkestøtet mot Harvard-programmet med effektivitetsforklaringen på konsentrasjon. Og juristene fullførte jobben: Richard Posner med Antitrust Law i 1976 og Robert Bork med The Antitrust Paradox i 1978. Bork gjorde forbrukervelferd til det styrende målet for konkurranseretten, og hans argument om at et monopol bare har én monopolprofitt å hente — så koblingssalg og andre påstått utestengende praksiser må ha effektivitetsbegrunnelser — ble en generasjons standardsvar. To fotnoter til Bork er verdt å ha: det han kalte forbrukervelferd, var teknisk sett samlet velferd, en begrepsforvirring som senere har skapt betydelig strid; og selve enkeltmonopolprofitt-argumentet ble tilbakevist teoretisk på nittitallet.
+
+Hva bør du beholde fra Chicago? Disiplinen. Krav om en spesifisert mekanisme, krav om at strategien skal være lønnsom for den som utfører den, og skepsis mot å slutte fra struktur til skade. Hva bør du ikke kjøpe? Den sterke antakelsen om at markeder korrigerer seg selv raskt nok til at inngrep sjelden trengs.
+
+### Coase og Williamson: firmaet og transaksjonskostnadene
+
+En egen tradisjon spør noe mer grunnleggende: hvorfor finnes bedrifter i det hele tatt, hvis markeder er så effektive? Ronald Coase svarte i 1937 — med et argument han hadde tenkt ut som ung student på studiereise i USA — at markedstransaksjoner koster noe — å finne motparter, forhandle, kontrollere kontrakter — og at bedriften eksisterer der intern koordinering er billigere. Han fikk Nobelprisen i 1991, over femti år senere, for den artikkelen og for arbeidet om eksternaliteter fra 1960 som vi møtte i episode én.
+
+Oliver Williamson bygde dette til transaksjonskostnadsøkonomi og fikk Nobelprisen i 2009. Hans nøkkelbegrep er spesifikke investeringer: når en investering bare har verdi i én relasjon, blir parten sårbar for å bli presset i etterkant — hold-up-problemet. Da er vertikal integrasjon eller langsiktige kontrakter en løsning på et styringsproblem, ikke et forsøk på å stenge ut konkurrenter. Dette er den viktigste enkeltinnsikten å ha med i vertikale saker: den samme integrasjonen kan ha en helt legitim begrunnelse, og analysen må skille mellom dem.
+
+### Angripbare markeder og den spillteoretiske revolusjonen
+
+I 1982 kom William Baumol, John Panzar og Robert Willig med teorien om angripbare markeder, som vi møtte i episode to: uten sunkne kostnader disiplinerer trusselen om øyeblikkelig inntog selv en monopolist. Betingelsene er strenge og sjelden oppfylt, men bidraget flyttet oppmerksomheten permanent fra antall aktører til hva som gjør etablering mulig.
+
+Samtidig skjedde den virkelig store omveltningen. Fra slutten av syttitallet ble spillteorien tatt i bruk på industriøkonomiens problemer, og faget ble omskrevet i løpet av et tiår. Michael Spence i 1977 og Avinash Dixit i 1980 viste hvordan kapasitetsinvesteringer kan avskrekke etablering nettopp fordi de er irreversible — binding som strategi. Steven Salop formaliserte strategisk etableringsavskrekking i 1979, og sammen med David Scheffman ga han oss i 1983 begrepet som kanskje brukes mest i moderne misbrukssaker: å øke rivalers kostnader. Poenget der er elegant: du trenger ikke drive konkurrenten ut, det er nok å gjøre den dyrere, for da kan du selv sette høyere pris.
+
+Paul Milgrom og John Roberts viste i 1982, sammen med David Kreps og Robert Wilson uavhengig, hvordan rykte kan gjøre rovprising rasjonell: et etablert selskap som er villig til å tape penger nå, bygger et rykte som avskrekker fremtidige utfordrere — og dermed falt Chicagos innvending om at rovprising aldri er lønnsomt. Drew Fudenberg og Jean Tirole ryddet i 1984 opp i mangfoldet av strategier med en klassifisering som fikk uforglemmelige navn: den fete katten, valpeknepet og det slanke og sultne blikket. Philippe Aghion og Patrick Bolton viste i 1987 hvordan kontrakter kan fungere som etableringshinder, og Michael Whinston tilbakeviste i 1990 enkeltmonopolprofitt-argumentet ved å vise når koblingssalg faktisk kan stenge et tilgrensende marked.
+
+Denne bølgen kalles gjerne post-Chicago, og den er grunnlaget for dagens virkningsbaserte konkurranserett. Kjernen er at utestengelse kan være både rasjonell og lønnsom — men bare under spesifiserte betingelser, som må dokumenteres i den enkelte saken. Det er nettopp derfor moderne misbruksanalyse følger skjemaet evne, insentiv og virkning.
+
+### Tirole 1988: verket som samlet faget
+
+I 1988 ga Jean Tirole ut The Theory of Industrial Organization, og det er vanskelig å overdrive hva den boken gjorde. Den samlet et felt som hadde eksplodert i spredte artikler, til én sammenhengende, spillteoretisk fremstilling — og definerte dermed hva industriell økonomi er. Nesten alt du har hørt i episode to og tre står i den boken.
+
+Tirole er i det hele tatt verdt å kjenne: fransk, tilknyttet Toulouse, nobelprisvinner i 2014 nettopp for analysen av markedsmakt og regulering. Han skrev også standardverket om reguleringsøkonomi med Jean-Jacques Laffont, la sammen med Jean-Charles Rochet grunnlaget for teorien om tosidige markeder, og skrev med Patrick Rey den mest brukte gjennomgangen av utestengelse. Møter du et moderne konkurranseøkonomisk argument, er sjansen god for at sporet leder til Toulouse. Laffont, som døde i 2004, bare syvogfemti år gammel, var den andre halvparten av det miljøet.
+
+### Den nye empiriske industriøkonomien
+
+Fra åttitallet vokste det frem et parallelt program med et annet siktemål: å måle, ikke bare modellere. Timothy Bresnahan og Peter Reiss viste i 1991 hvordan man kan lese konkurranseintensitet ut av hvor mange innbyggere som skal til før bedrift nummer to, tre og fire etablerer seg i en småby — etableringsterskler som identifikasjonsstrategi.
+
+Det største metodiske gjennombruddet kom i 1995, med Steven Berry, James Levinsohn og Ariel Pakes' analyse av bilmarkedet. Deres metode — i faget bare kjent som BLP — gjorde det mulig å estimere etterspørselen etter differensierte produkter med realistiske substitusjonsmønstre, og dermed å simulere hva en fusjon gjør med prisene. Aviv Nevos studie av frokostblandinger fra 2001 gjorde metoden til standardverktøy. Når en fusjonssimulering legges frem i en sak i dag, er det denne linjen den står i.
+
+John Sutton ved London School of Economics gikk en annen vei i Sunk Costs and Market Structure fra 1991: i stedet for å predikere ett utfall, utledet han grenser for hva som er mulig — hva teorien utelukker, uansett hvilke detaljer man ikke observerer. Det er en undervurdert holdning å ta med seg i saksarbeid: ofte er robuste utsagn om hva som ikke kan være tilfelle, mer verdifullt enn et presist punktanslag ingen tror på.
+
+### Den europeiske tradisjonen — og dagens strid
+
+Én tradisjon til må med, fordi den forklarer forskjeller du faktisk møter mellom europeisk og amerikansk praksis. Den tyske ordoliberalismen, med Walter Eucken og Freiburg-skolen fra mellomkrigstiden, satte konkurransen som orden i sentrum: statens oppgave er å sikre selve konkurranseprosessen, ikke å optimere et velferdsmål. Denne tenkningen preget tysk og deretter europeisk konkurranserett, og den er grunnen til at EU- og EØS-retten tradisjonelt har vært strengere mot dominerende aktørers atferd enn amerikansk rett, og mer opptatt av markedsstrukturens beskaffenhet enn av målbar forbrukerskade i den enkelte saken.
+
+Og striden pågår. Fra rundt 2017 har en bevegelse med Lina Khan og Tim Wu i spissen — kalt neo-brandeisianere etter dommeren Louis Brandeis — argumentert for at forbrukervelferdsstandarden er for trang: den fanger ikke maktkonsentrasjon, leverandørers og arbeidstakeres stilling eller de langsiktige virkningene av at noen få plattformer kontrollerer infrastrukturen. Khan ledet selv den amerikanske konkurransemyndigheten FTC fra 2021 til 2025, og fikk dermed prøvd posisjonen i praksis. Motstanden er like skarp, fra folk som Herbert Hovenkamp og Carl Shapiro, med argumentet at et mål uten operasjonelt innhold gir uforutsigbar håndheving og dårligere beslutninger.
+
+Europa har svart mer institusjonelt enn ideologisk: tre innflytelsesrike rapporter i 2019 — Crémer, de Montjoye og Schweitzers rapport for Kommisjonen, Furman-rapporten i Storbritannia og Stigler-senterets rapport i USA — pekte alle i retning av at etterhåndshåndheving alene er for langsom for digitale markeder, og svaret ble forhåndsregulering gjennom Digital Markets Act. Du trenger ikke ta side i denne striden. Men du bør vite at den finnes, for den avgjør hvilke argumenter som får gjennomslag hos hvilken myndighet.
+
+## Episode 9: Verkene — og hva du skal hente fra hvert
+
+### Læreboksjiktet
+
+Start med de tre du bør ha tilgang til. Tiroles The Theory of Industrial Organization fra 1988 er fortsatt referanseverket, men vær realistisk om hva den er: tett, formell og krevende. Bruk den som oppslagsverk når du trenger den presise modellen bak et argument, ikke som lesebok.
+
+Belleflamme og Peitz' Industrial Organization: Markets and Strategies er den moderne arvtakeren — like grundig på det som betyr noe, men skrevet for å læres av, med bedre dekning av plattformer og digitale markeder. Skal du lese én bok i faget på nytt, er det denne. Og for en raskere vei inn er Luís Cabrals Introduction to Industrial Organization eller Carlton og Perloffs Modern Industrial Organization gode: mindre matematikk, mer intuisjon og eksempler.
+
+Til de virkelig tekniske spørsmålene om oligopol — når finnes likevekten, når er den entydig, hvordan reagerer den på endringer — er Xavier Vives' Oligopoly Pricing: Old Ideas and New Tools stedet å gå.
+
+### Konkurransepolitikkens praktikerbøker
+
+Her ligger de bøkene du faktisk kommer til å bruke. Massimo Mottas Competition Policy: Theory and Practice fra 2004 er standardverket som knytter teori til europeisk praksis: hvert kapittel går fra modell til hva myndighetene faktisk gjør. Michael Whinstons Lectures on Antitrust Economics fra 2006 er den korte, skarpe komplementen — særlig god på hva teorien egentlig sier om utestengelse.
+
+To bøker fra praksissiden fortjener plass. Bishop og Walkers The Economics of EC Competition Law, i tredje utgave, er skrevet for å brukes i saker og er sterk på hvordan økonomiske argumenter faktisk gjøres gjeldende overfor europeiske myndigheter. Og for misbrukssaker er O'Donoghue og Padillas The Law and Economics of Article 102 TFEU, i tredje utgave fra 2020 med et nytt kapittel om digitale plattformer, den grundigste gjennomgangen som finnes av grensen mellom hard konkurranse og misbruk.
+
+Til sist en annen sjanger: Kwoka og Whites The Antitrust Revolution samler faktiske saker med økonomenes egne redegjørelser for analysen de gjorde. Det er den raskeste veien til å se hvordan teori omsettes til bevisføring — og til å se hvor det gikk galt.
+
+### Vertikale forhold og utestengelse
+
+Om du bare leser én tekst i denne kategorien: Patrick Rey og Jean Tiroles A Primer on Foreclosure, kapittelet i Handbook of Industrial Organization fra 2007. Den systematiserer hele feltet — vertikal utestengelse oppstrøms og nedstrøms, hvorfor et integrert selskap kan ha insentiv til å nekte tilgang, og når det ikke har det.
+
+Utover det: Salop og Scheffmans arbeid om å øke rivalers kostnader er kildeteksten for den strategien, Krattenmaker og Salops juridiske omsetting av den fra 1986 er verdt å kjenne, Aghion og Boltons artikkel om kontrakter som etableringshinder er kilden til analysen av eksklusivavtaler, og Whinstons artikkel om koblingssalg fra 1990 er den som viste hvorfor Chicagos avvisning ikke holdt. Fumagalli, Motta og Calcagnos Exclusionary Practices fra 2018 er den moderne samlingen av det hele.
+
+### Karteller og stilltiende samordning
+
+Stiglers oligopoliartikkel fra 1964 er utgangspunktet: samordning er et overvåkingsproblem. Edward Green og Robert Porters arbeid fra 1984 viste hvordan priskriger kan være en likevektsmekanisme for å håndheve samarbeid under usikkerhet — altså at observerte priskriger ikke motbeviser samordning, men kan være beviset på den.
+
+Robert Porters studie av jernbanekartellet Joint Executive Committee på 1880-tallet er klassikeren i empirisk kartelloppdagelse. Margaret Levenstein og Valerie Suslows oversiktsartikkel om hva som bestemmer kartellers suksess, fra 2006, er den beste enkeltkilden til de empiriske regelmessighetene — hvor lenge karteller varer, hva som får dem til å bryte sammen.
+
+Og for norsk og europeisk praksis er det én tekst du bør ha lest: The Economics of Tacit Collusion, rapporten Marc Ivaldi, Bruno Jullien, Patrick Rey, Paul Seabright og Jean Tirole skrev for Kommisjonens konkurransedirektorat i 2003. Den er selve broen mellom teorien om gjentatte spill og vilkårene for koordinerte virkninger i fusjonssaker — altså den økonomiske underbyggingen av Airtours-kriteriene fra episode tre.
+
+### Fusjonsøkonomiens sentrale bidrag
+
+Joseph Farrell og Carl Shapiros artikkel fra 1990 om horisontale fusjoner er referansen for hvordan man vurderer om en fusjon hever prisene, og deres senere arbeid om oppadgående prispress — UPP — sammen med Salop og Moresis GUPPI-mål, er det som faktisk brukes til screening i dag. Gregory Werden og Luke Froebs arbeid gjorde fusjonssimulering til et praktisk verktøy.
+
+Legg til to ting. Glen Weyl og Michal Fabingers gjennomgang av overveltning fra 2013 er den beste kilden til hvordan kostnadsendringer og effektivitetsgevinster faktisk slår ut i priser — direkte relevant for om synergier kommer kundene til gode. Og etterprøvingslitteraturen: en rekke studier, blant andre av Orley Ashenfelter, Daniel Hosken og Matthew Weinberg, har målt hva som faktisk skjedde med prisene etter godkjente fusjoner. Konklusjonen er ubehagelig nyttig: prisøkninger er vanligere enn myndighetenes prognoser antydet, og lovede effektivitetsgevinster materialiserer seg sjeldnere. Ta det med når du vurderer en effektivitetsanførsel.
+
+### Regulering: de fire navnene
+
+Laffont og Tiroles A Theory of Incentives in Procurement and Regulation fra 1993 er verket, og David Baron og Roger Myersons artikkel fra 1982 om å regulere en monopolist med ukjente kostnader er dens forløper. Sammen gir de kontraktsmenyene og informasjonsrenten fra episode fire.
+
+Andrei Shleifers artikkel om målestokkonkurranse fra 1985 er kilden til DEA-benchmarkingen i norsk nettregulering. Stephen Littlechilds rapport om britisk telekom fra 1983 er der pristakregulering faktisk ble oppfunnet — for øvrig et sjeldent tilfelle av at et enkelt policy-notat endret reguleringspraksis i hele verden. Og Harvey Averch og Leland Johnsons artikkel fra 1962 ga navn til overinvesteringseffekten under avkastningsregulering. For en oppdatert oversikt er Mark Armstrong og David Sappingtons kapittel om nyere reguleringsteori i Handbook of Industrial Organization den effektive inngangen.
+
+### Auksjoner, anskaffelser og plattformer
+
+Paul Klemperers Auctions: Theory and Practice fra 2004 er den beste kombinasjonen av teori og praktisk klokskap — Klemperer designet selv den britiske 3G-auksjonen, og boken er full av lærdom om hva som går galt i virkelige auksjoner. Paul Milgroms Putting Auction Theory to Work er den tekniske komplementen fra en av dem som fikk Nobelprisen for arbeidet i 2020, sammen med Robert Wilson.
+
+For plattformer: Rochet og Tiroles arbeid fra 2003 og deres statusrapport fra 2006, sammen med Mark Armstrongs artikkel om konkurranse i tosidige markeder fra 2006, er det teoretiske grunnlaget. Carl Shapiro og Hal Varians Information Rules fra 1999 er fortsatt uslåelig på nettverkseffekter, innlåsing og standarder — og bemerkelsesverdig godt eldet. Og de tre rapportene fra 2019 som jeg nevnte i forrige episode, er obligatorisk lesning hvis du skal jobbe med digitale markeder, fordi de er premissleverandørene for gjeldende regulering.
+
+### Innovasjon og dynamisk konkurranse
+
+Her er sporet kort men viktig, for det er den vanligste motanførselen mot streng håndheving. Joseph Schumpeter satte i 1942 rammen med kreativ ødeleggelse: konkurransen som betyr noe, er konkurransen om å erstatte det bestående, ikke prisrivalisering innenfor det. Kenneth Arrow ga i 1962 motargumentet — erstatningseffekten: en monopolist har mindre å vinne på å innovere, fordi den fortrenger sin egen profitt. Richard Gilbert og David Newbery svarte i 1982 at monopolisten likevel kan ha mest å tape, og derfor sterkest insentiv til å patentere defensivt.
+
+Den empiriske synsen finner du hos Philippe Aghion og medforfattere i 2005: sammenhengen mellom konkurranse og innovasjon er formet som en omvendt U — for lite konkurranse gir slapphet, for mye fjerner belønningen. Nyttig fordi den nekter å gi noen av sidene full støtte, og fordi den tvinger diskusjonen ned på hvor i kurven bransjen faktisk ligger.
+
+### Oppslagsverkene
+
+Handbook of Industrial Organization er feltets samlede referanseverk. De to første bindene fra 1989, redigert av Richard Schmalensee og Robert Willig, definerte faget slik det sto etter den spillteoretiske revolusjonen. Bind tre fra 2007, redigert av Mark Armstrong og Robert Porter, inneholder blant annet Rey og Tiroles gjennomgang av utestengelse. Bind fire og fem kom i 2021, redigert av Kate Ho, Ali Hortaçsu og Alessandro Lizzeri, og de er stedet å gå for status i den empiriske litteraturen. Bruk dem som du bruker et leksikon: ett kapittel når du trenger det, aldri forfra.
+
+### Det norske fagmiljøet
+
+Til slutt hjemmebanen, som er faglig sterk og verdt å kjenne ved navn.
+
+Lars Sørgard er den mest sentrale enkeltpersonen: professor ved NHH, Konkurransetilsynets første sjeføkonom fra 2004 til 2007, og konkurransedirektør fra 2016 til 2022. Læreboken hans, Konkurransestrategi: eksempler på anvendt mikroøkonomi, er en usedvanlig god inngang til faget nettopp fordi eksemplene er norske — luftfart, sement, kraft, ferger og dagligvare. Skal du friske opp spillteori og konkurranseanalyse på norsk, er det den boken.
+
+Miljøet ellers: Konkurransetilsynet ledes siden 2022 av Tina Søreide, tidligere professor ved NHH og kjent for forskning på korrupsjon og institusjoner. Ved NHH og Universitetet i Bergen finner du BECCLE — Bergen Center for Competition Law and Economics, etablert i 2011 som et felles senter for jurister og økonomer — med forskere som Tommy Staahl Gabrielsen, Bjørn Olav Johansen, Frode Steen, Øystein Foros og Hans Jarle Kind, sistnevnte to særlig på medier og plattformer. Kurt Brekke er den sentrale navnet på helseøkonomi og konkurranse, og Nils-Henrik von der Fehr ved Universitetet i Oslo på kraftmarkeder og regulering. BECCLEs årlige konferanse og deres arbeidsnotater er den mest effektive måten å holde seg oppdatert på hva som faktisk diskuteres i norsk konkurranseøkonomi.
+
+Legg til Konkurransetilsynets egne vedtak og høringssvar. De er undervurdert lesestoff: der ser du hvilken økonomisk argumentasjon som faktisk vinner frem i norsk praksis, hvilket bevisnivå som kreves, og hvordan tilsynet selv formulerer det kontrafaktiske.
+
+### En lesestrategi for høsten
+
+Om du har begrenset tid — og det har du — er dette prioriteringen jeg vil anbefale.
+
+Først, én lærebok for å gjenopprette bredden: Belleflamme og Peitz, eller Sørgards Konkurransestrategi hvis du vil ha den norske og raskere veien. Les selektivt, kapitlene som treffer det du faktisk skal jobbe med.
+
+Deretter to tekster som gir mest presisjon per side: Rey og Tiroles gjennomgang av utestengelse, og rapporten om stilltiende samordning fra 2003. Til sammen dekker de de to mekanismene som oftest er omstridt i saker.
+
+Så én bok å ha på pulten som oppslagsverk gjennom høsten: Motta hvis arbeidet er konkurransepolitikk bredt, O'Donoghue og Padilla hvis det er misbrukssaker, Klemperer hvis det er anbud og auksjoner.
+
+Og til sist en vane fremfor en bok: les to eller tre av Konkurransetilsynets nyere vedtak i sin helhet, og et par avgjørelser fra Konkurranseklagenemnda. Ingenting kalibrerer forventningene til hva økonomisk analyse skal levere i en sak, like raskt som å se den bli prøvd.
+
+Det var serien. Ni episoder, én rød tråd: nesten alt i anvendt samfunnsøkonomi — fra fusjonssaker via statsstøtte til helseprioritering — er variasjoner over et lite sett ideer: marginaltenkning, elastisiteter, strategisk interaksjon, asymmetrisk informasjon og det kontrafaktiske spørsmålet. Og litteraturen er ikke et vedheng til det håndverket, men kilden til det: bak hvert argument du møter i en sak, står det noen som skrev det ned først. Har du dem klart for deg, er du klar for høsten. God oppstart!

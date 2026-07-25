@@ -1,8 +1,8 @@
 # Økonomisk teori før høsten
 
-## En refresher i fem episoder — mikroøkonomi, konkurranse og regulering
+## En refresher i sju episoder — mikroøkonomi, konkurranse og regulering
 
-Dette er et podkastmanus skrevet for å lyttes til, men det fungerer også som lesestoff. Hver episode er på fem til ti minutter i opplesningstempo. Episodene kan tas i rekkefølge eller hver for seg, men episode én legger grunnlaget de andre bygger på.
+Dette er et podkastmanus skrevet for å lyttes til, men det fungerer også som lesestoff. Episodene er på mellom fem og tolv minutter i opplesningstempo. Episodene kan tas i rekkefølge eller hver for seg, men episode én legger grunnlaget de andre bygger på.
 
 ## Episode 0: Om denne serien
 
@@ -10,11 +10,11 @@ Velkommen tilbake fra ferie. Denne serien er en faglig oppfriskning før høsten
 
 For det første: hva forvitrer raskest over en sommer? Det er sjelden intuisjonen — du husker godt at markedsmakt gir effektivitetstap. Det som forvitrer, er presisjonen: de formelle vilkårene, testene, skillene mellom modeller som ligner på hverandre. Derfor bruker serien mest tid på nettopp det — vilkårene i Airtours, forskjellen på Cournot og Bertrand, hva SSNIP-testen faktisk spør om.
 
-For det andre: hva er mest bærende i den typen oppdrag som venter? For en samfunnsøkonomisk rådgiver i Norge betyr det fusjonssaker og andre konkurransesaker, reguleringsoppdrag i sektorer som energi, transport og helse, og samfunnsøkonomiske analyser etter norsk metodestandard. Utvalget er skjevt i retning av det som brukes i slike saker, og hopper over deler av pensum som sjeldnere dukker opp i praksis — generell likevektsteori, makro og avansert kontraktsteori er nevnt bare der de trengs.
+For det andre: hva er mest bærende i den typen oppdrag som venter? For en samfunnsøkonomisk rådgiver i Norge betyr det fusjonssaker og andre konkurransesaker, reguleringsoppdrag i sektorer som energi, transport og helse, statsstøtte- og anskaffelsesspørsmål, og samfunnsøkonomiske analyser etter norsk metodestandard. Utvalget er skjevt i retning av det som brukes i slike saker, og hopper over deler av pensum som sjeldnere dukker opp i praksis — generell likevektsteori, makro og avansert kontraktsteori er nevnt bare der de trengs.
 
 For det tredje: intuisjon foran utledning. Du trenger ikke å kunne utlede førsteordensbetingelsene i en Cournot-modell på stående fot, men du trenger å vite hva modellen forutsetter, hva den predikerer, og når den er feil verktøy. Serien er lagt opp deretter.
 
-Strukturen er slik. Episode én frisker opp den mikroøkonomiske verktøykassa — begrepene alt annet hviler på. Episode to handler om markedsmakt og strategisk interaksjon, altså industriell organisering. Episode tre tar konkurransepolitikken i praksis: fusjoner, karteller og misbruk av dominans, med norsk og europeisk rettslig ramme. Episode fire handler om regulering av markeder — fra naturlig monopol til insentivregulering og anbudskonkurranser. Episode fem knytter teorien til saksarbeid: kontrafaktisk tenkning, den empiriske verktøykassa og det norske institusjonskartet.
+Strukturen er slik. Episode én frisker opp den mikroøkonomiske verktøykassa — begrepene alt annet hviler på. Episode to handler om markedsmakt og strategisk interaksjon, altså industriell organisering. Episode tre tar konkurransepolitikken i praksis: fusjoner, karteller og misbruk av dominans, med norsk og europeisk rettslig ramme. Episode fire handler om regulering av markeder — fra naturlig monopol til insentivregulering, miljøregulering og anbudskonkurranser. Episode fem dekker statsstøtte og offentlige anskaffelser — to felt der økonomifaget og EØS-retten møtes i det daglige. Episode seks tar helseøkonomien og de regulerte kvasimarkedene. Og episode sju knytter det hele til saksarbeid: kontrafaktisk tenkning, den empiriske verktøykassa og det norske institusjonskartet.
 
 Da setter vi i gang.
 
@@ -46,6 +46,14 @@ Referansepunktet er frikonkurranselikevekten: der pris er lik marginalkostnad, m
 
 Når prisen presses over marginalkostnad, oppstår et dødvektstap: handler som ville skapt verdi — der betalingsvilligheten overstiger marginalkostnaden — blir ikke gjennomført. Legg merke til skillet mellom omfordeling og effektivitetstap: at penger flyttes fra konsumenter til produsenter er en fordelingsvirkning; dødvektstapet er den delen av verdien som forsvinner helt. Konkurransepolitikken i Europa og Norge legger i praksis størst vekt på konsumentvelferd, ikke bare samlet overskudd — det har betydning for hvordan effektivitetsgevinster vurderes i fusjonssaker, som vi kommer til i episode tre.
 
+### Hvordan velferdsvirkninger måles
+
+Bak konsumentoverskuddet ligger et par finere distinksjoner som er verdt å ha i bakhodet når velferdsvirkninger skal tallfestes.
+
+En prisendring virker gjennom to kanaler: substitusjonseffekten — varen er blitt relativt dyrere, så forbruket vris mot alternativer — og inntektseffekten — kjøpekraften er redusert. Skillet er ikke pedanteri: den kompenserte etterspørselen, som bare fanger substitusjonseffekten, er den teoretisk riktige basisen for velferdsmåling, mens den vanlige, ukompenserte etterspørselen er den vi faktisk kan observere og estimere. De teoretisk korrekte velferdsmålene heter kompenserende og ekvivalerende variasjon — pengebeløpet som stiller konsumenten likt før og etter endringen. For de fleste praktiske formål er konsumentoverskuddet en god tilnærming, og avviket er lite når godet legger beslag på en liten andel av budsjettet.
+
+Én asymmetri til er verdt å merke seg, særlig i verdsettingsstudier: betalingsvillighet for å oppnå et gode og kompensasjonskrav for å gi det opp — WTP og WTA — avviker ofte betydelig i praksis, mer enn standardteorien tilsier. Hvilket spørsmål som stilles, kan påvirke svaret. I verdsettingsarbeid er innrammingen av spørsmålet derfor aldri likegyldig.
+
 ### Kostnadsbegreper som dukker opp i saker
 
 Faste kostnader varierer ikke med produsert mengde; variable gjør det. Sunkne kostnader er faste kostnader som ikke kan gjenvinnes ved exit — og det er de sunkne, ikke de faste, som utgjør etableringsbarrierer i økonomisk forstand.
@@ -59,6 +67,16 @@ I konkurransesaker møter du dessuten spesifikke kostnadsmål: gjennomsnittlig v
 Overveltning — pass-through — er hvor stor andel av en kostnadsendring som veltes over i prisene. Graden avhenger av konkurranseform og av krumningen på etterspørselen. To holdepunkter: et monopol med lineær etterspørsel og konstant marginalkostnad velter over femti prosent av en kostnadsøkning; med konstant elastisitet i etterspørselen kan overveltningen overstige hundre prosent. I frikonkurranse bestemmes overveltningen av forholdet mellom tilbuds- og etterspørselselastisiteten.
 
 Dette er ikke en kuriositet. Overveltning avgjør hvem som til slutt bærer en avgift, hvor mye av en fusjonsspesifikk kostnadsbesparelse som kommer kundene til gode, og hvordan et overpriskrav i en erstatningssak skal fordeles nedover i verdikjeden.
+
+### Usikkerhet, risiko og forventet nytte
+
+Beslutninger under usikkerhet håndteres i standardrammeverket med forventet nytte: nytten av hvert utfall, vektet med sannsynlighetene. Avtakende grensenytte av inntekt gir risikoaversjon — et sikkert beløp foretrekkes fremfor et usikkert med samme forventningsverdi. Differansen mellom forventningsverdien og sikkerhetsekvivalenten er risikopremien, og den er hele forretningsgrunnlaget for forsikring: selskapet samler mange uavhengige risikoer, kunden betaler for å slippe sin.
+
+To anvendelser å ha klare. For det første skillet mellom systematisk og usystematisk risiko: risiko som kan diversifiseres bort, skal ikke prises — det er bare samvariasjonen med økonomien som helhet som begrunner risikotillegg i avkastningskrav og kalkulasjonsrente. For det andre opsjonsverdien av å vente: når en beslutning er irreversibel og informasjon kommer til over tid, har fleksibilitet en egen verdi, og det kan være riktig å utsette et prosjekt som isolert sett har positiv nåverdi. Merk at det er kombinasjonen irreversibilitet og usikkerhet som bærer argumentet — ikke usikkerhet alene.
+
+### Tid og diskontering
+
+Virkninger som kommer på ulike tidspunkter, gjøres sammenlignbare gjennom diskontering til nåverdi. Begrunnelsen er dobbel: ressurser har alternativ avkastning, og konsum i dag verdsettes normalt høyere enn konsum i morgen. I norske samfunnsøkonomiske analyser er kalkulasjonsrenten fastsatt i rundskriv fra Finansdepartementet, med lavere rente for virkninger langt frem i tid — og satsene skal alltid slås opp i gjeldende rundskriv, ikke siteres fra hukommelsen. Det analytiske poenget å huske er at diskonteringen ofte er den enkeltforutsetningen som betyr mest for rangeringen av tiltak med lang levetid, og at den derfor hører hjemme i enhver usikkerhetsanalyse.
 
 ### Markedssvikt — kartet over feltet
 
@@ -104,11 +122,25 @@ I Bertrand-modellen velger bedriftene pris. Med homogene produkter og lik, konst
 
 Den praktiske lærdommen: modellvalget skal følge bransjens faktiske konkurranseform. Konkurrerer aktørene med kapasitet som bindende skranke — kraftproduksjon, prosessindustri, hoteller på kort sikt — tenk Cournot. Konkurrerer de på pris med differensierte produkter — dagligvarer, telekom, bank — tenk differensiert Bertrand. I fusjonsanalyse avgjør dette valget hvilke mekanismer som driver prisvirkningene.
 
+### Hotelling og produktdifferensiering
+
+Differensiering fortjener et eget stopp, for den er hovedforklaringen på at priskonkurranse ikke konkurrerer bort marginene. Skillet går mellom horisontal differensiering — produktene er ulike på måter der smaken varierer, som beliggenhet og stil — og vertikal differensiering, der alle er enige om hva som er best, og spørsmålet er hvem som vil betale for kvalitet.
+
+Hotellings modell med to iskremselgere på en strand er arbeidsmodellen for horisontal differensiering, og den bærer på en spenning mellom to krefter. Etterspørselskraften trekker mot midten — du vil stå nær flest mulig kunder. Konkurransekraften trekker fra hverandre — jo likere dere er, desto hardere blir priskonkurransen. Med priskonkurranse ender modellen gjerne i betydelig differensiering: bedriftene skiller seg med vilje for å dempe konkurransen. Og «stranden» kan være hva som helst — geografi, produktegenskaper, sendetider. Innsikten for saksarbeid: nærhet i produktrommet er nærhet i konkurransen, og det er derfor diversjonsrater og opplevd substituerbarhet, ikke bare markedsandeler, avgjør hvor hardt to aktører disiplinerer hverandre.
+
 ### Gjentatt spill og stilltiende samordning
 
 Når det samme spillet gjentas uten kjent sluttpunkt, endres mulighetsrommet fundamentalt. Samarbeid — også stilltiende, uten avtale — kan opprettholdes hvis hver aktør veier kortsiktig gevinst ved å avvike mot langsiktig tap når de andre svarer. Betingelsen er at avviksgevinsten i dag er mindre enn nåverdien av tapet under straffefasen. Det er folketeoremets praktiske innhold.
 
 Fra denne betingelsen kan du lese av hva som gjør samordning lettere å opprettholde, og listen er verdt å kunne utenat, for det er den samme listen som strukturerer analysen av koordinerte virkninger i fusjonssaker: få aktører, symmetri i kostnader og markedsandeler, gjennomsiktige priser, hyppige transaksjoner, stabil etterspørsel, kontakt i flere markeder, høye etableringsbarrierer, og fravær av store, kjøpesterke kunder som kan lokke frem avvik.
+
+### Byttekostnader, innlåsing og nettverkseffekter
+
+To mekanismer gjør etterspørselen «klebrig» og fortjener egen omtale.
+
+Byttekostnader: når det koster — i tid, penger eller risiko — å skifte leverandør, får den etablerte et grep om egne kunder. Den klassiske dynamikken er lokk og lås: hard konkurranse om nye kunder, som gjerne subsidieres, og høsting av de innelåste etterpå. Bank, forsikring, strøm og programvare er velkjente arenaer. For analysen betyr det at gjennomsnittspriser kan skjule mye: konkurranseintensiteten må leses i tilbudene til kundene som faktisk er i bevegelse — og i hvor mange som beveger seg.
+
+Nettverkseffekter: godet blir mer verdt jo flere som bruker det, direkte eller via tilgangen på komplementer. Da finnes det kritisk masse og vippepunkter, historien får betydning, og markeder kan tippe mot én standard som ikke nødvendigvis er den beste. Kompatibilitet og standarder blir konkurransestrategi: åpenhet rekrutterer et økosystem, lukkethet beskytter innlåsingen. Sammen med byttekostnadene er dette råstoffet i plattformdynamikken vi møter i episode tre — og et hovedargument for at inngrep i digitale markeder må komme før markedet har tippet, om de skal virke.
 
 ### Etableringsbarrierer og potensiell konkurranse
 
@@ -174,6 +206,20 @@ Lojalitetsrabatter: rabatter betinget av at kunden legger hele eller det meste a
 
 Koblingssalg og leveringsnektelse: kobling av produkter kan stenge tilgrensende markeder; nektelse av tilgang til en innsatsfaktor rammes bare under strenge vilkår — innsatsfaktoren må være uunnværlig, nektelsen må eliminere konkurransen, og det må mangle saklig begrunnelse. Terskelen er bevisst høy: en for lav terskel underminerer selve insentivene til å bygge verdifulle fasiliteter.
 
+### Utnyttende misbruk
+
+Paragraf 11 rammer ikke bare utestengelse, men også utnyttende misbruk — først og fremst urimelig høye priser. Den etablerte testen fra United Brands-saken har to trinn: er differansen mellom pris og kostnad urimelig stor, og er prisen i så fall urimelig i seg selv eller sammenlignet med relevante referansepriser?
+
+Ordlyden er enkel; anvendelsen er ikke. Kostnadsfordeling i flerproduktvirksomheter er notorisk vanskelig, høye marginer kan være avkastning på vellykket innovasjon eller risikotaking, og prisregulering gjennom konkurranseretten svekker insentivene konkurransen skal belønne. Derfor er håndhevingsterskelen bevisst høy, og sakene konsentrerer seg om situasjoner med varige etableringsbarrierer og svak kjøpermakt — legemidler uten patentbeskyttelse med én tilbyder er blitt et typeeksempel i europeisk praksis. For økonomen er kjerneøvelsen å konstruere troverdige referansepunkter: kostnadsbaser, sammenlignbare markeder, sammenlignbare perioder.
+
+### Kjøpermakt og monopsoni
+
+Markedsmakt finnes også på kjøpersiden, og den har to ansikter som må holdes fra hverandre.
+
+Monopsonimakt er speilbildet av monopol: en dominerende kjøper holder tilbake innkjøp for å presse innkjøpsprisen under konkurransenivået, med for lavt omsatt kvantum som resultat — et effektivitetstap, selv om sluttprisene ikke stiger. Arbeidsmarkeder og innkjøp fra spredte primærprodusenter er typiske arenaer.
+
+Motmakt er noe annet: en stor kjøper som forhandler ned prisene til en leverandør med markedsmakt, kan flytte utfallet nærmere konkurranselikevekten — til gunst også for sluttkundene, i hvert fall når konkurransen nedstrøms er virksom nok til at besparelsene føres videre. I fusjonssaker dukker kjøpermakt opp på begge sider av regnestykket: som disiplinerende kraft partene påberoper seg, og som selvstendig bekymring når innkjøpsmakt konsolideres. Norsk dagligvare er feltets hjemlige skoleeksempel, der forhandlingene mellom kjeder og leverandører er gjenstand for både konkurranselovens verktøy og en egen lov om god handelsskikk med tilhørende tilsyn.
+
 ### Plattformer og tosidige markeder
 
 Tosidige markeder — betalingskort, markedsplasser, medier — kobler to kundegrupper som verdsetter hverandres deltakelse. Kjerneinnsikten fra Rochet og Tirole: prisstrukturen er like viktig som prisnivået. Det kan være effektivt å prise den ene siden under kostnad — gratis medieinnhold, gratis kortbruk — og hente inntjeningen på den andre siden, fordi lav pris på én side gjør plattformen mer verdifull for den andre.
@@ -212,6 +258,12 @@ Shleifers idé om målestokkonkurranse løser informasjonsproblemet elegant: bel
 
 Norsk nettregulering er et skoleeksempel på syntesen. Reguleringsmyndigheten for energi setter inntektsrammer der en vesentlig del av normkostnaden bestemmes ved sammenlignende effektivitetsanalyser — DEA-benchmarking — mellom nettselskapene. Og kvalitetsdimensjonen håndteres gjennom KILE-ordningen, der avbrudd koster selskapet inntektsramme, slik at kundenes avbruddskostnader internaliseres i selskapets kalkyle. Detaljene justeres over tid, men arkitekturen — inntektsramme, benchmarking, kvalitetsinsentiv — er selve pensumet omsatt i forvaltningspraksis.
 
+### Kvalitet, leveringsplikt og universelle tjenester
+
+Prisregulering uten kvalitetsregulering er en oppskrift på skuffelse: når inntektene er låst, er kvalitet den letteste kostnaden å kutte, for kvalitetens gevinster tilfaller kundene, ikke selskapet. Svaret er å gjøre kvalitet målbar og la den koste: standarder med sanksjoner, kompensasjonsordninger ved svikt, eller — mest elegant — å prise kvalitetsavvik direkte inn i inntektsrammen, slik KILE-ordningen gjør med strømavbrudd.
+
+I samme familie hører leveringsplikter og universelle tjenester: post-, bank- og ekomtjenester som skal finnes overalt til overkommelig pris, også der ingen kommersiell aktør ville levert. Økonomisk er dette et spørsmål om å identifisere nettokostnaden ved plikten — hva taper tilbyderen på å betjene de ulønnsomme områdene, medregnet fordelene ved landsdekkende nærvær — og om hvordan den skal finansieres: over statsbudsjettet, gjennom fond bransjen betaler inn til, eller gjennom stilltiende kryssubsidiering fra lønnsomme kunder. Kryssubsidieringen er den minst synlige og derfor politisk fristende løsningen — og den mest sårbare, for konkurrenter går målrettet etter nettopp de lønnsomme segmentene som skal bære byrden.
+
 ### Tilgangsprising
 
 Når konkurrenter trenger tilgang til et regulert selskaps infrastruktur — teleaksess, jernbanespor, havner — blir tilgangsprisen konkurransepolitikkens og reguleringens møtepunkt. Settes den for høyt, stenges konkurrentene ute eller skvises marginene deres; for lavt, undergraves infrastruktureierens investeringsinsentiver, og du inviterer ineffektiv etablering.
@@ -224,6 +276,12 @@ Der konkurranse i markedet er umulig, kan konkurranse om markedet være mulig �
 
 Men verktøyet har velkjente begrensninger, og de bør ligge fremst i bevisstheten i ethvert anbudsoppdrag. Ufullstendige kontrakter: alt kan ikke spesifiseres, og det som ikke kan verifiseres, blir salderingspost. Reforhandling: et lavt vinnerbud kan være en inngangsbillett til lønnsom reforhandling når leverandøren først sitter med relasjonsspesifikke investeringer — hold-up-problemet gjelder begge veier. Vinnerens forbannelse: i anbud med felles usikkerhet vinner ofte den som har undervurdert kostnadene mest, med konkurs eller kvalitetssvikt som nedside. Og overgangsproblemer mellom kontraktsperioder: materiell, personell og kompetanse skal skifte hender uten at tjenesten forvitrer.
 
+### Pris eller mengde: miljøregulering som anvendt reguleringsteori
+
+Miljøreguleringen er Pigou-tradisjonen satt i system, og den illustrerer et helt generelt reguleringsvalg: skal du styre prisen eller mengden? En avgift fastsetter prisen på utslipp og lar mengden bli som den blir; et kvotesystem fastsetter mengden og lar markedet finne prisen. Med full informasjon er de to ekvivalente. Under usikkerhet er de ikke, og Weitzmans klassiske svar peker på helningene: er den marginale skaden bratt — terskler, vippepunkter — er det viktigst å treffe mengden, altså kvoter; er det rensekostnadene som er usikre og skaden jevn, gir avgift minst forventet feil. Hybrider med pristak og prisgulv i kvotemarkeder forsøker å hente det beste fra begge.
+
+For norsk praksis er dette hverdagsnært: CO2-avgiften og det europeiske kvotesystemet virker side om side, og spørsmål om dobbel virkemiddelbruk, karbonlekkasje og kompensasjonsordninger lander jevnlig på utrederens bord. Det analytiske hovedgrepet er alltid det samme: se på den marginale rensekostnaden på tvers av kilder — kostnadseffektivitet krever at den utjevnes, og det er nettopp det en felles pris får til.
+
 ### Reguleringsfangst, troverdighet og reguleringssvikt
 
 Til slutt: reguleringens politiske økonomi. Stiglers fangstteori er den klassiske advarselen — reguleringen kan over tid komme til å tjene de regulerte, fordi bransjen er konsentrert, velinformert og har mest på spill, mens forbrukerinteressene er spredte. Svakere varianter er like relevante: informasjonsfangst, der regulator ser verden gjennom bransjens tall og premisser.
@@ -232,11 +290,77 @@ Og troverdighetsproblemet: infrastrukturinvesteringer er sunkne, og når de før
 
 Summen av episoden er en nøktern huskeregel: valget står aldri mellom perfekt marked og perfekt regulering, men mellom ufullkomne alternativer. Analysens jobb er å identifisere hvilken kombinasjon av markedssvikt og styringssvikt som gir minst samlet tap.
 
-## Episode 5: Fra teori til sak
+## Episode 5: Statsstøtte og offentlige anskaffelser
+
+### Hvorfor dette er økonomfag
+
+Statsstøttereglene og anskaffelsesregelverket ser ut som juss, men de dypeste spørsmålene i begge er økonomiske: Har noen fått en fordel de ikke ville fått i markedet? Vrir det konkurransen? Og hvordan bør det offentlige kjøpe og støtte for å få mest mulig igjen? Det er her mye av det praktiske arbeidet ligger for økonomer i skjæringsfeltet mot EØS-retten — og verktøyene er de samme som i episodene foran.
+
+### Støttebegrepet og markedsaktørprinsippet
+
+EØS-avtalens forbud rammer støtte som gis av statsmidler, gir en økonomisk fordel til enkelte foretak — selektivitet — og som vrir eller truer med å vri konkurransen og påvirker samhandelen. Det økonomiske tyngdepunktet ligger i fordelsvilkåret, og testen er markedsaktørprinsippet: ville en rasjonell privat aktør i samme situasjon — investor, kreditor, selger eller kjøper — gjort det samme på tilsvarende vilkår? En kapitaltilførsel er ikke støtte hvis forventet avkastning forsvarer investeringen; en tomt er ikke solgt med støtte hvis prisen er markedsmessig.
+
+I praksis er dette verdsettelsesøkonomi: kontantstrømanalyser, avkastningskrav som reflekterer risikoen, sammenligning med samtidige private transaksjoner. Og disiplinen ligger i tidspunktet — vurderingen skal gjøres med informasjonen som forelå da beslutningen ble tatt, ikke med fasit i hånd.
+
+### Balansetesten: når er støtte god politikk
+
+At noe er støtte, betyr ikke at det er forbudt — mye av statsstøttekontrollen handler om når støtte kan godkjennes. Den økonomiske kjernen er en balansetest med velkjente ingredienser. Retter støtten opp en veldefinert markedssvikt, eller tjener den et legitimt fordelingsformål? Er den egnet, og har den insentiveffekt — utløser den aktivitet som ellers ikke ville skjedd, eller finansierer den noe som ville skjedd uansett? Er den proporsjonal — ikke større enn nødvendig? Og er konkurransevridningene begrensede nok til at nettovirkningen er positiv?
+
+Legg merke til at dette er episode én og det kontrafaktiske spørsmålet om igjen: insentiveffekt er addisjonalitet, og addisjonalitet er en sammenligning med verden uten støtte. Det er også her analysene oftest ryker.
+
+### Tjenester av allmenn økonomisk betydning
+
+Der det offentlige pålegger foretak oppgaver markedet ikke løser — ulønnsomme flyruter, distriktsapotek, kystruten — kan kompensasjon gis uten å regnes som støtte, hvis fire vilkår er oppfylt: plikten må være klart definert, kompensasjonsparametrene må være fastsatt objektivt på forhånd, kompensasjonen må ikke overstige nettokostnadene med en rimelig fortjeneste, og leverandøren må enten velges gjennom konkurranse eller kompenseres med utgangspunkt i kostnadene til et veldrevet selskap. Det siste er i praksis reguleringsøkonomi: nettokostnadsberegninger og effektivitetsmålestokker — samme verktøykasse som i episode fire.
+
+### Anskaffelser som markedsdesign
+
+Offentlige innkjøp er anvendt auksjonsteori. Grunnskillet går mellom private verdier — tilbydernes kostnader er deres egne — og fellesverdier, der alle står overfor samme usikre kostnad og vinnerens forbannelse truer: den som vinner, er ofte den som har undervurdert mest. Konkurranseform, kvalifikasjonskrav og informasjonen som deles, bør utformes med det for øye.
+
+Tildelingsmodellen fortjener særlig aktsomhet. Vektingen mellom pris og kvalitet er en implisitt betalingsvillighet — sett den bevisst: hvor mange kroner er ett kvalitetspoeng verdt? Relative poengmodeller, der uttellingen avhenger av de andre tilbudene, kan gi rangeringsomkastninger og åpner for taktisk prising; absolutte modeller er mer robuste. Og unormalt lave tilbud er ikke alltid et kupp — de kan varsle vinnerens forbannelse eller en reforhandlingsstrategi, med kvalitetssvikt og konflikt som nedside.
+
+Til slutt det dynamiske perspektivet: hver konkurranse påvirker den neste. Kontraktenes størrelse og lengde, oppdeling i delkontrakter og krav som mindre aktører kan møte, avgjør hvor mange reelle tilbydere som finnes neste gang. Innkjøperen er markedsdesigner enten hun vil eller ikke.
+
+### Utforming og evaluering av støtteordninger
+
+To praktiske håndverk til. Det første er valg av instrument: et tilskudd, et lån på gunstige vilkår, en garanti og en skattefordel kan tjene samme formål, men fordeler risiko og synlighet helt ulikt. Fellesnevneren i analysen er støtteekvivalenten — hva er ordningen verdt for mottakeren sammenlignet med markedsvilkår? Garantier er det klassiske blindpunktet: de koster ingenting på budsjettet før de utløses, og nettopp derfor undervurderes de systematisk.
+
+Det andre er etterprøving. Om en støtteordning faktisk har insentiveffekt, er et empirisk spørsmål, og verktøyene er de samme som i episode sju: sammenlign mottakere med sammenlignbare ikke-mottakere over tid, eller utnytt terskler og tildelingsregler som skaper nesten-tilfeldig variasjon i hvem som får. Selvrapportert addisjonalitet — å spørre mottakerne om støtten var avgjørende — er det svakeste beviset som finnes, av åpenbare grunner. God ordningsdesign legger evalueringen inn fra start: klare mål, definerte utfallsmål og data som gjør sammenligning mulig.
+
+## Episode 6: Helseøkonomi og regulerte kvasimarkeder
+
+### Hvorfor helsemarkeder er annerledes
+
+Helseøkonomien starter med Arrows klassiske observasjon: nesten alt som kan gå galt i et marked, går galt samtidig i helse. Etterspørselen er usikker og kommer når man er på sitt mest sårbare. Informasjonsasymmetrien er dobbel — legen vet mer enn pasienten, og pasienten vet mer enn forsikreren. Tredjepartsfinansiering bryter koblingen mellom bruk og betaling. Og behandleren er både rådgiver og tilbyder, med rom for tilbudsindusert etterspørsel der finansieringen belønner aktivitet. Denne veven av markedssvikt er grunnen til at alle rike land ender med tung offentlig styring av sektoren — og til at analyser i helse alltid må spørre hvilke insentiver systemet faktisk setter.
+
+### Forsikring, moralsk hasard og egenandeler
+
+Forsikringslogikken fra episode én får full anvendelse. Ugunstig utvalg: frivillig helseforsikring tiltrekker seg de sykeste, premien stiger, de friske faller fra — kjerneargumentet for obligatorisk, universell dekning. Moralsk hasard: full dekning gjør bruken gratis på marginen, og noe av bruken har lavere verdi enn kostnaden. Egenandeler er kompromisset, og det store amerikanske RAND-eksperimentet ga det empiriske ankerfestet: kostnadsdeling reduserer bruken merkbart, med små målbare helseeffekter for gjennomsnittspasienten — men med viktige unntak for lavinntektsgrupper og kronisk syke, som også kutter nyttig behandling. Utforming av egenandeler og skjermingsordninger er derfor presisjonsarbeid, ikke bare proveny.
+
+### Verdsetting av helse og prioritering
+
+Helsegevinster måles i kvalitetsjusterte leveår — QALY — som veier levetid med livskvalitet, og tiltak sammenlignes med kostnad-effekt-brøken: merkostnad per vunnet QALY. De norske prioriteringskriteriene gir rammen: nytten av tiltaket, ressursbruken og tilstandens alvorlighet — der større alvorlighet, målt som fremtidig helsetap uten tiltaket, aksepterer høyere kostnad per QALY. Den økonomiske logikken bak er alternativkostnad: i et gitt helsebudsjett fortrenger et dyrt tiltak andre pasienters behandling, så betalingsvillighetsgrensen bør speile hva helsekronene ellers ville produsert.
+
+Merk grensesnittet mot samfunnsøkonomisk analyse: der brukes verdien av statistisk liv, mens helsesektorens prioriteringssystem bruker QALY-rammeverket. Det er to ulike konvensjoner, og hvilke virkninger som telles med, kan avgjøre konklusjonen — vær alltid eksplisitt på hvilket rammeverk som gjelder for hvilken beslutning.
+
+### Legemiddelmarkeder
+
+Legemidler er regulert monopol satt i system: patentet gir en tidsavgrenset enerett som belønner innovasjon med markedsmakt — det klassiske byttet mellom dynamisk og statisk effektivitet. Så lenge eneretten løper, forhandles prisene mot betalingsvillighetsgrenser og metodevurderinger; når den utløper, overtar generisk konkurranse, i Norge forsterket av trinnprismodellen som trapper ned refusjonsprisen etter faste satser. For sykehuslegemidler samler anbudskonkurranser i regi av Sykehusinnkjøp etterspørselen — med konfidensielle rabatter som gir betydelige besparelser, men gjør reell prissammenligning vanskelig for utenforstående. Analytisk er feltet en gavepakke av episodene foran: monopolprising, anbudsdesign, kjøpermakt og regulering i én og samme verdikjede.
+
+### Kvasimarkeder og finansieringsmodeller
+
+Offentlig helsetjeneste bruker markedslignende mekanismer uten fullt marked — kvasimarkeder: penger følger pasienten og aktører konkurrerer om aktivitet, men prisene er administrerte. Finansieringsmodellene er insentivkontrakter i forkledning, og episode fires spenn mellom kostnadsdekning og faste rammer går igjen. Rammefinansiering gir kostnadskontroll, men svake aktivitetsinsentiver og køer. Stykkprisfinansiering — i spesialisthelsetjenesten via DRG-systemet, der behandlinger grupperes og prises etter normerte kostnader — gir aktivitet, men frister til å velge lønnsomme pasienter og til kreativ koding. Blandingsmodeller er derfor regelen, og vektingen mellom ramme og aktivitet er et reguleringsvalg med målbare konsekvenser. Fastlegeordningen forener på samme vis kapitasjon — basistilskudd per listeinnbygger — med aktivitetstakster. For analytikeren er oppskriften alltid den samme: følg pengene, identifiser marginalinsentivet, og let etter seleksjon, kvalitetsskvis og kodepraksis der insentivene peker.
+
+### Konkurranse når prisen er regulert
+
+Et siste teoripoeng binder helseepisoden til konkurranseepisodene: når prisene er administrerte, flyttes konkurransen til kvalitet. Så lenge den regulerte prisen ligger over marginalkostnaden, tjener tilbyderen på hver ekstra pasient, og pasienter tiltrekkes av kvalitet — da gir sterkere konkurranse om pasientene sterkere kvalitetsinsentiver. Ligger prisen for lavt, snur logikken: hver pasient er et tap, og konkurransen premierer å skyve de dyre fra seg. Prisnivået avgjør altså hva konkurransen konkurrerer om.
+
+Det gir en nyttig linse på strukturspørsmål i sektoren: sykehussammenslåinger vurderes gjerne med stordriftsfordeler og fagmiljø på plussiden — men kostnaden er tap av sammenligningsgrunnlag og valgmuligheter, og dermed svakere kvalitetsdisiplin. Og det gir en advarsel for anbud i helse- og omsorgstjenester: der kvalitet er vanskelig å verifisere og prisen er hovedkriteriet, predikerer teorien nettopp den kvalitetsglidningen som jevnlig observeres. Løsningen er sjelden mindre konkurranse, men bedre kontrakter: målbar kvalitet, oppfølgbare krav og finansiering som ikke gjør de sykeste pasientene ulønnsomme.
+
+## Episode 7: Fra teori til sak
 
 ### Det kontrafaktiske spørsmålet
 
-Hvis de fire første episodene skal kokes ned til én arbeidsvane, er det denne: enhver virkningsanalyse er en sammenligning mellom to verdener — verden med og verden uten. Fusjonens virkning måles mot den sannsynlige utviklingen uten fusjon. Kartellskaden måles mot prisen uten kartell. Tiltakets samfunnsøkonomiske lønnsomhet måles mot nullalternativet — som er forventet utvikling uten tiltaket, ikke dagens situasjon frosset fast.
+Hvis de seks første episodene skal kokes ned til én arbeidsvane, er det denne: enhver virkningsanalyse er en sammenligning mellom to verdener — verden med og verden uten. Fusjonens virkning måles mot den sannsynlige utviklingen uten fusjon. Kartellskaden måles mot prisen uten kartell. Tiltakets samfunnsøkonomiske lønnsomhet måles mot nullalternativet — som er forventet utvikling uten tiltaket, ikke dagens situasjon frosset fast.
 
 Det kontrafaktiske er aldri observerbart. Det er derfor det må konstrueres — med teori, data og åpent dokumenterte forutsetninger. De fleste alvorlige analysefeil er i bunn og grunn kontrafaktiske feil: man har sammenlignet med feil verden.
 
@@ -284,6 +408,6 @@ Fem: å behandle modellen som virkeligheten. Cournot, Bertrand, GUPPI og DEA er 
 
 ### Hvis du vil fordype deg
 
-Til slutt, et lite bibliotek for høsten. For industriell organisering: Tiroles klassiker The Theory of Industrial Organization, og Belleflamme og Peitz' Industrial Organization: Markets and Strategies som en mer moderne lærebok. For konkurransepolitikk: Mottas Competition Policy: Theory and Practice. For regulering: Viscusi, Harrington og Sappingtons Economics of Regulation and Antitrust, og Deckers Modern Economic Regulation. Og for norsk metode: DFØs veileder i samfunnsøkonomiske analyser med tilhørende rundskriv.
+Til slutt, et lite bibliotek for høsten. For industriell organisering: Tiroles klassiker The Theory of Industrial Organization, og Belleflamme og Peitz' Industrial Organization: Markets and Strategies som en mer moderne lærebok. For konkurransepolitikk: Mottas Competition Policy: Theory and Practice. For regulering: Viscusi, Harrington og Sappingtons Economics of Regulation and Antitrust, og Deckers Modern Economic Regulation. For auksjoner og anskaffelser: Klemperers Auctions: Theory and Practice. For helseøkonomi: Drummond og medforfatteres Methods for the Economic Evaluation of Health Care Programmes. For statsstøtte er ESAs og Kommisjonens retningslinjer selv den beste innføringen i den økonomiske testlogikken. Og for norsk metode: DFØs veileder i samfunnsøkonomiske analyser med tilhørende rundskriv.
 
-Det var serien. Fem episoder, én rød tråd: nesten alt i anvendt konkurranse- og reguleringsøkonomi er variasjoner over et lite sett ideer — marginaltenkning, elastisiteter, strategisk interaksjon, asymmetrisk informasjon og det kontrafaktiske spørsmålet. Har du dem klart for deg, er du klar for høsten. God oppstart!
+Det var serien. Sju episoder, én rød tråd: nesten alt i anvendt samfunnsøkonomi — fra fusjonssaker via statsstøtte til helseprioritering — er variasjoner over et lite sett ideer: marginaltenkning, elastisiteter, strategisk interaksjon, asymmetrisk informasjon og det kontrafaktiske spørsmålet. Har du dem klart for deg, er du klar for høsten. God oppstart!

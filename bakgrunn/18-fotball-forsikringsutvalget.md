@@ -72,6 +72,26 @@ Volumutviklingen: 975 meldte skadesaker i 2006 → ca. **11 500 forventet i 2024
 
 **Konsekvens for NSF:** hvis de samme driverne gjelder for ski — og punkt 3–4 er systemiske, ikke fotballspesifikke — vil **ingen omlegging av produktstrukturen løse prisproblemet**. Modell B og C flytter kostnaden, de fjerner den ikke. Dette er den mest alvorlige innvendingen mot vår egen hovedhypotese, og den må testes direkte mot If (bestilling 10.1).
 
+## 4b. Avgjørende strukturforskjell: hvem bærer tapet
+
+Det er **to ulike gap** i en slik ordning, og fotballen og ski har dem plassert hos forskjellige parter:
+
+| Gap | Fotball (NFF) | Ski (NSF) |
+|---|---|---|
+| Mellom medlemmenes innbetaling og forbundets kostnad | **Null ved design** — «NFF skal verken ha over- eller underskudd»; klubbprisene settes til kostnadsnivå | **NSF bærer tapet** — 1,6 MNOK (2025), forventet 2 MNOK (2026); «Skiforbundet kan ikke fortsette å tape penger på ordningen» |
+| Mellom premien til selskapet og faktiske utbetalinger | **Selskapet bærer** risiko over avtalt maksimalpremie — hevder 54,6 MNOK tap på fire år | Ukjent — må avklares (bestilling 10.1) |
+
+**Konsekvenser av at NSF, ikke selskapet, bærer gapet:**
+
+1. **Premieøkningen på 40 % er sannsynligvis reelt nytt kostnadsnivå, ikke innhenting av gammel underprising.** Fotballens +53 % inneholder en stor retrospektiv komponent fordi selskapet skal hente inn fire års projeksjonsfeil. Har If fått dekkende premie løpende, finnes ikke et tilsvarende etterslep i ski — og NSF kan da ikke «vente ut» hoppet.
+2. **Ingen selvkorrigerende mekanisme.** Fotballens struktur tvinger fram reprising via selskapet, og medlemmene møter reell kostnad løpende. NSF kan absorbere avviket stille til styret sier stopp — så prissignalet har vært *undertrykt*, og 173 % på to år er en oppsamlet justering, ikke en prisøkning.
+3. **Kryss-subsidieringen går fra forbundets alminnelige økonomi til lisenspoolen**, ikke primært mellom grener. Hver krone til underskuddet er en krone som ikke går til rekruttering — i et forbund som har mistet 25,6 % av medlemmene. Dette er en skarpere innramming av «økonomisk ubalanse» enn manglende selvfinansiering.
+4. **Motparten i en reprising er intern.** NFF forhandler med et forsikringsselskap; NSF må forhandle med kretser, grener og medlemmer om hvem som tar kostnaden. Politisk problem, ikke forhandlingsteknisk — og forklaringen på at fotballens sak ble et tingdokument mens skiens ble en mediekonflikt.
+5. **Modell B er risikablere for NSF enn for fotballen.** Svikter det frivillige sjiktet, skyves regningen i fotballens struktur mot selskapet ved neste reprising; i NSFs struktur absorberer **NSF** svikten direkte og forstørrer dermed underskuddet ordningen skulle fjerne. Provenyrisikoen i B ligger udelt på forbundet.
+6. **«Selvfinansiering» er et valg om hvem som betaler, ikke en ekstern skranke** — når det er forbundet selv som bærer tapet. Det utvider løsningsrommet, men gjør valget mer politisk (jf. førsteprinsipp-setet i `08-radsvurdering.html`).
+
+**Viktigste praktiske følge:** 2024/25 var et **naturlig eksperiment**. Da NSF sluttet å undertrykke prisen på alpint, ble det gjennomført en faktisk elastisitetsmåling på den marginen som betyr noe. Volumtall for alpinlisenser 2023 → 2025, fordelt på grunn/utvidet og alder, er dermed det mest verdifulle enkeltdatasettet i hele bestillingen — observert atferd slår meglers modellanslag.
+
 ## 5. Forsikringsøkonomi og forhandlingsposisjon — direkte anvendbart
 
 **NFFs premieberegningsmodell** (transparent, trinnvis — en mal NSF bør kreve av sin megler):

@@ -14,12 +14,12 @@ Dette repoet strukturerer innhentingen av bakgrunnsfakta og data til utvalgsarbe
 | `00-OVERLEVERING.md` | **Start her** — status, kritisk sti, kjente svakheter og premisser som må testes |
 | `01-datainnhentingsplan.md` | Hovedplan: spørsmål utvalget må besvare, datakategorier, kilder, ansvar og frister |
 | `02-bestillingsliste-internt.md` | Konkrete databestillinger til NSF-administrasjonen og Söderberg & Partners |
-| `03-syntese-modellalternativer.md` | Syntese: problembilde, rammer og fire modellalternativer vurdert mot mandatet |
+| `03-syntese-modellalternativer.md` | Syntese: problembilde, rammer og fem modellalternativer (A–E) vurdert mot mandatet |
 | `04-prinsipielle-vurderinger.md` | Prinsipielle vurderinger forankret i økonomisk teori og empiri |
 | `05-rapportdisposisjon.md` | Skjelett for utvalgets sluttrapport med produksjonsplan mot 1. oktober |
 | `06-epostutkast.md` | Ferdige e-postutkast: bestillinger, innspillsrunde og arrangørintervjuer |
-| `08-radsvurdering.html` | Ekspertrådets trykktest: seks seter, fagfellerunde, formannens syntese og fire deal-breakers |
 | `07-panelvurdering.md` | Tre uavhengige kvalitetsvurderinger av grunnlaget: funn, rettelser og beslutningsporter |
+| `08-radsvurdering.html` | Ekspertrådets trykktest: seks seter, fagfellerunde, formannens syntese og fire deal-breakers |
 | `bakgrunn/17-litteratur.md` | Verifisert referanseliste og sentrale empiriske funn til prinsippnotatet |
 | `bakgrunn/10-dagens-ordning.md` | Dagens skilisensordning: typer, priser, dekning, historikk, kritikk |
 | `bakgrunn/11-andre-saerforbund.md` | Benchmarking av lisens-/forsikringsordninger i andre norske særforbund |

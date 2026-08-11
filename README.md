@@ -14,7 +14,7 @@ Dette repoet strukturerer innhentingen av bakgrunnsfakta og data til utvalgsarbe
 | `00-OVERLEVERING.md` | **Start her** — status, kritisk sti, kjente svakheter og premisser som må testes |
 | `01-datainnhentingsplan.md` | Hovedplan: spørsmål utvalget må besvare, datakategorier, kilder, ansvar og frister |
 | `02-bestillingsliste-internt.md` | Konkrete databestillinger til NSF-administrasjonen og Söderberg & Partners |
-| `03-syntese-modellalternativer.md` | Syntese: problembilde, rammer og fem modellalternativer (A–E) vurdert mot mandatet |
+| `03-syntese-modellalternativer.md` | Syntese: problembilde, rammer og seks modellalternativer (A–F) vurdert mot mandatet |
 | `04-prinsipielle-vurderinger.md` | Prinsipielle vurderinger forankret i økonomisk teori og empiri |
 | `05-rapportdisposisjon.md` | Skjelett for utvalgets sluttrapport med produksjonsplan mot 1. oktober |
 | `06-epostutkast.md` | Ferdige e-postutkast: bestillinger, innspillsrunde og arrangørintervjuer |

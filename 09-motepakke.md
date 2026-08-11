@@ -84,6 +84,26 @@ Møtet bør formulere disse som eksplisitte beslutningsporter i rapporten:
 4. Tåler **~6 700 lisenser** differensiering i gren × nivå × alder? → meglers vurdering av minste kredible poolstørrelse.
 5. Kan **små klubbarrangører** bære en kollektivmodell? → arrangørdialog utover Birken. *NB: Birken er i rettskonflikt med Cykleforbundet om eierskap til nettopp lisensinntekter — ikke en nøytral motpart nå.*
 
+## 7b. Incentivstrukturer å være bevisst i møtet
+
+**I rommet:**
+
+1. **Utvalget er selv partene i fordelingskampen.** Grendifferensiering er tilnærmet nullsum — betaler alpint aktuarisk pris, betaler langrenn mindre. Sitter gren- og kretsrepresentanter rundt bordet, blir «hva er rettferdig» i praksis «hva skal min gren betale». *Grep:* løft kryss-subsidieringsspørsmålet **ut** av utvalgets anbefaling og legg det fram som eksplisitt politisk valg med 2–3 kostnadsberegnede alternativer. Fotballen la fram tre prisalternativer, anbefalte ett, og lot tinget velge.
+2. **Utvalget har incentiv til å konkludere for tidlig** — «vi kunne ikke konkludere» oppleves som fiasko. Det er dette som produserer prematur tallfesting. *Grep:* ta beslutningen om leveransens form (pkt. 5 B) først i møtet, før diskusjonen drifter mot et modellvalg av seg selv.
+3. **Administrasjonen har incentiv til å undertrykke prissignalet.** Når NSF selv bærer tapet, er det politisk billigere å absorbere underskudd enn å heve pris — til budsjettet brekker. Derav 173 % på to år istedenfor jevn vekst. *Grep:* regelstyrt årlig indeksering fjerner skjønnet og dermed utsettelsesincentivet. Mekanismen betyr mer enn nivået.
+
+**I kontrakten (relevant for anbudet som løper parallelt):**
+
+4. **Den som kontrollerer kostnadsdriveren bør bære kostnadsrisikoen.** I fotballen bestemmer Idrettens skadetelefon behandlingen, mens selskapet bærer utbetalinger over maksimalpremien — en feiljustering som forklarer både tapet på 54,6 MNOK og selskapets etterfølgende krav om antingen kontroll over behandlernettverket eller ugjennomsiktig prising. Dette er den viktigste designbeslutningen i NSFs eget anbud. Captive er den logiske enden: kontrollerer du driveren, bør du ta risikoen.
+5. **Overbehandling er et tilbudssideproblem.** Behandlerne betales per behandling, og skadetelefonen som vurderer behovet finansieres av ordningen — ingen i kjeden har incentiv til å behandle mindre. Overlegekritikken er reell, men de virksomme instrumentene er protokoller, forhåndsgodkjenning og tak på behandlingsrammen, ikke frivillig dekning. Fotballens svar: individuell godkjenning av behandlere, NIMF-gjennomgang av hver skademelding, og kutt i behandlingsrammen fra 20 000 til 15 000 kr.
+
+**I markedet:**
+
+6. **Den som betaler, velger nivået.** Under modell C betaler arrangøren og har da incentiv til å minimere dekningen og klassifisere deltakere i billigste kategori (trim framfor konkurranse) — dekningen drifter nedover. Arrangøren har dessuten en exit-opsjon (Styrkeprøven-presedensen), som setter tak på hvor mye NSF kan hente fra denne flaten.
+7. **Fri-rytter-asymmetri i NIF-sporet.** En felles pool betyr at noen kryss-subsidierer andre. Fotballen har den største poolen og billigste ordningen — mest å gi, minst å hente. NSF er liten og dyr — mest å hente. Det forutsier at samordning går langsomt: NSF bør presse på, men ikke bygge planen på at den lander.
+
+**Konkret arbitrasje å måle:** koster helår 5 200 kr og engangs 300 kr, har en utøver som starter fem renn incentiv til å kjøpe fem engangslisenser. Antall gjentatte engangskjøp samme sesong er et direkte mål på hvor inkonsistent prisstrukturen er (bestilling 8.6).
+
 ## 8. Underlag som er klart å dele
 
 `bakgrunn/10` dagens ordning · `11` ni norske særforbund · `12` Norden/FIS/turrenn · `13` statistikk og SSB · `14` debatt og interessenter · `15` seks skinasjoner · `16` juridisk ramme · `17` litteratur · **`18` fotballens forsikringsutvalg** · `03` modell A–F · `04` prinsipper · `07` panelvurdering · `08` rådsvurdering (HTML).

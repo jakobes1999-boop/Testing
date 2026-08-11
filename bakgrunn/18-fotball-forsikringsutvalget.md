@@ -55,7 +55,7 @@ Dette er kjernen. NFFs utvalg vurderte eksplisitt **reduserte dekninger og frivi
 
 **Hva NFF valgte i stedet — i praksis NSFs modell A:** premien per gruppe tilpasses gruppens faktiske skadekostnad, men **gradvis**, fordi «det anses ikke realistisk å øke kostnadene til klubbene med 100 % fra 1 år til et annet» og «en forsikringsordning i sin natur skal være en solidarisk ordning». Egenandeler og premie indeksjusteres årlig. Eneste dekningskutt: behandlingsramme fra 20 000 → 15 000 kr (sparer 3,5 MNOK).
 
-De vurderte tre prisalternativer: (1) full tilpasning til skadekostnad per gruppe, (2) solidarisk flat økning på 28 % for alle, (3) skjønnsmessig tilpasning mot alternativ 1 over tid. **De valgte alternativ 3.** Dette er direkte overførbart til NSFs spørsmål om grendifferensiering versus kryss-subsidiering — og det er verdt å merke at fotballen valgte den *gradvise* veien nettopp for å unngå prissjokket NSF allerede har utløst.
+De vurderte tre prisalternativer: (1) full tilpasning til skadekostnad per gruppe, (2) solidarisk flat økning på 28 % for alle, (3) skjønnsmessig tilpasning mot alternativ 1 over tid. **Utvalget anbefalte alternativ 3.** Presisering (verifisert 11.08.2026 mot NFFs tinghefte 2025): Forbundstinget 2025 vedtok «Forslag 8 – Rapport fra utvalg – Fotballforsikringen» med **248 mot 40 stemmer**, men vedtaksteksten er en generell tilslutning til utvalgets anbefaling — forbundsstyret skulle «legge opp til en realitetsbehandling av også de andre alternativer». Det er altså ikke dokumentert at alternativ 3 spesifikt ble vedtatt som prismodell. Anbefalingen om gradvis tilpasning står, men utfallet er delvis åpent. Dette er direkte overførbart til NSFs spørsmål om grendifferensiering versus kryss-subsidiering — og det er verdt å merke at fotballen valgte den *gradvise* veien nettopp for å unngå prissjokket NSF allerede har utløst.
 
 ## 4. Hvorfor premien steg — svaret rådet etterlyste
 
@@ -140,7 +140,9 @@ Antall skader med utbetaling på beregningstidspunkt
 | Eliteserien/OBOS/Toppserien (individuell) | 2 520 kr | 2 520 kr (uendret) | 324 |
 | 5. div. menn (lagsforsikring) | 16 380 kr | 27 000 kr | 357 lag |
 
-**Dette er det mest slående i hele dokumentet:** en 15-åring i fotball er dekket for **385 kr**, mens en 15-åring med utvidet alpinlisens i ski betaler **5 200 kr** — med i praksis samme dekningsstruktur og samme leverandørapparat (Idrettens skadetelefon, IHS). Forskjellen forklares dels av risiko (alpint er farligere enn fotball per time), men først og fremst av **poolstørrelse**: fotballen fordeler risikoen på ~126 000 ungdommer alene, NSF på ~6 700 lisenser totalt.
+**Faktiske priser 2026, verifisert 11.08.2026 mot fotball.no/klubb-og-leder/forsikring/fotball-priser/:** 13–14 år **280 kr**/spiller · 15–16 år **420 kr**/spiller · 17–19 år **500 kr**/spiller · lag samlet 2 750 kr · barn 0–13 år **gratis** (NIFs barneforsikring). Prisene ble altså satt høyere enn utvalgets 2025-forslag (260/385/450) — veksten fortsatte.
+
+**Dette er det mest slående i hele dokumentet:** en 15-åring i fotball er dekket for **420 kr** (2026), mens en 15-åring med utvidet alpinlisens i ski betaler **5 200 kr** — med i praksis samme dekningsstruktur og samme leverandørapparat (Idrettens skadetelefon, IHS). Forskjellen forklares dels av risiko (alpint er farligere enn fotball per time), men først og fremst av **poolstørrelse**: fotballen fordeler risikoen på ~126 000 ungdommer alene, NSF på ~6 700 lisenser totalt.
 
 Dette er det sterkeste enkeltargumentet for modell D/E i hele materialet — og samtidig en advarsel mot modell B: fotballen får sin lave pris fra *bred obligatorisk pooling*, ikke fra frivillige nivåer. NFF opplyser dessuten at «nesten ingen kjøper utvidet» i futsal, og at utvidet tilleggsforsikring (frivillig) måtte økes med 32–36 % for senior bredde — altså et frivillig sjikt som selv er under presis det premiepresset antiseleksjonsteorien forutsier.
 

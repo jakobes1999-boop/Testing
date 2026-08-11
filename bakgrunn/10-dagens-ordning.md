@@ -16,6 +16,8 @@
 
 | Gren | Grunn | Utvidet |
 |---|---|---|
+*Prislisten for 2025/26 er verifisert 11.08.2026 mot primærkilde: skiforbundet.no/om/skilisens/forsikringen/ og forsikringsbeviset «NSF_Fors.bevis-og-vilkår-skilisens-fra-01.10.2025–30.09.2026». Engangslisens: 13–25 år **120 kr**/konkurransedag; 26+ år **300 kr**/konkurransedag; trimklasser **120 kr**; familieklasse turrenn maks **240 kr** (dekker to deltakere). 2026/27-priser er ikke publisert ennå.*
+
 | Alpint | 2 400 kr (ny kategori 25/26) | 5 200 kr |
 | Freestyle/freeski | 1 500 kr (ny kategori 25/26) | 3 600 kr |
 | Freeride | 2 400 kr | 5 200 kr |
@@ -25,7 +27,7 @@
 
 **Engangslisens:** 13–25 år: 120 kr; fra 26 år: 300 kr; trimklasser: 120 kr; familieklasser i turrenn: maks 240 kr per familie. I alpint/freeski kan engangslisens kun brukes for klubb-/kretsaktivitet — FIS-renn krever årslisens. Engangslisens dekker «tilnærmet det samme som grunnlisensen, men bare i det enkelte renn» (FAQ: https://www.skiforbundet.no/om/skilisens/fak/). Betales ved påmelding (iSonen/EQ Timing) eller Vipps.
 
-**Aldersgrenser:** Obligatorisk fra fylte 13 år (før det: NIFs barneidrettsforsikring). Fellesreglementet pkt. 203.3.1 sier obligatorisk 13–70 år, frivillig 71–80; NSFs FAQ (2025/26) sier obligatorisk til fylte 80 — **avvik mellom kildene, må avklares internt**. Forsikringen gjelder t.o.m. året man fyller 80.
+**Aldersgrenser:** Obligatorisk fra fylte 13 år (før det: NIFs barneidrettsforsikring). **Oppklart 11.08.2026 mot primærkilde — dette var ikke et avvik:** Fellesreglementet pkt. 203.3.1 sier lisens «skal løses fra den dato løperen fyller 13 år til den dato løperen fyller 70 år. I tillegg er skilisens frivillig for løpere fra 71 til 80 år», og pkt. 203.3.4 at lisensforsikring «kan ikke tegnes for løpere etter fylte 80 år». 70 år = grense for *obligatorisk* lisens; 80 år = øvre grense for *frivillig* lisens og for forsikringsdekning. Vilkårene 2025/26 bekrefter: forsikringen gjelder t.o.m. året man fyller 80, og over 80 dekkes ikke medisinsk invaliditet/dødsfall. Begge tall i kildematerialet var korrekte — de beskriver ulike terskler.
 
 ## 2. Hvem må ha lisens
 
@@ -59,7 +61,7 @@ Dekker idrettsskade, belastningsskade og ulykkesskade, verden over, trening + ko
 
 - **Lisensinntekter:** «Løperlisenser» 12,868 MNOK (2024), 9,915 MNOK (2023) — Årsberetning 2024–2025 (https://www.skiforbundet.no/contentassets/923e236d0997454cbb089a4aa77fecea/vedlegg-2---arsberetning-2024-2025.pdf).
 - **Prinsipp:** lisensinntektene skal kun dekke forsikringspremien (If) og skadetelefonen — NSF skal ikke tjene på ordningen (FAQ).
-- **Underskudd:** akkumulert **4,2 MNOK (2019–2024)**; forsikringspremie økt ca. **40 %**; NSFs nettokostnad ca. 1,2 MNOK (2025), ca. 1,0 MNOK (2026-estimat) (Vedlegg 7). Skistyret i sak 11.3: subsidiert med **1,6 MNOK i 2025**, forventet **2 MNOK i 2026**; «Skiforbundet kan ikke fortsette å tape penger på ordningen» (tingpapirer s. 36).
+- **Underskudd:** akkumulert **4,2 MNOK (2021–2024)** — perioden bekreftet 11.08.2026 mot to nyhetskilder som siterer Skistyrets vedtak 27.08.2024; «2019–2024» i tidligere utkast var feil; forsikringspremie økt ca. **40 %**; NSFs nettokostnad ca. 1,2 MNOK (2025), ca. 1,0 MNOK (2026-estimat) (Vedlegg 7). Skistyret i sak 11.3: subsidiert med **1,6 MNOK i 2025**, forventet **2 MNOK i 2026**; «Skiforbundet kan ikke fortsette å tape penger på ordningen» (tingpapirer s. 36).
 - Langtidsbudsjettet 2026–2030 forutsetter at NSF ikke kan finansiere ytterligere subsidiering.
 - **Lisensfond** for utøvere med økonomiske utfordringer, søknadsfrist 1. desember (nyhet nov. 2025).
 
@@ -68,7 +70,7 @@ Dekker idrettsskade, belastningsskade og ulykkesskade, verden over, trening + ko
 - Ordningen **etablert 1980**, «vokst i omfang» (Vedlegg 7).
 - «Kraftig subsidiert siden 2021» pga. økende skadeomfang (Vedlegg 7).
 - **2024/25:** utvidet alpint 1 900 → 4 200 kr (VG 18.09.2024: https://www.vg.no/sport/i/AvEXk5/raser-mot-skiforbundet-etter-prisoekning). Langrenn 24/25: grunn 740 / utvidet 2 600 kr [DELVIS VERIFISERT].
-- **2025/26:** alpint utvidet videre til 5 200 kr (+173 % på to år); grunnlisens innført alpint/freeski; lisensfond opprettet (Nettavisen 07.10.2025). Gjeldende langrennspris (650/2 400) er *lavere* enn 24/25 — [IKKE VERIFISERT om langrenn ble satt ned; avklares internt].
+- **2025/26:** alpint utvidet videre til 5 200 kr (+173 % på to år); grunnlisens innført alpint/freeski; lisensfond opprettet (Nettavisen 07.10.2025). Gjeldende langrennspris (650/2 400) er **verifisert** mot primærkilde 11.08.2026. Om den er *lavere* enn 24/25 er derimot uavklart, og verre enn antatt: vårt underlag oppgir 740/2 600 for 24/25, mens Dagsavisen 18.09.2024 — som siterer Skistyrets vedtak 27.08.2024 — oppgir 880 → 1 990 kr for langrenn/randonee. **Én av disse er feil, og «+126 %» hviler på den.** Prislisten for 2024/25 er fjernet fra skiforbundet.no (HTTP 500) og må hentes internt (bestilling 8.8). Alpint-serien er derimot godt dokumentert: utvidet 1 900 (23/24) → 4 200 (24/25, Skistyrets vedtak 27.08.2024) → 5 200 (25/26) = +173 %.
 - Eldre historikk (2015–2023, ev. selskaps-/meglerbytter): [IKKE FUNNET på nett — bestilles internt].
 
 ## 6. Skitinget 2026 sak 11.3 — bakgrunn og innstilling

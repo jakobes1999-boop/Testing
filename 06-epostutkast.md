@@ -17,7 +17,7 @@ I forbindelse med oppstarten av det hurtigarbeidende utvalget for Skilisens (jf.
 3. Innspillsdokumentene fra Hordaland skikrets (2024) og Troms skikrets' kartlegging (2025).
 4. Statusnotat om forsikringsanbudet som ble varslet i november 2025 (utlysning, tidsplan, ev. mottatte tilbud) — utvalgets arbeid bør koordineres med denne prosessen.
 5. Status for NIF-arbeidet om forsikringssynergier mellom særforbundene, og utfallet av Bedriftsidrettsforbundets forslag til Idrettstinget 2025 om forsikringskrav for organisasjonsledd.
-6. To mindre avklaringer: (a) ble langrennslisensen justert fra 740/2 600 kr (2024/25) til 650/2 400 kr (2025/26)? (b) hva er korrekt øvre aldersgrense — Fellesreglementet pkt. 203.3.1 sier obligatorisk til 70 år, FAQ-en sier 80?
+6. Én avklaring: hva var den faktiske prislisten for skilisens sesongen **2024/25**, per gren? Vi har to motstridende opplysninger for langrenn/randonee — 740/2 600 kr i ett underlag, og 880 → 1 990 kr i pressedekning som siterer Skistyrets vedtak 27.08.2024. Prisveksten for langrenn («+126 %») hviler på hvilken som er riktig. 2025/26-prisene har vi bekreftet fra forsikringsbeviset.
 
 Med vennlig hilsen
 [navn], utvalg for Skilisens

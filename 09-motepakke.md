@@ -42,7 +42,7 @@ Begrunnelsen er fordelingsargumentet: reduserte dekninger gir «større økonomi
 
 **Tre tall fra fotballen som må inn i vår vurdering:**
 
-1. **385 kr mot 5 200 kr.** En 15-åring i fotball er dekket for 385 kr/år; en 15-åring med utvidet alpinlisens betaler 5 200 kr — med samme dekningsstruktur og samme leverandørapparat (Idrettens skadetelefon/IHS). Noe er reell risikoforskjell, men hovedforklaringen er **poolstørrelse**: fotballen fordeler risiko på ~126 000 ungdommer alene.
+1. **420 kr mot 5 200 kr.** En 15-åring i fotball er dekket for 420 kr/år (2026, bekreftet fotball.no); en 15-åring med utvidet alpinlisens betaler 5 200 kr — med samme dekningsstruktur og samme leverandørapparat (Idrettens skadetelefon/IHS). Noe er reell risikoforskjell, men hovedforklaringen er **poolstørrelse**: fotballen fordeler risiko på ~126 000 ungdommer alene.
 2. **Det offentlige har trukket seg ut.** Fotballen har hatt **ca. 90 % nedgang siden 2019** i operasjoner de får inn i offentlig helsevesen. Er det samme sant for ski, er behandlingsdekning ikke «køhopping» men eneste realistiske behandlingsvei — og premisset for å gjøre den frivillig faller.
 3. **Premieveksten er strukturell.** Fotballens fem årsaker er alle volum- og tilgangsdrevne, ikke produktdesign. Gjelder det samme for ski, **flytter modell B/C prisproblemet i stedet for å løse det**.
 
@@ -79,8 +79,9 @@ Disse krever **ingen nye data** og bør ikke utsettes:
 ## 6. Tall som IKKE bør presenteres før de er avstemt
 
 - **Subsidieringen:** oppgitt som 1,2/1,0 MNOK i Vedlegg 7, men 1,6/2,0 MNOK av Skistyret. Trolig ulike definisjoner (nettokostnad vs. subsidiering inkl. administrasjon) — må avklares.
-- **Akkumulert underskudd 4,2 MNOK:** oppgitt for både 2019–2024 og 2021–2024.
-- **«+126 %» for langrenn:** hviler på en delvis verifisert prisserie (740/2 600 → 650/2 400?).
+- ~~Akkumulert underskudd~~ **AVKLART:** 4,2 MNOK gjelder 2021–2024 (verifisert 11.08.2026). Kan brukes.
+- **«+126 %» for langrenn — bruk ikke.** Vårt underlag sier 740/2 600 for 24/25; pressen sier 880 → 1 990. Motstridende. 2025/26-prisen (650/2 400) er verifisert.
+- **Tingprotokollen finnes ikke offentlig** — sakslistearkivet gir teknisk feil. Vedtaket i sak 11.3 må hentes fra sekretariatet; ikke siter det ordrett før da.
 - **Lisensvolumet «6 700»:** uklart om engangslisenser inngår. Ikke bruk det som kalibreringsgrunnlag.
 - **Scenariokalkulatoren** (`verktoy/`) kan ikke vedlegges som beslutningsgrunnlag: den antar ~9 000 udokumenterte engangslisenser, og admin modellert som andel av brutto favoriserer B/C mekanisk. Brukbar som illustrasjon med forbehold.
 

@@ -20,6 +20,7 @@ Dette repoet strukturerer innhentingen av bakgrunnsfakta og data til utvalgsarbe
 | `06-epostutkast.md` | Ferdige e-postutkast: bestillinger, innspillsrunde og arrangørintervjuer |
 | `07-panelvurdering.md` | Tre uavhengige kvalitetsvurderinger av grunnlaget: funn, rettelser og beslutningsporter |
 | `08-radsvurdering.html` | Ekspertrådets trykktest: seks seter, fagfellerunde, formannens syntese og fire deal-breakers |
+| `09-motepakke.md` | Kortversjon til utvalgsmøte: fire beslutninger, tall som ikke må presenteres, fem premisser |
 | `bakgrunn/17-litteratur.md` | Verifisert referanseliste og sentrale empiriske funn til prinsippnotatet |
 | `bakgrunn/18-fotball-forsikringsutvalget.md` | **Nøkkelkilde:** NFFs forsikringsutvalg 2024/25 — samme øvelse, motsatt konklusjon |
 | `bakgrunn/10-dagens-ordning.md` | Dagens skilisensordning: typer, priser, dekning, historikk, kritikk |

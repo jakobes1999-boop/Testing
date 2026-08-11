@@ -173,6 +173,54 @@ Ca. 75 % av barn 6–15 år går på ski minst én gang, men bare ca. 14 % ukent
 | Alle (16+) | 27 % | 25 % | 25 % | 26 % |
 | 16–24 år | 31 % | 27 % | 29 % | 31 % |
 
+### Tabell 07459 — Befolkning etter alder (uttrekk 11.08.2026)
+
+Per 1.1.2026: 6–12 år **429 001** · 13–19 år **477 580** · 20–39 år 1 494 272 · 40–66 år 1 934 861 · 67+ 959 633.
+
+**Kullet 6–19 år, utvikling:** 890 658 (2016) → 898 292 (2018) → 910 412 (2024, topp) → **906 581 (2026)**. Altså **+1,8 % vekst** over tiåret.
+
+> **Viktig funn:** NSFs medlemsfall på 25,6 % (2018–2024) kan **ikke** forklares med demografi — alderskullene har vokst i samme periode. Fallet er reelt frafall og/eller tapt konkurranse mot andre aktiviteter. Dette lukker en åpenbar motinnvending før den kommer.
+
+### Tabell 14412 — Organisert trening blant barn og unge (2024)
+
+| Aktivitet | 6–15 år | 6–11 år | 12–15 år |
+|---|---|---|---|
+| Organisert idrett i alt | 72,2 % (466 000) | 78,2 % (293 000) | 63,8 % (172 000) |
+| **Langrenn eller skiskyting** | **4,2 % (27 000)** | 5,9 % (22 000) | 1,8 % (5 000) |
+
+**27 000 barn** driver organisert langrenn/skiskyting nasjonalt — nærmeste reelle markedsanslag (TAM) for NSFs kjernedisiplin blant barn. Merk det kraftige fallet fra 5,9 % (6–11 år) til 1,8 % (12–15 år): frafallet skjer *før* lisensplikten inntrer ved 13 år. Alpint/snowboard/freestyle er **ikke** egen kategori i undersøkelsen — en datamangel for NSFs voksende gren.
+
+### Tabell 14416 — Foreldres inntekt og idrettsdeltakelse (2024)
+
+| Foreldrenes inntektskvartil | Organisert idrett i alt | Langrenn/skiskyting |
+|---|---|---|
+| Alle | 72,2 % | 4,2 % |
+| Lavest kvartil | 58,8 % | **2,1 %** |
+| 2. kvartil | 69,3 % | 4,3 % |
+| 3. kvartil | 77,8 % | 5,2 % |
+| Høyest kvartil | 82,6 % | **5,1 %** |
+
+> Deltakelsen i NSFs kjerneidrett er **mer enn dobbelt så høy** i øverste som i nederste inntektskvartil. Dette er den mest direkte norske dokumentasjonen på økonomisk barriere i skiidretten — og den samme fordelingsmekanismen NFF brukte som begrunnelse for å avvise reduserte dekninger: senkes obligatorisk dekning, kjøper de med god økonomi seg opp, og gradienten forsterkes.
+
+### Tabell 14430 — Kostnad som hinder for trening (2024)
+
+Andel barn/foresatte helt eller delvis enig i at kostnader til utstyr, reise og kontingent hindrer trening: **45,3 %** (6–15 år); 45,5 % (6–11 år); 44,8 % (12–15 år). Nesten halvparten.
+
+### Penetrasjonsgrader (beregnet)
+
+- **Lisens blant NSFs egne aktive:** 6 700 / 110 000 = **6,1 %**
+- **Lisens av skiaktiv befolkning 16+:** 6 700 / ~1 524 000 (skitur) = **0,44 %**; av alpint/snowboard/randonee (958 000) = **0,70 %**
+- **NSF-aktive av skiaktiv befolkning:** 110 000 / 1 524 000 = **7,2 %** (langrenn) / 11,5 % (alpint)
+
+Penetrasjonen av *lisens* er altså under 1 % av det skiaktive markedet, og 6 % av forbundets egne aktive. Ordningen treffer en svært liten kjerne.
+*Kan ikke beregnes uten NSF-data:* andel av barnekullene som er NSF-medlem — krever aldersfordelt medlemsstatistikk (bestilling 3.1).
+
+### Bekreftet datamangel
+
+**SSB har ingen åpen skadestatistikk for sport/ski/fritid.** Systematisk søk (11.08.2026) ga kun trafikkulykker (08329, 09000, 12044, 10209), generell sykelighet uten årsaksbrytning (11190), og konsultasjonstall uten skadeårsak (10141, 10903, 14824). Skadedata må derfor komme fra megler/If, Norsk pasientregister (spesialbestilling) eller alpinbransjen — søket er avsluttet, ikke ufullstendig.
+
+Ingen oppdatert SSB-forbruksundersøkelse for husholdningers idretts-/fritidsutgifter finnes heller; bruk OE-rapport 2020-12 og Deloitte/NIF 2024 for kostnadstall.
+
 **Tolkning:** Skiturgåing er bred, men fallende — særlig lange skiturer (fra 29 % i 2011 til 13,7 % i 2024, med forbehold om seriebrudd), mens alpint/snowboard vokser, særlig blant unge (44 % av 16–24-åringer i 2024). Bare ca. 10 % av voksne deltok i idrettskonkurranse i 2024. Det hyppige skimiljøet er en liten kjerne av en stor, sporadisk skibefolkning — markedet for engangs-/turrennlisens ligger i dette store, uorganiserte sjiktet. Trendene speiler NSF-tallene: langrennsdominansen svekkes, alpint/freestyle vokser.
 
 ## 6. Kunnskapshull utvalget bør merke seg

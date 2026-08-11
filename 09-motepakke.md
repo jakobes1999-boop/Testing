@@ -21,6 +21,16 @@ Frist til Skistyret: **1. oktober 2026**. I dag er det 11. august — **7,3 uker
 
 **Medlemsfall:** NSF har hatt størst fall av alle særforbund 2018–2024 (**−25,6 %**); barn 6–12 år ned ca. en tredjedel siden 2014 — mens norsk idrett samlet vokser igjen. NSF er i motfase med sin egen sektor.
 
+### Fem ferske SSB-tall (uttrekk 11.08.2026) — nyttige i møtet
+
+1. **Demografi forklarer ikke medlemsfallet.** Kullet 6–19 år har **vokst 1,8 %** fra 2016 til 2026 (890 658 → 906 581, tabell 07459). Fallet på 25,6 % er reelt frafall. *Dette lukker en åpenbar motinnvending før den kommer.*
+2. **Økonomisk barriere er dokumentert i vår egen kjerneidrett:** deltakelsen i langrenn/skiskyting er **2,1 % i laveste inntektskvartil mot 5,1 % i høyeste** (tabell 14416) — mer enn dobbelt. Dette er den samme fordelingsmekanismen NFF brukte for å avvise reduserte dekninger: senkes obligatorisk nivå, kjøper de med god økonomi seg opp og gradienten forsterkes.
+3. **45,3 %** av barn/foresatte oppgir kostnad (utstyr, reise, kontingent) som hinder for organisert trening (tabell 14430).
+4. **Frafallet skjer før lisensplikten:** organisert langrenn/skiskyting faller fra 5,9 % (6–11 år) til **1,8 %** (12–15 år) — altså før 13-årsgrensen slår inn (tabell 14412). Totalt **27 000 barn** driver organisert langrenn/skiskyting nasjonalt; det er kjernediscplinens reelle marked blant barn.
+5. **Lisenspenetrasjonen er svært lav:** 6 700 lisenser er **6,1 %** av NSFs egne aktive og **under 1 %** av den skiaktive befolkningen.
+
+**Avsluttet søk:** SSB har ingen åpen skadestatistikk for sport/ski. Skadedata må komme fra megler/If, Norsk pasientregister eller alpinbransjen — ikke bruk møtetid på dette.
+
 ## 3. Det viktigste nye: fotballen gjorde samme øvelse og konkluderte motsatt
 
 NFFs Forbundsting 2024 vedtok en totalgjennomgang med nesten identisk ordlyd som vår sak 11.3. Utvalget deres vurderte **reduserte dekninger og frivillighet i kjernen — og avviste begge** (`bakgrunn/18`):

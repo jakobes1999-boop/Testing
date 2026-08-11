@@ -108,6 +108,7 @@ Panelvurderingen (`07`) fant følgende. Rettet: ✔ · Åpent: ○
 
 ## 8. Arbeidsmåte og konvensjoner
 
+- **Kort og pedagogisk.** Poenget først, så begrunnelsen. Oppdragsgiver vil ikke lese lange svar — konklusjon i første setning.
 - **Alt skrives på norsk.** Faglig, nøkternt — Oslo Economics' husstil (skillen `oslo-economics-skrivestil` finnes).
 - **Kildeføring:** URL til alt; usikre påstander merkes eksplisitt `[IKKE VERIFISERT]` / `[ANTAKELSE]`. Dette er strengt håndhevet — panelet fanget flere brudd.
 - **Branch:** `claude/background-research-setup-tywjxq`. Commit på norsk, push etter hver leveranse.

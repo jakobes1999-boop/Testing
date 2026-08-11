@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rådsrapport — Skilisensordningen</title>
+<!--
+  COUNCIL — rådsrapport for utvalg for Skilisens, 11. august 2026.
+  Palett: INK #1C1A1D, LIME #E2F075, hvit tekst.
+  De seks setene er analytiske perspektiver, ikke virkelige personer.
+-->
+<style>
+  :root{
+    --ink:#1C1A1D;
+    --ink-raised:#252227;
+    --ink-line:#3a363c;
+    --lime:#E2F075;
+    --white:#ffffff;
+    --muted:#a39fa8;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--white);
+    font-family:"Inter","Helvetica Neue",Arial,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:64px 24px 96px;}
+
+  /* ---- Header ---- */
+  .eyebrow{
+    font-size:12px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--lime);font-weight:600;margin:0 0 18px;
+  }
+  .question{
+    font-size:clamp(28px,5vw,46px);line-height:1.12;font-weight:700;
+    letter-spacing:-.015em;margin:0 0 20px;max-width:18ch;
+  }
+  .context{color:var(--muted);font-size:16px;max-width:62ch;margin:0;}
+  .rule{height:1px;background:var(--ink-line);border:0;margin:48px 0;}
+
+  .section-label{
+    font-size:12px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;margin:0 0 24px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .section-label::after{content:"";flex:1;height:1px;background:var(--ink-line);}
+
+  /* ---- Member placards ---- */
+  .members{display:grid;gap:18px;}
+  @media(min-width:680px){.members{grid-template-columns:1fr 1fr;}}
+  .card{
+    background:var(--ink-raised);border:1px solid var(--ink-line);
+    border-radius:14px;padding:24px 24px 22px;position:relative;
+    transition:border-color .18s ease,transform .18s ease;
+  }
+  .card:hover{border-color:var(--lime);transform:translateY(-2px);}
+  .card .num{
+    position:absolute;top:20px;right:22px;font-size:13px;color:var(--muted);
+    font-variant-numeric:tabular-nums;
+  }
+  .card .role{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--lime);font-weight:600;margin:0 0 4px;}
+  .card .name{font-size:21px;font-weight:700;margin:0 0 12px;letter-spacing:-.01em;}
+  .card .verdict{
+    font-size:15px;font-style:italic;color:var(--white);
+    border-left:2px solid var(--lime);padding-left:14px;margin:0 0 16px;
+  }
+  .card ul{margin:0;padding:0;list-style:none;}
+  .card li{font-size:14px;color:#d8d5dc;padding:7px 0 7px 20px;position:relative;border-top:1px solid var(--ink-line);}
+  .card li:first-child{border-top:0;}
+  .card li::before{content:"";position:absolute;left:2px;top:14px;width:6px;height:6px;background:var(--lime);border-radius:50%;}
+
+  /* ---- Peer review ---- */
+  .review-intro{color:var(--muted);font-size:15px;margin:0 0 26px;max-width:60ch;}
+  .exchange{display:grid;gap:14px;}
+  .turn{
+    display:grid;grid-template-columns:48px 1fr;gap:16px;align-items:start;
+    background:var(--ink-raised);border:1px solid var(--ink-line);border-radius:12px;padding:18px 20px;
+  }
+  .badge{
+    width:48px;height:48px;border-radius:50%;background:transparent;border:1.5px solid var(--lime);
+    color:var(--lime);font-weight:700;font-size:18px;display:flex;align-items:center;justify-content:center;
+  }
+  .turn .body{font-size:14.5px;}
+  .turn .agrees{color:#d8d5dc;margin:0 0 6px;}
+  .turn .challenges{color:var(--white);margin:0;}
+  .tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;margin-right:8px;}
+  .tag.up{color:var(--lime);}
+  .tag.down{color:#f0a5a5;}
+
+  /* ---- Chairman ---- */
+  .chairman{
+    background:linear-gradient(160deg,#262329,#1f1c22);
+    border:1px solid var(--lime);border-radius:18px;padding:36px 34px;position:relative;overflow:hidden;
+  }
+  .chairman .seal{
+    position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;
+    border:1px solid rgba(226,240,117,.25);
+  }
+  .chairman .seal::after{content:"";position:absolute;inset:24px;border-radius:50%;border:1px solid rgba(226,240,117,.18);}
+  .chairman h3{margin:0 0 18px;font-size:22px;font-weight:700;letter-spacing:-.01em;}
+  .chairman p{font-size:15.5px;color:#e4e1e8;margin:0 0 16px;max-width:64ch;}
+  .tensions{margin:0 0 22px;}
+  .tensions strong,.options strong{color:var(--lime);}
+  .recommendation{
+    background:var(--lime);color:var(--ink);border-radius:12px;padding:20px 22px;margin:8px 0 22px;position:relative;z-index:1;
+  }
+  .recommendation .rlabel{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;margin:0 0 8px;opacity:.7;}
+  .recommendation .rtext{font-size:17px;font-weight:600;margin:0;line-height:1.4;}
+  .dealbreakers{border-top:1px solid rgba(226,240,117,.25);padding-top:18px;margin-top:4px;}
+  .dealbreakers .dlabel{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:#f0a5a5;margin:0 0 8px;}
+  .dealbreakers ul{margin:0;padding-left:18px;color:#e4e1e8;font-size:14.5px;}
+  .dealbreakers li{margin-bottom:10px;}
+
+  footer{margin-top:56px;text-align:center;color:var(--muted);font-size:12px;letter-spacing:.1em;}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ HEADER ============ -->
+  <header>
+    <p class="eyebrow">Rådet er samlet · Seks seter · Én dom</p>
+    <h1 class="question">Er grunnlaget godt nok til å velge en ny skilisensordning?</h1>
+    <p class="context">Norges Skiforbund skal levere forslag til revidert skilisensordning innen 1. oktober 2026 (Skitinget sak 11.3). Utvidet alpinlisens har økt 173 % på to år, ordningen subsidieres med 1,6 MNOK trass i selvfinansieringskravet, og bare ~6 700 lisenser løses mot ~110 000 aktive medlemmer. Fem modeller er utredet (A justert dagens ordning, B obligatorisk minimum + frivillige tillegg, C arrangørkollektiv for turrenn, D medlemskapsmodell, E NIF-samordning), og materialet heller mot B, ev. B+C. Rådet har trykktestet hele kunnskapsgrunnlaget. <em>De seks setene er analytiske perspektiver med oppdiktede navn, ikke virkelige personer.</em></p>
+  </header>
+
+  <hr class="rule">
+
+  <!-- ============ MEMBERS ============ -->
+  <p class="section-label">The Council</p>
+  <div class="members">
+
+    <article class="card">
+      <span class="num">01</span>
+      <p class="role">Praktikeren</p>
+      <h2 class="name">Ingrid Halvorsen</h2>
+      <p class="verdict">Grunnlaget forklarer problemet godt, men er ikke godt nok til å vedta og bygge B/C til 1. oktober — det eneste gjennomførbare er en tallfestet minimumsjustering av A, mens B/C vedtas som retning for lisensåret 2027/28.</p>
+      <ul>
+        <li>B/C krasjer med kjøpsløsning, anbud og kalender — ikke bare med tallene. Begge krever ny betalingsflyt i en ekstern løsning (iSonen/EQ Timing/Vipps) som betjener flere forbund, og lisensåret starter 1. oktober — samme dag utvalget skal levere. I 2014 skapte en lisensendring reaksjoner pga. sen avklaring, og Birken måtte selv dekke lisenskostnaden for alle deltakere for å hindre kaos rett før sesongstart.</li>
+        <li>Modell C forutsetter at Birken påtar seg kollektivansvar — men Birken er akkurat nå i uavklart rettskonflikt med Norges Cykleforbund om eierskap til nøyaktig denne typen lisenspenger. Det er ikke en nøytral forhandlingspartner man lander en ny finansieringsmodell med på sju uker; det er en motpart med jurist og presedens klar på samme tema.</li>
+        <li>Klokken går fortere enn planen tilsier. Det er nå uke 33, mens datainnhentingsplanen la interne data til uke 32 og modellvalg til uke 37–38. Avgjørende bestillinger står fortsatt som åpne, forsikringen er på anbud parallelt, og NIF kjører sitt eget samordningsspor. Det kloke grepet som slo tilbake sist var nettopp å stramme til eierskapet til lisensinntekter uten å ha arrangøren med — identisk risiko i C.</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <span class="num">02</span>
+      <p class="role">Førsteprinsipp-tenkeren</p>
+      <h2 class="name">Halvard Nyseth</h2>
+      <p class="verdict">Utvalget er i gang med å prissette fire ulike ting sammenslynget i ett produkt — uten å ha testet om sammenslyngingen selv er nødvendig, og Sverige/Danmark beviser at den ikke er det.</p>
+      <ul>
+        <li>«Lisens» er ikke én ting, men fire, og bare én er FIS-betinget. FIS krever kun <em>dokumenterbar</em> forsikring (ICR 212.3) — ikke NSF-administrert individuell lisens. Det som faktisk må løses er startberettigelse, ansvarsforsikring, redningskostnader og helsedekning. Behandlingsgarantien er en luksusfunksjon sydd inn i et produkt merket «forsikringskrav for å starte». Modell D bør ikke være ett av fem sideordnede alternativer, men referansen de fire andre må forsvares mot.</li>
+        <li>Antiseleksjon ved 6 700 av 110 000 er ikke et datahull som kan innhentes — det er en matematisk konsekvens av arkitekturen, og A, B og C endrer ikke arkitekturen. Spiralen kjører nå: premien har steget 40 % på dem som er igjen i den skjeve poolen. Modell C gjør det verre ved å smalne poolen ytterligere til turrenndeltakere. Bare en pool som trekker inn store deler av de ~110 000 bryter mekanismen.</li>
+        <li>Selvfinansieringskravet er allerede brutt i praksis (1,6 MNOK subsidiert i 2025) uten at ordningen har kollapset — det beviser at kravet er et internt policyvalg, ikke en bindende ekstern skranke, og det bør derfor ikke være variabelen fem modeller tvinges til å oppfylle. Samtidig: dersom NIF reelt vurderer samordnet forsikring, er spørsmålet på hvilket <em>nivå</em> risikopoolen bør ligge — klubb, forbund eller NIF — ikke hvilken av fem forbundsinterne modeller som skal driftes fra 1. oktober.</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <span class="num">03</span>
+      <p class="role">Metodologen</p>
+      <h2 class="name">Marit Lundgren</h2>
+      <p class="verdict">Grunnlaget holder til å velge en retning, men tåler ikke å bli tallfestet i en styrerapport ennå — 6 700 lisenser er aktuarisk for tynt for gren×nivå×alder, kalkulatoren er en antakelsesmaskin forkledd som beregning, og to kjernetall er fortsatt uforenlige i egne kilder.</p>
+      <ul>
+        <li>Klassisk kredibilitetsteori krever typisk ~1 000 forventede skadetilfeller for full kredibilitet på egen erfaring (Mowbray-standarden). Kalkulatorens egne segmenter (alpint grunn 400, alpint utvidet 800) er tynne før aldersplitt, og med skadefrekvensene i materialet gir dette lave titalls skader per celle årlig — en størrelsesorden under grensen. Kun 2–3 grove risikoklasser kan prises på porteføljens egen erfaring; resten må Bühlmann-Straub-veies mot bransjebenchmark, noe ingen bestilling etterspør.</li>
+        <li>Kalkulatorens lineære punktelastisitet ekstrapoleres mekanisk til nettopp de store prissjokkene saken handler om: ved elastisitet −0,4 og 173 % prisøkning gir formelen −69 % volumfall uten empirisk forankring. Premien er to globale skalarer påført identisk på alle sju segmenter, så verktøyet kan strukturelt ikke representere antiseleksjonsmekanismen modell B avhenger av. Og admin modellert som 5 % av brutto gir B/C en unevnt strukturell bonus i alle simuleringer.</li>
+        <li>Tall som ikke overlever gransking: subsidieperioden (2019–2024 mot 2021–2024) og subsidiebeløpet (1,2/1,0 MNOK mot 1,6/2,0 MNOK) er fortsatt uavklart. Verre: kalkulatoren løser tvetydigheten rundt «6 700» stilltiende selv, ved å anta at tallet er kun helårslisenser og legge til 9 000 udokumenterte engangslisenser — et antatt univers på 15 700 — presentert i teksten som «kalibrert».</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <span class="num">04</span>
+      <p class="role">Closeren</p>
+      <h2 class="name">Tore Bakkejord</h2>
+      <p class="verdict">Grunnlaget holder ikke til å tallfeste og vedta B eller C til 1. oktober — det utvalget kan forsvare faglig er et prinsippvedtak med justert A som ett års bro, pluss et bundet to-trinnsløp som sender B til aktuarisk prising før lisensåret 2027/28.</p>
+      <ul>
+        <li>De to bestillingene som avgjør om B/C kan prises — aktuarisk pris på isolert minimumsprodukt og skadedata per gren — er ikke sendt ennå. Trekk fra fellesferien, og realistisk svar kommer tidligst i september, samtidig som forsikringsanbudet kan låse premiegrunnlaget i samme periode. B/C kan beskrives som rammeverk med åpne priser og fastsatt dato for når prisen skal foreligge, men ikke vedtas som tallfestet ordning nå.</li>
+        <li>Antiseleksjon er den svakeste lenken, ikke valget mellom fem modeller. Modell B fungerer kun hvis opt-in er høy og risikohomogen, og opt-in-empiri er ikke innhentet — det gjør premissene for B en antakelse, ikke en beregning. Feilslutningen er selvforsterkende: kun skadeutsatte kjøper tillegget, prisen må opp igjen neste år, og utvalget har «løst» problemet på papiret.</li>
+        <li>E hører ikke hjemme i denne runden og bør nevnes som strategisk retning, ikke tallfestes. Av rapportens ti kapitler ville jeg kuttet den detaljerte gjennomgangen av alle fem modeller til fordel for to — A som bro, B som mål — og byttet et fullt sensitivitetskapittel for et vedlegg om databehov og forbehold. Svarer megler ikke i tid, er plan B å levere prinsippvedtaket med hardkodet dato, ikke å skyve hele leveransen: lisensåret tvinger da et ekstra år på dagens ordning uansett.</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <span class="num">05</span>
+      <p class="role">Motparten</p>
+      <h2 class="name">Kjersti Vollan</h2>
+      <p class="verdict">Grunnlaget er ikke godt nok til å levere 1. oktober — utvalget har designet en løsning på en priskrise uten å ha stilt If ett spørsmål om hvorfor prisen faktisk steg, og det er den sømmen jeg river opp først.</p>
+      <ul>
+        <li>Antiseleksjonen er ikke analysert, den er antatt bort. Med 6 700 lisenser mot 110 000 aktive er utvalget allerede et ekstremt selektert utvalg — de som løser lisens i dag er systematisk dem med høyest skaderisiko. B garanterer at skjevheten forsterkes. Ingen har bedt If forklare den faktiske skadefrekvens- og kostnadsutviklingen bak økningen; uten den vet utvalget ikke om B løser noe, eller bare flytter kostnadstrykket til et mindre og enda mer selektert tilleggsmarked.</li>
+        <li>Modell B skaper en 16-åring uten dekning, og det er en overskrift, ikke en fotnote. Settes minimumsdekningen lavere enn dagens behandlingsgaranti — og det må den, ellers er B bare A med nytt navn — betyr «frivillig tillegg» at noen utøvere, typisk fra familier med minst økonomisk handlingsrom, står med redusert dekning ved alvorlig skade. Det finnes ingen fordelingsanalyse av hvem som faktisk kjøper opp.</li>
+        <li>Kryss-subsidieringen og MOTOE-eksponeringen er samme problem sett fra to vinkler, og B/C løser ingen av dem. Dagens subsidiering er i det minste skjult i regnskapet; et eksplisitt tingvedtak må forsvares offentlig hvert år. Samtidig beholder NSF rollen som både regulator og økonomisk mottaker i nøyaktig den konstellasjonen MOTOE-dommen advarer mot — og krymper man dekningen mens inntektsstrømmen beholdes, er det et <em>sterkere</em> MOTOE-argument enn dagens ordning. Ingen har spurt medlemmene om de vil kvitte seg med behandlingsgarantien de betaler for.</li>
+      </ul>
+    </article>
+
+    <article class="card">
+      <span class="num">06</span>
+      <p class="role">Strategen</p>
+      <h2 class="name">Sigurd Moland</h2>
+      <p class="verdict">Utvalget bruker et 1. oktober-mandat til å redesigne betalingsløsningen for en billett 6 700 mennesker kjøper, mens skipet den er festet til fortsetter å lekke — og et parallelt NIF-spor kan gjøre hele den NSF-spesifikke arkitekturen overflødig før den er innkjørt.</p>
+      <ul>
+        <li>Lisensen er ikke NSFs problem, den er en kvittering på det. 6 700 lisenser mot ~110 000 aktive og ~1,5 millioner nordmenn på ski årlig: uansett hvor elegant B/C designes, treffer det en marginal brøkdel. Samtidig er NSF det særforbundet med størst medlemsfall 2018–2024 mens norsk idrett totalt vokser igjen (1,65 → 1,80 mill.) — NSF er i motfase med sin egen sektor, og rekrutteringskollapsen blant barn 6–12 år er ikke engang utvalgets mandat.</li>
+        <li>Man bygger definitivt en ordning for idretten man <em>hadde</em>. Volumtoppen for lisens (10 400 i 2012/13) falt sammen med turrenn-toppen, og arkitekturen er formet av en langrenns- og turrenndominert idrett som krymper. Alpint vokser (44 % av 16–24-åringer) og bærer både de største prisøkningene og den skarpeste konflikten — men modell C har ingen adresse til alpintsegmentet. Man perfeksjonerer strukturen for den krympende halvdelen.</li>
+        <li>NIF-sporet er ikke en fotnote, det er den reelle beslutningsvariabelen, og innlåsingen er asymmetrisk. B og C krever begge NSF-spesifikke meglerkontrakter, egne salgskanaler og bilaterale arrangøravtaler — bindinger som må reforhandles hvis NIF lander en tverrforbunds-pool innen 24 måneder. Den opsjonsbevarende strategien er å vedta Tinbergen-strukturen som prinsipp nå, men holde kontrakts- og systemvalg kortsiktige og modulære, og formelt kreve et datert NIF-svar før man låser B/C.</li>
+      </ul>
+    </article>
+
+  </div>
+
+  <hr class="rule">
+
+  <!-- ============ PEER REVIEW (anonym A–F) ============ -->
+  <p class="section-label">Anonymous Peer Review</p>
+  <p class="review-intro">Hvert sete leste de andres dommer uten å vite hvem som hadde sagt hva.
+    Her er hvor de var enige — og hvor de ikke var det.</p>
+  <div class="exchange">
+
+    <div class="turn">
+      <div class="badge">A</div>
+      <div class="body">
+        <p class="agrees"><span class="tag up">Enig</span>Med den som sier at antiseleksjon er strukturelt og ikke et datahull — det er teknisk riktig, og det er samme innsikt jeg kommer til fra kredibilitetssiden: cellene blir for tynne for egen erfaring.</p>
+        <p class="challenges"><span class="tag down">Utfordrer</span>Men to seter skriver at ordningen «bare» kan justeres eller vedtas som prinsipp mens tallene kommer senere. Det går ikke: så lenge subsidiebeløpet er oppgitt i to uforenlige versjoner og kalkulatoren dikter opp 9 000 engangslisenser, mangler selv en <em>justert A</em> et tallgrunnlag den kan prises på. Uenigheten er ikke om ambisjonsnivå, men om at ingen av alternativene kan tallfestes før regnskapstallene er avstemt.</p>
+      </div>
+    </div>
+    <div class="turn">
+      <div class="badge">B</div>
+      <div class="body">
+        <p class="agrees"><span class="tag up">Enig</span>Med at ingen har spurt forsikringsgiveren hvorfor premien steg — det er den mest presise enkeltinnvendingen i runden, og den treffer også min egen bekymring: man kan ikke bygge en arkitektur mot en årsak man ikke har verifisert.</p>
+        <p class="challenges"><span class="tag down">Utfordrer</span>Setet som vil levere en «minimumsjustert A» til fristen tar for lett på hva det signaliserer. En prisjustering nå er tredje justering på tre år; den bekrefter for kretsene at forbundet ikke har en plan, og den brenner den politiske kapitalen man trenger når det egentlige spørsmålet — på hvilket nivå risikoen skal poolet — endelig skal vedtas. Å levere «noe» kan koste mer enn å levere en ærlig utsettelse.</p>
+      </div>
+    </div>
+    <div class="turn">
+      <div class="badge">C</div>
+      <div class="body">
+        <p class="agrees"><span class="tag up">Enig</span>Med at NIF-sporet er en reell beslutningsvariabel og ikke en fotnote, og med at kontrakts- og systemvalg må holdes modulære. Det stemmer med min erfaring: det er bindingene, ikke prinsippene, som er dyre å reversere.</p>
+        <p class="challenges"><span class="tag down">Utfordrer</span>Men å gjøre modell D til «referansen de andre må forsvares mot» er en akademisk luksus vi ikke har råd til på sju uker. Sverige og Danmark har hatt kollektiv klubbforsikring i tiår med et klubbapparat bygget rundt det; norske skiklubber har ikke administrasjonen som kreves for å bære det fra neste sesong. Reframing er riktig retning og feil leveranse.</p>
+      </div>
+    </div>
+    <div class="turn">
+      <div class="badge">D</div>
+      <div class="body">
+        <p class="agrees"><span class="tag up">Enig</span>Med at klokken er verre enn planen antar, og med at de avgjørende bestillingene ikke er sendt. Det underbygger mitt eget poeng: utvalget diskuterer modellvalg før det har grunnlaget som avgjør modellvalget.</p>
+        <p class="challenges"><span class="tag down">Utfordrer</span>To seter behandler dette som et fremdrifts- og datakvalitetsproblem. Det er også et legitimitetsproblem, og det løses ikke av bedre tall. Selv en perfekt priset modell B må forsvares den dagen en 16-åring som valgte bort tillegget blir alvorlig skadet — og at utvalget da kan vise til oppfylt informasjonsplikt, hjelper ikke i den offentlige samtalen. Ingen har spurt medlemmene om de vil gi opp behandlingsgarantien.</p>
+      </div>
+    </div>
+    <div class="turn">
+      <div class="badge">E</div>
+      <div class="body">
+        <p class="agrees"><span class="tag up">Enig</span>Med at forbundet er i motfase med sin egen sektor, og at man risikerer å bygge for idretten man hadde. Det er samme observasjon som min, ett nivå opp: strukturen er sedimentert, ikke designet.</p>
+        <p class="challenges"><span class="tag down">Utfordrer</span>Jeg avviser rammen om at «A som bro» er trygt. A endrer ingenting arkitektonisk og forlenger nøyaktig den skjeve poolen som produserer premieøkningene — det er ikke en bro, det er å betale renter på problemet i ett år til. Og selvfinansieringskravet, som flere seter behandler som en gitt skranke, er et internt policyvalg NSF selv har brutt uten konsekvenser. Fjern den skranken, og løsningsrommet ser helt annerledes ut.</p>
+      </div>
+    </div>
+    <div class="turn">
+      <div class="badge">F</div>
+      <div class="body">
+        <p class="agrees"><span class="tag up">Enig</span>Med den tekniske dommen om at kalkulatoren ikke er rapportklar, og med at Birken-konflikten diskvalifiserer C som realistisk forhandlingsspor i denne runden. Det er to konkrete grunner til å snevre inn leveransen.</p>
+        <p class="challenges"><span class="tag down">Utfordrer</span>Men de som vil omramme hele oppdraget til «hvilket nivå skal poolen ligge på» og de som vil vente på NIF, overser at utvalget har et vedtatt mandat med en dato. Leverer man en reframing i stedet for et forslag, har man ikke løst oppdraget — man har returnert det. Det finnes en tredje vei: lever prinsippet og broen, med en bindende dato for tallfestingen. Ærlig utsettelse må ha en frist, ellers er den bare utsettelse.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="rule">
+
+  <!-- ============ CHAIRMAN SYNTHESIS ============ -->
+  <p class="section-label">The Chair's Ruling</p>
+  <div class="chairman">
+    <div class="seal"></div>
+    <h3>Syntese</h3>
+
+    <div class="tensions">
+      <p><strong>Den reelle spenningen:</strong> Alle seks seter mener grunnlaget ikke kan <em>tallfeste</em> B eller C i dag. Men de splitter hardt i tre leirer om hva det betyr. To seter mener det er et <em>dataproblem</em> som kan lukkes med de riktige bestillingene og en avstemming av regnskapstallene. To mener det er et <em>innrammingsproblem</em>: hele den individuelle lisensarkitekturen er arvet sediment, og det egentlige spørsmålet er på hvilket nivå risikoen skal poolet — klubb, forbund eller NIF — hvilket gjør en NSF-spesifikk modell prematur. Og ett sete mener det er et <em>legitimitetsproblem</em> som ikke lar seg regne bort: selv en perfekt priset modell B er offentlig uforsvarlig før NSF har spurt If hvorfor premien steg, og spurt medlemmene om de vil gi opp behandlingsgarantien de betaler for. Den skjulte uenigheten er om «justert A som bro» er trygt eller nettopp er å betale renter på problemet i ett år til.</p>
+    </div>
+
+    <div class="options">
+      <p><strong>De sterkeste alternativene:</strong></p>
+      <p><strong>1. Prinsippvedtak + bro med bindende frist.</strong> Lever 1. oktober et prinsippvedtak om Tinbergen-strukturen (skill de tre målene: registrering, forsikringsminimum, frivillige tillegg), en minimumsdifferensiert justering av A som ettårsbro for 2026/27, og et bundet to-trinnsløp med hardkodet dato for tallfestet B før lisensåret 2027/28. Billigst å reversere, ærlig om datamangelen, oppfyller mandatet formelt. Innvendingen står: en tredje prisjustering på tre år signaliserer at forbundet ikke har en plan.<br><br>
+      <strong>2. Omram til poolnivå-spørsmålet.</strong> Endre leveransen fra «hvilken av fem NSF-modeller» til «på hvilket nivå skal risikoen poolet», med modell D som referanse og et datert NIF-svar som forutsetning. Høyest analytisk gevinst, men risikerer å returnere oppdraget i stedet for å løse det — og norske skiklubber har ikke administrasjonen som en dansk/svensk klubbmodell forutsetter fra neste sesong.<br><br>
+      <strong>3. Tallfestet B/C nå.</strong> Ikke støttet av noe sete. Kredibilitetsgrunnlaget mangler, de to avgjørende meglerbestillingene er ikke sendt, og Birken — den uunnværlige motparten i C — er i rettskonflikt om nettopp lisensinntekter.</p>
+    </div>
+
+    <div class="recommendation">
+      <p class="rlabel">Anbefalt neste steg</p>
+      <p class="rtext">Send de to bestillingsbrevene denne uken — med fire spørsmål ingen ennå har stilt lagt til: (1) Ifs egen forklaring på premieøkningen, (2) håndballens faktiske opt-in-fordeling mellom LISE-nivåene, (3) meglers vurdering av minste kredible poolstørrelse per celle, (4) et datert svar fra NIF om samordningssporet. Omram samtidig 1. oktober-leveransen fra «anbefalt modell» til «prinsippvedtak + ettårsbro + bundet to-trinnsløp med frist». Spørsmål 1 er avgjørende: skyldes premieøkningen skadeutvikling og ikke produktstruktur, løser verken B eller C prisproblemet — de flytter det.</p>
+    </div>
+
+    <div class="dealbreakers">
+      <p class="dlabel">Deal-breakers flagget</p>
+      <ul>
+        <li><strong>Ingen har spurt forsikringsgiveren hvorfor premien steg 40 %.</strong> Er årsaken skadefrekvens og -alvorlighet snarere enn produktstruktur, faller hele begrunnelsen for omleggingen. Dette må besvares før noen modell anbefales — ikke etterpå.</li>
+        <li><strong>Kalkulatoren kan ikke vedlegges en styrerapport som den står.</strong> Den antar stilltiende 9 000 udokumenterte engangslisenser (univers 15 700) og presenterer resultatet som «kalibrert», modellerer admin som andel av brutto — hvilket mekanisk favoriserer B/C i alle scenarioer — og kan strukturelt ikke representere antiseleksjon fordi premien er en fast skalar per lisens.</li>
+        <li><strong>To kjernetall er fortsatt uforenlige i NSFs egne kilder.</strong> Subsidieperioden (2019–2024 mot 2021–2024) og beløpet (1,2/1,0 mot 1,6/2,0 MNOK) kan ikke stå side om side i en rapport til Skistyret. Må avstemmes mot Vedlegg 7 før noe tall publiseres.</li>
+        <li><strong>Modell C har ingen realistisk motpart i denne runden.</strong> Birken er i uavklart rettskonflikt med Norges Cykleforbund om eierskap til nøyaktig denne typen lisensinntekter. Å forhandle en ny kollektivmodell med dem på sju uker er ikke gjennomførbart.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>COUNCIL · samlet 11. august 2026</footer>
+
+</div>
+</body>
+</html>

@@ -18,6 +18,7 @@ Dette repoet strukturerer innhentingen av bakgrunnsfakta og data til utvalgsarbe
 | `04-prinsipielle-vurderinger.md` | Prinsipielle vurderinger forankret i økonomisk teori og empiri |
 | `05-rapportdisposisjon.md` | Skjelett for utvalgets sluttrapport med produksjonsplan mot 1. oktober |
 | `06-epostutkast.md` | Ferdige e-postutkast: bestillinger, innspillsrunde og arrangørintervjuer |
+| `08-radsvurdering.html` | Ekspertrådets trykktest: seks seter, fagfellerunde, formannens syntese og fire deal-breakers |
 | `07-panelvurdering.md` | Tre uavhengige kvalitetsvurderinger av grunnlaget: funn, rettelser og beslutningsporter |
 | `bakgrunn/17-litteratur.md` | Verifisert referanseliste og sentrale empiriske funn til prinsippnotatet |
 | `bakgrunn/10-dagens-ordning.md` | Dagens skilisensordning: typer, priser, dekning, historikk, kritikk |

@@ -59,6 +59,10 @@ tydelig minimumsordning · reduserte barrierer · frivillige tilleggsforsikringe
 
 **Status for anbefalingen:** B (ev. B+C) er formulert som **hypotese med beslutningsporter**, ikke konklusjon. Feller meglersvarene premissene om opt-in-grad eller poolstørrelse, er **A riktig anbefaling**.
 
+**Ekspertrådets dom** (`08-radsvurdering.html`, seks seter): ingen av setene mener B/C kan *tallfestes* til 1. oktober. Rådets anbefaling er å omramme leveransen fra «anbefalt modell» til **prinsippvedtak (Tinbergen-strukturen) + minimumsdifferensiert A som ettårsbro for 2026/27 + bundet to-trinnsløp med hardkodet dato for tallfestet B før 2027/28**. Merk mindretallsinnvendingen: en tredje prisjustering på tre år signaliserer at forbundet ikke har en plan, og «A som bro» endrer ingenting arkitektonisk.
+
+**Tidslinjen er strammere enn planen antar:** det er 51 dager (7,3 uker) til fristen, og produksjonsplanen i `05-rapportdisposisjon.md` la interne data til uke 32 — som er passert. Ingen bestillinger er sendt. Dette er avgjørende for hva som realistisk kan leveres.
+
 ## 5. Kritisk sti — det som må skje nå
 
 | Prioritet | Handling | Hvorfor |
@@ -83,7 +87,9 @@ Panelvurderingen (`07`) fant følgende. Rettet: ✔ · Åpent: ○
 - ○ «+126 %» for langrenn hviler på delvis verifisert prisserie (740/2 600 → 650/2 400?).
 - ○ USSS-priser fra søkeindeks; alpin skadefrekvens 0,96/1 000 skidager mangler datert primærkilde.
 
-**Kalkulatorens metodesvakheter** (flagg i rapporten): lineær punktelastisitet er uegnet ved store prisendringer; ingen krysspriselastisitet/segmentmigrasjon; premien er eksogen per lisens der den reelt er kollektivt forhandlet; admin bør splittes fast/variabel.
+**Kalkulatoren kan ikke vedlegges rapporten som den står** (rådets deal-breaker): den antar stilltiende ~9 000 udokumenterte engangslisenser (antatt univers 15 700) og presenterer resultatet som «kalibrert»; lineær punktelastisitet ekstrapoleres mekanisk til store prissjokk (−69 % volum ved 173 % prisøkning, uten empirisk forankring); premien er to globale skalarer påført alle segmenter, så verktøyet kan strukturelt ikke representere antiseleksjon; admin som 5 % av brutto gir B/C en mekanisk fordel i alle scenarioer. Må bygges om eller nedgraderes til illustrasjon med eksplisitte forbehold.
+
+**Modell C har ingen realistisk motpart nå** (rådets deal-breaker): Birken er i uavklart rettskonflikt med Norges Cykleforbund om eierskap til nøyaktig denne typen lisensinntekter. Å forhandle en kollektivmodell med dem på sju uker er ikke gjennomførbart. Presedensen fra 2014 — der Birken selv dekket lisenskostnaden for alle deltakere for å hindre kaos før sesongstart — viser hvor fort dette eskalerer.
 
 **Underbelyste grupper** som må dekkes: toppidrett/landslag, para-utøvere og ledsagere, TD-er/funksjonærer, kretsenes inntektsandel, små dugnadsbaserte arrangører, utenlandske deltakere.
 

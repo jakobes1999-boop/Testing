@@ -88,6 +88,15 @@ Identifisert i `bakgrunn/`-notatene som gjenstående hull:
 9.9 **Para, TD-er og toppidrett**: dagens dekning og volum for para-utøvere/ledsagere, TD-er/funksjonærer og landslagsutøvere — må konsekvensvurderes særskilt i alle modeller.
 9.10 **Klubbenes kontingentnivå** (NIF/idrettsregistreringen el. utvalg): referansepunkt for modell D/E.
 
+## 10. Rådets fire spørsmål — legges til e-post 2 (jf. `08-radsvurdering.html`)
+
+Ekspertrådet identifiserte fire spørsmål ingen ennå har stilt, og som avgjør modellvalget:
+
+10.1 **Ifs egen forklaring på premieøkningen på 40 %.** Skyldes den skadefrekvens/-alvorlighet eller produktstruktur og reprising? *Rådets viktigste deal-breaker:* er årsaken skadeutvikling, løser verken B eller C prisproblemet — de flytter det. Må besvares FØR en modell anbefales.
+10.2 **Håndballens faktiske opt-in-fordeling** mellom LISE / LISE Pluss / LISE Super. Beste norske empiri på hvor mange som faktisk velger opp — premisset hele modell B hviler på.
+10.3 **Meglers vurdering av minste kredible poolstørrelse per celle.** Kredibilitetsteori tilsier ~1 000 forventede skadetilfeller for full kredibilitet; med segmenter på 400–800 lisenser kan trolig bare 2–3 grove risikoklasser prises på egen erfaring, og resten må veies mot bransjebenchmark (Bühlmann-Straub). Be eksplisitt om denne vurderingen.
+10.4 **Datert svar fra NIF** om samordningssporet (modell E). Uten en tidslinje kan utvalget ikke vurdere om NSF-spesifikke meglerkontrakter og salgskanaler må rives opp innen 24 måneder.
+
 ### Utkast til bestillings-e-post (kan tilpasses)
 
 > Emne: Databestilling – hurtigarbeidende utvalg for Skilisens (frist [dato])

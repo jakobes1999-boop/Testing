@@ -21,6 +21,7 @@ Dette repoet strukturerer innhentingen av bakgrunnsfakta og data til utvalgsarbe
 | `07-panelvurdering.md` | Tre uavhengige kvalitetsvurderinger av grunnlaget: funn, rettelser og beslutningsporter |
 | `08-radsvurdering.html` | Ekspertrådets trykktest: seks seter, fagfellerunde, formannens syntese og fire deal-breakers |
 | `bakgrunn/17-litteratur.md` | Verifisert referanseliste og sentrale empiriske funn til prinsippnotatet |
+| `bakgrunn/18-fotball-forsikringsutvalget.md` | **Nøkkelkilde:** NFFs forsikringsutvalg 2024/25 — samme øvelse, motsatt konklusjon |
 | `bakgrunn/10-dagens-ordning.md` | Dagens skilisensordning: typer, priser, dekning, historikk, kritikk |
 | `bakgrunn/11-andre-saerforbund.md` | Benchmarking av lisens-/forsikringsordninger i andre norske særforbund |
 | `bakgrunn/12-internasjonalt-og-turrenn.md` | Sverige/Finland, FIS-krav, praksis hos store turrenn/langløp |

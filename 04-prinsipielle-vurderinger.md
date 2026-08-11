@@ -39,6 +39,10 @@ Arrow (1963) og Pauly (1968) viste at forsikring endrer atferd på to marginer: 
 
 **Rolleavklaringen mot offentlig helsevesen** (Skistyrets prinsipp 5) har altså solid teoretisk forankring: obligatorisk dekning bør avgrenses til det som er (a) reelle udekkede tap (invaliditet, død, tannskader, redningskostnader, ansvar) og (b) FIS-gulvet; køkjøp og fysioterapi-tempo er frivillige produkter.
 
+> **Vesentlig korreksjon (august 2026):** Argumentet over hviler på at det offentlige faktisk *tilbyr* behandlingen, slik at idrettsforsikringen bare kjøper fortrinn i køen. NFFs forsikringsutvalg dokumenterer at dette premisset er empirisk svekket (`bakgrunn/18`): etter pandemien er det «nesten ingen» som får avlastning i det offentlige, fotballen har hatt **ca. 90 % nedgang siden 2019** i antall operasjoner de får inn i offentlig helsevesen, og ikke alle offentlige sykehus prioriterer f.eks. korsbåndskirurgi. Er det riktig også for ski, er behandlingsdekningen ikke køhopping men **den eneste realistiske behandlingsveien** — og å flytte den til et frivillig sjikt betyr at de som ikke kjøper opp reelt står uten behandling, ikke bare uten fortrinn. Moralsk hasard-argumentet står fortsatt for *overbehandling* innenfor et gitt tilbud (NFF kuttet behandlingsrammen fra 20 000 til 15 000 kr nettopp av den grunn), men bærer ikke lenger konklusjonen om at hele behandlingsdekningen prinsipielt hører i det frivillige sjiktet.
+>
+> Prinsipp 5 må derfor omformuleres: spørsmålet er ikke «skal idretten finansiere køhopping», men **«hvem skal betale for idrettsmedisinsk behandling som det offentlige har trukket seg fra»**. NFFs svar er å arbeide for offentlig finansiering av Idrettens skadetelefon sammen med NIF — ikke å krympe dekningen. Dette må avklares empirisk for ski (hvor stor andel av skiskadene tas i dag av det offentlige?) før designprinsipp 3 nedenfor kan stå.
+
 ## 3. Deltakelsesøkonomi: pris, friksjon og de marginale deltakerne
 
 ### 3.1 Elastisitet er ulik i kjernen og i randsonen — men varierer mer enn man tror

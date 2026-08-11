@@ -59,6 +59,15 @@ NSF opplyste i november 2025 at det er igangsatt et NIF-arbeid for kostnadssyner
 - **Motforestillinger:** utenfor utvalgets kontroll og tidshorisont; krever flerforbunds-enighet; grendifferensiering på tvers av forbund er krevende.
 - **Handling nå:** dette er primært en *koordineringsrisiko* — utvalget må avklare status og tidslinje med NIF (restliste 8.5) før endelig modellvalg, og utforme anbefalingen slik at den er kompatibel med en senere NIF-samordning.
 
+### F. Egeneid forsikring (captive) + offentlig finansiert skadetelefon
+Fra NFFs forsikringsutvalg (`bakgrunn/18`), som anbefaler at begge grep vurderes:
+- **Captive insurance company:** idretten etablerer et eget skadeforsikringsselskap som i prinsippet bare forsikrer sine eiere, i stedet for å betale premie til tredjepart. Treffer marginproblemet direkte — fotballens selskap økte marginkravet fra 16 % til 26,8 %. Forutsetter stort volum, og er derfor i praksis bare realistisk i NIF-fellesskap (kobles til modell E).
+- **Offentlig finansiering av Idrettens skadetelefon** i samarbeid med NIF: flytter en fast kostnad ut av premien i stedet for å bake den inn. Treffer presist innvendingen om at et krympet obligatorisk minimum undergraver skadetelefonens finansiering. NFF betaler 13,5–14 MNOK årlig for medlemmenes tilgang.
+
+- **Løser:** premienivå og marginlekkasje; fjerner skadetelefonen fra premiegrunnlaget.
+- **Motforestillinger:** captive krever kapital, konsesjon og volum langt over NSFs; ligger utenfor utvalgets mandat og tidshorisont.
+- **Handling nå:** ta med som anbefalt utredningsspor, og som argument i NIF-dialogen (restliste 8.5).
+
 ## 4. Vurdering mot mandatets prinsipper
 
 | Prinsipp (Skistyret) | A Justert | B Minimum+valg | C Todelt | D Medlemskap |
@@ -72,6 +81,8 @@ NSF opplyste i november 2025 at det er igangsatt et NIF-arbeid for kostnadssyner
 | Gjennomførbart til 1. okt. | **++** | + | + | – |
 
 **Foreløpig vurdering:** B, eventuelt B+C i kombinasjon (minimumslisens for konkurranse + arrangørkollektiv for turrenn), treffer mandatets fem prinsipper best og har direkte internasjonale forbilder (Frankrike, Finland, Vasaloppet) — men dette er en **hypotese med eksplisitte beslutningsporter**, ikke en konklusjon: hvis meglersvarene viser at opt-in-graden blir for lav (antiseleksjon) eller at ~6 700 lisenser er for tynt volum for differensiert prising, er **A riktig anbefaling** — A løser tre av fem problemer raskt og billig og må behandles med samme analytiske grundighet (jf. `07-panelvurdering.md`). D beskrives som mulig langsiktig retning; E (NIF-samordning) er primært en koordineringsrisiko som må avklares før valget.
+
+**Tungtveiende motpresedens (august 2026):** NFFs forsikringsutvalg gjennomførte i 2024/25 nesten identisk tingvedtatt gjennomgang og **forkastet både reduserte dekninger og frivillighet i kjernen** — «alle bør ha en grunnforsikring» — med den begrunnelse at reduserte dekninger gir «større økonomiske barrierer, mindre solidaritet og forskjeller ved at de som har god økonomi vil kjøpe seg tilleggsforsikringer». Fotballen valgte i stedet **gradvis** tilpasning av premie til skadekostnad per gruppe, altså i praksis modell A. Fotballen dokumenterer dessuten at premieveksten drives av strukturell skadeutvikling og at det offentlige har trukket seg ~90 % ut av idrettsmedisinsk kirurgi siden 2019 — er det samme sant for ski, løser ikke B/C prisproblemet, de flytter det. Se `bakgrunn/18`. Utvalget må enten begrunne hvorfor ski er annerledes enn fotball, eller justere anbefalingen mot A pluss modell E/F-sporet.
 
 ## 5. Hva som må på plass før utvalget kan velge
 

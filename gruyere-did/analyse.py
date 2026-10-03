@@ -388,6 +388,7 @@ log()
 k = kpi.pivot(index="maned", columns="gruppe", values="kpi_2025eq100")
 k.index = pd.PeriodIndex(k.index, freq="M")
 kd = pd.DataFrame({"rel": 100 * np.log(k["01.1.4.5"] / k["01.1"])})
+kd = kd[(kd.index.year >= WINDOW[0]) & (kd.index.year <= WINDOW[1])]
 kd["t"] = np.arange(len(kd))
 kd["post"] = (kd.index.year >= REFORM_YEAR).astype(int)
 kd["mnd"] = kd.index.month
@@ -397,6 +398,71 @@ its_short = smf.ols("rel ~ t + C(mnd) + post", kd[(kd.index.year >= 2010) & (kd.
 log("## 5. KPI ost relativt til KPI matvarer (log-diff ×100), nivåskift fra jan 2013")
 log(f"2008–2019: {its.params['post']:+.2f} (HAC-SE {its.bse['post']:.2f}, p={its.pvalues['post']:.2f})")
 log(f"2010–2015: {its_short.params['post']:+.2f} (HAC-SE {its_short.bse['post']:.2f}, p={its_short.pvalues['post']:.2f})")
+log()
+
+# --------------------------------------------------------------------------------------
+# 6. Elastisitet innenfor importen (Wald-estimator): mengdeeffekt / priseffekt
+# --------------------------------------------------------------------------------------
+# Landmodellen gir reduced form: Δln Q for et fullt eksponert land. Priseffekten er tollkilen på
+# annen hard ost. Tollen virker bare utenfor kvote, så den effektive prisøkningen avhenger av hvor
+# stor andel s av den rammede importen som går inn tollfritt innenfor kvote (ikke observert i SSB).
+# Når s øker, blir priseffekten mindre og elastisiteten større i absoluttverdi; s = 0 gir derfor en
+# nedre grense for |ε|.
+beta_q = m_ppml.params["ExP"]
+se_q = m_ppml.bse["ExP"]
+el_rows = []
+for s_q in [0.0, 0.25, 0.5, 0.75]:
+    p_before = (1 - s_q) * (p_taxed + SPECIFIC_TARIFF) + s_q * p_taxed
+    p_after = (1 - s_q) * p_taxed * (1 + AD_VALOREM) + s_q * p_taxed
+    dlnp = np.log(p_after / p_before)
+    el_rows.append(dict(andel_innenfor_kvote=s_q, dlnP=dlnp, elastisitet=beta_q / dlnp,
+                        ki_lav=(beta_q - 1.96 * se_q) / dlnp, ki_hoy=(beta_q + 1.96 * se_q) / dlnp))
+el = pd.DataFrame(el_rows)
+el.to_csv(RES / "elastisitet_import.csv", index=False)
+log("## 6. Egenpriselastisitet for import av annen hard ost (Wald: PPML-β / Δln pris)")
+for _, r in el.iterrows():
+    log(f"  andel innenfor kvote {r.andel_innenfor_kvote:.2f}: Δln P = {r.dlnP:.2f}, ε = {r.elastisitet:.2f} "
+        f"(95 % KI {r.ki_lav:.2f} til {r.ki_hoy:.2f})")
+log()
+
+# --------------------------------------------------------------------------------------
+# 7. Norsk mot importert ost (Armington) – krever manuell serie for norsk ost
+# --------------------------------------------------------------------------------------
+# M_t: all osteimport (SSB 08801), D_t: norsk ost solgt i Norge (Landbruksdirektoratets Markedsrapport).
+# ln(M/D) = a + σ ln(P_D / P_M) + b·trend,  P_D = KPI ost,  P_M = importens enhetsverdi (kr/kg, CIF).
+# σ estimeres med OLS og med reformen (post 2013) som instrument for relativ pris. Med årsdata er
+# antallet observasjoner lite; resultatet er indikativt.
+new = read_wide(DATA / "ssb_08801_import_eksport_hardost_2022_2025.csv", ["Varekoder", "ImpEks"])
+new["year"] = new["per"].astype(int)
+imp_all = pd.concat([tot, new[new["ImpEks"] == "1"]]).groupby("year")[["Mengde1", "Verdi"]].sum()
+imp_all = imp_all[imp_all.index >= 2008]
+kpi_y = kpi.assign(year=kpi["maned"].str[:4].astype(int)).groupby(["year", "gruppe"])["kpi_2025eq100"].mean().unstack()
+arm = pd.DataFrame({
+    "import_tonn": imp_all["Mengde1"] / 1000,
+    "import_enhetsverdi": imp_all["Verdi"] / imp_all["Mengde1"],
+    "kpi_ost": kpi_y["01.1.4.5"], "kpi_total": kpi_y["00"],
+}).dropna()
+manual = DATA / "manuelt_norsk_ost.csv"
+nor = pd.read_csv(manual, comment="#")
+arm = arm.join(nor.set_index("aar")[["norsk_ost_solgt_tonn"]])
+arm.to_csv(RES / "armington_panel.csv")
+ok = arm.dropna(subset=["norsk_ost_solgt_tonn"])
+log("## 7. Norsk mot importert ost (Armington)")
+log(f"Import av ost (SSB): 2024 {arm.loc[2024, 'import_tonn']:.0f} t, 2025 {arm.loc[2025, 'import_tonn']:.0f} t "
+    "(Landbruksdirektoratet: 20 041 t og 20 683 t; avviket i 2025 skyldes trolig revisjoner)")
+if len(ok) >= 10:
+    ok = ok.assign(ln_md=np.log(ok["import_tonn"] / ok["norsk_ost_solgt_tonn"]),
+                   ln_rel=np.log(ok["kpi_ost"] / (ok["import_enhetsverdi"] / ok["import_enhetsverdi"].iloc[0] * 100)),
+                   trend=ok.index - ok.index.min(), post=(ok.index >= REFORM_YEAR).astype(int))
+    ols = smf.ols("ln_md ~ ln_rel + trend", ok).fit(cov_type="HAC", cov_kwds={"maxlags": 2})
+    fs = smf.ols("ln_rel ~ post + trend", ok).fit()
+    rf = smf.ols("ln_md ~ post + trend", ok).fit()
+    sigma_iv = rf.params["post"] / fs.params["post"]
+    log(f"OLS: σ = {ols.params['ln_rel']:.2f} (HAC-SE {ols.bse['ln_rel']:.2f}), n = {len(ok)}")
+    log(f"IV (reform som instrument): σ = {sigma_iv:.2f}; førstetrinn F = {fs.tvalues['post'] ** 2:.1f}")
+else:
+    log(f"Hoppet over: {manual.name} har {len(ok)} år med norsk ost (minst 10 trengs). "
+        "Fyll inn fra Landbruksdirektoratets Markedsrapport.")
 log()
 
 (RES / "nokkeltall.md").write_text("# Nøkkeltall (generert av analyse.py)\n\n" + "\n".join(lines) + "\n")

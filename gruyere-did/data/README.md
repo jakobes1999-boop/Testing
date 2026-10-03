@@ -86,3 +86,23 @@ Formål: kontroll av om tollen på Gruyère/navngitte oster ble endret rundt 202
 
 SSB tabell 10455 (Prodcom 10.51.40.xx, ost) er prikket («:») fra og med 2010. Mengde norsk ost må
 hentes fra Landbruksdirektoratets Markedsrapport eller Helsedirektoratets «Utviklingen i norsk kosthold».
+
+## 6. `ssb_08801_import_eksport_hardost_2022_2025.csv`
+
+```
+Kilde: SSB tabell 08801
+Filtre: Varekoder = 04069093_2022, 04069097_2022, 04069098_2022; ImpEks = 1, 2;
+        Land = eliminert; ContentsCode = Mengde1, Verdi; Tid = 2022–2025
+Uttaksdato: 2026-10-03
+```
+
+Rimelighetskontroll: samlet osteimport (alle 0406-varenumre) er 20 041 t i 2024 og 20 693 t i 2025.
+Landbruksdirektoratets Markedsrapport oppgir 20 041 t og 20 683 t.
+
+KPI-filen (`ssb_14700_kpi_ost_mat.csv`) er utvidet til 2008M01–2026M08 og omfatter nå også 00 (KPI totalt).
+Årsgjennomsnittet for 2025 er 100,0 for alle tre gruppene, slik det skal være med 2025 = 100.
+
+## 7. `manuelt_norsk_ost.csv` (manuell kilde, må fylles inn)
+
+Norsk ost solgt i Norge (tonn per år) fra Landbruksdirektoratets Markedsrapport. Nettstedet er ikke
+tilgjengelig fra analysemiljøet. Armington-modulen i `analyse.py` kjører når minst 10 år er fylt inn.

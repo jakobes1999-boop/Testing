@@ -51,3 +51,13 @@ Smelteost, gj.snitt per måned: 2011–2012 28 t, jan–apr 2013 21 t, mai 2013�
 2008–2019: +1.36 (HAC-SE 2.00, p=0.50)
 2010–2015: -0.49 (HAC-SE 1.57, p=0.75)
 
+## 6. Egenpriselastisitet for import av annen hard ost (Wald: PPML-β / Δln pris)
+  andel innenfor kvote 0.00: Δln P = 0.94, ε = -0.84 (95 % KI -1.33 til -0.35)
+  andel innenfor kvote 0.25: Δln P = 0.82, ε = -0.96 (95 % KI -1.52 til -0.41)
+  andel innenfor kvote 0.50: Δln P = 0.66, ε = -1.20 (95 % KI -1.90 til -0.51)
+  andel innenfor kvote 0.75: Δln P = 0.42, ε = -1.91 (95 % KI -3.02 til -0.80)
+
+## 7. Norsk mot importert ost (Armington)
+Import av ost (SSB): 2024 20041 t, 2025 20693 t (Landbruksdirektoratet: 20 041 t og 20 683 t; avviket i 2025 skyldes trolig revisjoner)
+Hoppet over: manuelt_norsk_ost.csv har 1 år med norsk ost (minst 10 trengs). Fyll inn fra Landbruksdirektoratets Markedsrapport.
+

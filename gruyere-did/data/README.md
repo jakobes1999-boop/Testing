@@ -133,3 +133,24 @@ Uttaksdato: 2026-10-03
 Bearbeiding: Inntekten deflateres med KPI totalt (årsgjennomsnitt, tabell 14700) og deles på folkemengden.
 Merk: Disponibel inntekt inkluderer aksjeutbytte; utbytteuttak rundt skatteendringen i 2016 kan gi støy.
 ```
+
+## 10. Landbruksdirektoratets markedsrapporter (skript)
+
+`skrap_landbruksdirektoratet.py` laster ned «Markedsrapport» for 2012–2025 og trekker ut norsk ost solgt i
+Norge, import av ost og importandel. Det krever nettilgang til landbruksdirektoratet.no (og regjeringen.no
+for 2019-rapporten).
+
+```
+python3 skrap_landbruksdirektoratet.py last-ned            # PDF-er til data/landbruksdirektoratet/pdf/ (ikke i git)
+python3 skrap_landbruksdirektoratet.py ekstraher           # uttrekk_ost.csv og forslag_norsk_ost.csv
+python3 skrap_landbruksdirektoratet.py fyll-inn            # tørrkjøring
+python3 skrap_landbruksdirektoratet.py fyll-inn --bekreft  # skriver til manuelt_norsk_ost.csv
+```
+
+Skriptet henter tall fra tabeller, fra tabeller som bare er tekstlinjer, og fra setninger i løpende tekst.
+For hvert dataår velger det verdien fra den nyeste rapporten, slik at revisjoner kommer med. Hvert tall har
+rapport, side og tekstutdrag i `uttrekk_ost.csv`. Forslaget må kontrolleres mot PDF-ene før det brukes.
+Mangler en rapport, legges adressen inn i `data/landbruksdirektoratet/urls.txt` som «år url».
+
+Skriptet er testet på syntetiske PDF-er med samme oppbygning (tabeller med og uten rammer, og setninger).
+Det er ikke testet mot de faktiske rapportene, fordi nettstedet var sperret i analysemiljøet.

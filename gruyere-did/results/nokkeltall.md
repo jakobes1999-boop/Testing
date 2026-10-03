@@ -64,7 +64,7 @@ Smelteost, gj.snitt per måned: 2011–2012 28 t, jan–apr 2013 21 t, mai 2013�
 
 ## 7. Norsk mot importert ost (Armington)
 Import av ost (SSB): 2024 20041 t, 2025 20693 t (Landbruksdirektoratet: 20 041 t og 20 683 t; avviket i 2025 skyldes trolig revisjoner)
-Hoppet over: manuelt_norsk_ost.csv har 1 år med norsk ost (minst 10 trengs). Fyll inn fra Landbruksdirektoratets Markedsrapport.
+Hoppet over: manuelt_norsk_ost.csv har 7 år med norsk ost (minst 10 trengs). Fyll inn fra Landbruksdirektoratets Markedsrapport.
 
 ## 8. Etterspørsel etter importost, panel med 9 kategorier 2008–2025 (klynge på år, n = 162)
   Grunnmodell                      OLS: egenpris -0.52 (0.04), krysspris norsk ost -1.50 (0.55), inntekt +2.83 (0.20)

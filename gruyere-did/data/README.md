@@ -70,3 +70,19 @@ Tolltariffen for 0406.90 ble delt opp på nytt 1.1.2013:
 Summen 9091 + 9099 (før) og 9092 + 9097 + 9098 (etter) dekker samme varer og gir en konsistent
 serie for «hard og halvhard ost». Gruyère og de andre navngitte ostene kan **ikke** skilles ut før 2013.
 Hovedvinduet slutter i 2019 fordi pandemien og omkodingen i 2022 ellers ville gitt nye brudd i serien.
+
+## 5. `ssb_08799_import_hardost_land_mnd_2022_2026.csv`
+
+```
+Kilde: SSB tabell 08799 (månedlig)
+Filtre: Varekoder = 04069093_2022, 04069097_2022, 04069098_2022; ImpEks = 1; Land = CH, IT, FR;
+        ContentsCode = Mengde1 (kg), Verdi (kr); Tid = 2022M01–2026M08
+Enhet: kg og kroner, løpende priser
+Uttaksdato: 2026-10-03
+Formål: kontroll av om tollen på Gruyère/navngitte oster ble endret rundt 2024 (ingen brudd funnet).
+```
+
+## Ikke tilgjengelig: norsk osteproduksjon
+
+SSB tabell 10455 (Prodcom 10.51.40.xx, ost) er prikket («:») fra og med 2010. Mengde norsk ost må
+hentes fra Landbruksdirektoratets Markedsrapport eller Helsedirektoratets «Utviklingen i norsk kosthold».

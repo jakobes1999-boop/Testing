@@ -16,7 +16,7 @@ Vi bruker omleggingen som et naturlig eksperiment. Fordi Gruyère og de andre na
 - Vi finner ingen målbar effekt på konsumprisindeksen for ost, noe som er rimelig gitt at importen utgjør en liten del av forbruket og i stor grad går inn innenfor kvote.
 - Vi finner ingen tollendring for Gruyère eller annen ost i 2024. Importen av navngitte oster fra Sveits er stabil i både mengde og pris gjennom 2023–2025.
 
-Elastisiteten mellom norsk og importert ost kan ikke estimeres med SSB-data alene, fordi SSB ikke publiserer mengden norsk ost (produksjonsstatistikken er prikket). Modellen er satt opp og kjøres når serien for norsk ost fra Landbruksdirektoratets markedsrapporter er lagt inn.
+Elastisiteten mellom norsk og importert ost kan ikke estimeres med SSB-data alene, fordi SSB ikke publiserer mengden norsk ost (produksjonsstatistikken er prikket). En etterspørselsmodell for importost med prisen på norsk ost som forklaringsvariabel gir en krysspriselastisitet med feil fortegn, og vi vurderer den som ikke identifisert. Modellen for norsk mot importert ost er satt opp og kjøres når serien for norsk ost fra Landbruksdirektoratets markedsrapporter er lagt inn. Den bør suppleres med målprisen for melk som instrument.
 
 ---
 
@@ -135,6 +135,14 @@ På det øverste trinnet estimerer vi
 
 der M er all osteimport, D er norsk ost solgt i Norge, P_D er KPI for ost og P_M er importens enhetsverdi. σ er substitusjonselastisiteten mellom norsk og importert ost. Fordi relative priser og mengder bestemmes samtidig, instrumenterer vi den relative prisen med reformen. Målprisen for melk, som fastsettes i jordbruksoppgjøret, kan brukes som et ekstra instrument for norsk pris.
 
+### 5.5 Etterspørsel etter importost med pris på norsk ost
+
+Inntil mengden norsk ost er på plass, estimerer vi en etterspørselsfunksjon for importost som tar med prisen på norsk ost. Vi bruker et panel med ni ostekategorier i 2008–2025:
+
+  ln(q_gt / N_t) = α_g + ε_egen · ln(P_gt / KPI_t) + ε_norsk · ln(KPI ost_t / KPI_t) + η · ln(Y_t / (N_t · KPI_t)) + u_gt
+
+Her er q importmengden i kategori g, N folkemengden, P tollbelastet importpris utenfor kvote, KPI ost prisen på ost i Norge (som domineres av norsk ost) og Y husholdningenes disponible inntekt. Egenprisen instrumenteres med en tollfaktor som bare varierer med tollvedtakene. Kronetollen på 27,15 kr/kg er nominelt fast og blir realt lavere år for år. Hard ost fikk i tillegg 277 prosent på den rammede andelen fra 2013. Krysspriselastisiteten ε_norsk identifiseres bare fra variasjonen over tid i realprisen på ost, og vi behandler den prisen som bestemt utenfor importmarkedet, fordi den i stor grad følger målprisen i jordbruksoppgjøret.
+
 ## 6. Resultater
 
 ### 6.1 Mengdeeffekt etter opprinnelsesland
@@ -183,7 +191,22 @@ To forbehold gjelder. For det første er estimatet relativt: det måler importen
 
 ### 6.4 Norsk mot importert ost
 
-*Venter på data.* Modellen i kapittel 5.4 er implementert i `analyse.py` (avsnitt 7) og kjører når `data/manuelt_norsk_ost.csv` har minst ti år med norsk ost solgt i Norge.
+Substitusjonselastisiteten mellom norsk og importert ost (kapittel 5.4) venter på data. Modellen er implementert i `analyse.py` (avsnitt 7) og kjører når `data/manuelt_norsk_ost.csv` har minst ti år med norsk ost solgt i Norge.
+
+I mellomtiden har vi estimert etterspørselen etter importost med prisen på norsk ost som forklaringsvariabel (kapittel 5.5):
+
+| Spesifikasjon | Egenpris | Krysspris mot norsk ost | Inntekt |
+|---|---|---|---|
+| IV, grunnmodell | –0,23 (0,03) | –1,56 (0,46) | 2,65 (0,17) |
+| IV, felles trend | –0,22 (0,03) | –1,15 (0,24) | 1,64 (0,20) |
+| IV, kategorispesifikke trender | –0,33 (0,03) | –1,09 (0,25) | 1,61 (0,19) |
+| OLS, grunnmodell | –0,52 (0,04) | –1,50 (0,55) | 2,83 (0,20) |
+
+*Tabell 6-3: Elastisiteter i etterspørselen etter importost, ni kategorier, 2008–2025 (n = 162). Standardfeil klynget på år i parentes. Kilde: `results/ettersporsel_import.csv`.*
+
+Egenpriselastisiteten er –0,2 til –0,3 med tollfaktoren som instrument. Det er lavere i absoluttverdi enn estimatet fra landanalysen (–0,8 eller høyere). Forskjellen er ventet: kategorien hard ost inneholder også de navngitte ostene, og prisen er målt som om all import betalte full toll, noe som overdriver prisendringen og trekker elastisiteten mot null. Vi tolker derfor –0,2 til –0,3 som en nedre grense og landanalysen som det beste anslaget.
+
+Krysspriselastisiteten mot norsk ost har feil fortegn. Står den til troende, skulle importen falle når norsk ost blir relativt dyrere, og det er ikke forenlig med at norsk og importert ost er substitutter. Vi tolker resultatet slik at den er dårlig identifisert. Realprisen på ost har bare 18 årsobservasjoner og varierer lite (mellom –7 og +3 prosent fra nivået i 2025). Fra 2015 til 2022 falt den med om lag 7 prosent, samtidig som importen vokste kraftig av andre grunner, blant annet fordi grensehandelen var stengt i 2020–2021. Modellen tilskriver da importveksten prisfallet. Inntektselastisiteten på 1,6–2,8 fanger trolig også opp den underliggende veksten i etterspørselen etter importost, ikke bare inntektseffekten. For å anslå krysspriselastisiteten troverdig trenger vi mengden norsk ost og et eksogent skift i norsk pris, for eksempel endringer i målprisen for melk fra jordbruksoppgjøret.
 
 ### 6.5 Sammensetning, fremskyndet import og konsumpriser
 
@@ -208,9 +231,10 @@ Analysen har fire viktige begrensninger. Vi observerer ikke kvotebruken, og elas
 ## 9. Videre arbeid
 
 1. Legge inn norsk ost solgt i Norge 2008–2025 fra Landbruksdirektoratets markedsrapporter og estimere substitusjonselastisiteten mellom norsk og importert ost (kapittel 5.4).
-2. Hente kvotebruk og kvotepriser for EU-ostekvoten fra Landbruksdirektoratet for å snevre inn elastisitetsintervallet.
-3. Kontrollere tollsatsene 2013–2026 mot tolltariffen (Lovdata, Tolletaten), særlig for 2024.
-4. Vurdere månedlige data for hele perioden 2008–2019 for å styrke hendelsesstudien.
+2. Hente målprisen for melk (jordbruksavtalene 2008–2025) som instrument for prisen på norsk ost.
+3. Hente kvotebruk og kvotepriser for EU-ostekvoten fra Landbruksdirektoratet for å snevre inn elastisitetsintervallet.
+4. Kontrollere tollsatsene 2013–2026 mot tolltariffen (Lovdata, Tolletaten), særlig for 2024.
+5. Vurdere månedlige data for hele perioden 2008–2019 for å styrke hendelsesstudien.
 
 ## Referanser
 
@@ -222,7 +246,7 @@ Analysen har fire viktige begrensninger. Vi observerer ikke kvotebruken, og elas
 - Prop. 1 LS (2012–2013). *Skatter, avgifter og toll 2013*. Finansdepartementet.
 - Rambachan, A. og Roth, J. (2023). A more credible approach to parallel trends. *Review of Economic Studies*, 90(5), 2555–2591.
 - Santos Silva, J. M. C. og Tenreyro, S. (2006). The log of gravity. *Review of Economics and Statistics*, 88(4), 641–658.
-- SSB (2026). Statistikkbanken, tabell 08799, 08801, 10455 og 14700. Uttak 3. oktober 2026.
+- SSB (2026). Statistikkbanken, tabell 06913, 08799, 08801, 10455, 10799 og 14700. Uttak 3. oktober 2026.
 - Stortinget (2012). Stortingsvedtak om toll for budsjettåret 2013, 27. november 2012.
 - Stortinget (2023). Stortingsvedtak om tollavgift for 2024, 14. desember 2023, vedlegg 4.
 - Webb, M. D. (2023). Reworking wild bootstrap-based inference for clustered errors. *Canadian Journal of Economics*, 56(3), 839–858.

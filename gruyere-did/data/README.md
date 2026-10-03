@@ -120,3 +120,16 @@ Bearbeiding: Rader der alle verdier er 0 er utelatt (EE, 04069093).
 Brudd: fra 2020 ble blåmuggliknende oster med Penicillium roqueforti-marmorering flyttet til 0406.40, og
 fra 2022 ble navnelisten utvidet. Summen av hard ost per land (9093 + 9097 + 9098) er derfor ikke helt
 sammenlignbar med 2008–2019. Forlengelsen til 2025 brukes bare som robusthetssjekk.
+
+## 9. `ssb_06913_10799_befolkning_inntekt.csv`
+
+```
+Kilde: SSB tabell 06913 «Endringer i kommuner, fylker og hele landets befolkning»
+Filtre: Region = 0 (hele landet); ContentsCode = Folkemengde (1. januar); Tid = 2008–2025
+Kilde: SSB tabell 10799 «Årlig inntekts- og kapitalregnskap, etter sektor (mill. kr)»
+Filtre: Sektor = h140000 (husholdninger); Transaksjoner = i3491_ (disponibel inntekt);
+        ContentsCode = LPriser (løpende priser, mill. kr); Tid = 2008–2025
+Uttaksdato: 2026-10-03
+Bearbeiding: Inntekten deflateres med KPI totalt (årsgjennomsnitt, tabell 14700) og deles på folkemengden.
+Merk: Disponibel inntekt inkluderer aksjeutbytte; utbytteuttak rundt skatteendringen i 2016 kan gi støy.
+```

@@ -500,6 +500,88 @@ else:
         "Fyll inn fra Landbruksdirektoratets Markedsrapport.")
 log()
 
+# --------------------------------------------------------------------------------------
+# 8. Etterspørsel etter importost: egenpris, pris på norsk ost og inntekt (panel 2008–2025)
+# --------------------------------------------------------------------------------------
+# ln(q_gt / N_t) = α_g + ε_egen ln(P_gt / KPI_t) + ε_norsk ln(KPI ost_t / KPI_t) + η ln(Y_t / (N_t KPI_t)) + u_gt
+# q: importmengde i kategori g, P: tollbelastet importpris utenfor kvote (enhetsverdi + toll),
+# KPI ost: pris på ost i Norge (domineres av norsk ost), Y: husholdningenes disponible inntekt.
+# Egenprisen instrumenteres med tollfaktoren z_gt = ln(1 + τ_gt / uv_g,2011), som bare varierer med
+# tollvedtakene: kronetollen på 27,15 kr/kg er nominelt fast og blir realt lavere over tid, og hard ost
+# fikk 277 % på den rammede andelen fra 2013. Prisen på norsk ost behandles som eksogen fordi den i
+# stor grad bestemmes av målprisen i jordbruksoppgjøret.
+HARD_2022 = ["04069093_2022", "04069097_2022", "04069098_2022"]
+groups_x = dict(PRODUCT_GROUPS)
+groups_x["Hard/halvhard ost"] = HARD + HARD_2022
+tot_x = pd.concat([tot, new[new["ImpEks"] == "1"]])
+rows = []
+for g, codes in groups_x.items():
+    s_ = tot_x[tot_x["Varekoder"].isin(codes)].groupby("year")[["Mengde1", "Verdi"]].sum()
+    s_["group"] = g
+    rows.append(s_.reset_index())
+dem = pd.concat(rows)
+dem = dem[dem["year"].between(2008, 2025)].copy()
+macro = pd.read_csv(DATA / "ssb_06913_10799_befolkning_inntekt.csv").rename(columns={"aar": "year"})
+macro = macro.merge(kpi_y[["00", "01.1.4.5"]].reset_index(), on="year")
+dem = dem.merge(macro, on="year")
+dem["uv"] = dem["Verdi"] / dem["Mengde1"]
+uv_base = dem[dem["year"] == REF_YEAR].set_index("group")["uv"]
+named_share_2013 = share.loc[2013, "navngitt_andel_kg"]
+
+
+def tariff_per_kg(g, year, uv):
+    if g == "Hard/halvhard ost" and year >= REFORM_YEAR:
+        return named_share_2013 * SPECIFIC_TARIFF + (1 - named_share_2013) * AD_VALOREM * uv
+    return SPECIFIC_TARIFF
+
+
+dem["toll_kg"] = [tariff_per_kg(g, y, u) for g, y, u in zip(dem["group"], dem["year"], dem["uv"])]
+dem["z"] = [np.log(1 + tariff_per_kg(g, y, uv_base[g]) / uv_base[g]) for g, y in zip(dem["group"], dem["year"])]
+dem["ln_q"] = np.log(dem["Mengde1"] / dem["folkemengde_1jan"])
+dem["ln_p"] = np.log((dem["uv"] + dem["toll_kg"]) / dem["00"])
+dem["ln_pnor"] = np.log(dem["01.1.4.5"] / dem["00"])
+dem["ln_y"] = np.log(dem["disponibel_inntekt_husholdninger_mill_kr"] / dem["folkemengde_1jan"] / dem["00"])
+dem["covid"] = dem["year"].isin([2020, 2021]).astype(int)
+dem.to_csv(RES / "panel_ettersporsel.csv", index=False)
+
+from linearmodels.iv import IV2SLS
+
+fe = pd.get_dummies(dem["group"], prefix="g", drop_first=True, dtype=float)
+dem["trend"] = dem["year"] - dem["year"].min()
+gtr = pd.DataFrame({f"tr_{i}": (dem["group"] == g) * dem["trend"] for i, g in enumerate(dem["group"].unique())})
+specs = {
+    "Grunnmodell": ["ln_pnor", "ln_y", "covid"],
+    "Med felles trend": ["ln_pnor", "ln_y", "covid", "trend"],
+    "Med kategorispesifikke trender": ["ln_pnor", "ln_y", "covid"] + list(gtr.columns),
+}
+dem_x = pd.concat([dem, gtr], axis=1)
+out = []
+for name, cols in specs.items():
+    X_exog = pd.concat([pd.Series(1.0, index=dem_x.index, name="const"), fe, dem_x[cols]], axis=1)
+    for est in ["OLS", "IV"]:
+        if est == "OLS":
+            m_ = IV2SLS(dem_x["ln_q"], pd.concat([X_exog, dem_x[["ln_p"]]], axis=1), None, None)
+        else:
+            m_ = IV2SLS(dem_x["ln_q"], X_exog, dem_x[["ln_p"]], dem_x[["z"]])
+        f_ = m_.fit(cov_type="clustered", clusters=dem_x["year"])
+        out.append(dict(spesifikasjon=name, estimator=est,
+                        egenpris=f_.params["ln_p"], egenpris_se=f_.std_errors["ln_p"],
+                        krysspris_norsk=f_.params["ln_pnor"], krysspris_norsk_se=f_.std_errors["ln_pnor"],
+                        inntekt=f_.params["ln_y"], inntekt_se=f_.std_errors["ln_y"],
+                        F_forstetrinn=(f_.first_stage.diagnostics["f.stat"].iloc[0] if est == "IV" else np.nan)))
+dem_res = pd.DataFrame(out)
+dem_res.to_csv(RES / "ettersporsel_import.csv", index=False)
+log("## 8. Etterspørsel etter importost, panel med 9 kategorier 2008–2025 (klynge på år, n = "
+    f"{len(dem)})")
+for _, r in dem_res.iterrows():
+    log(f"  {r.spesifikasjon:32s} {r.estimator:3s}: egenpris {r.egenpris:+.2f} ({r.egenpris_se:.2f}), "
+        f"krysspris norsk ost {r.krysspris_norsk:+.2f} ({r.krysspris_norsk_se:.2f}), "
+        f"inntekt {r.inntekt:+.2f} ({r.inntekt_se:.2f})"
+        + (f", F = {r.F_forstetrinn:.0f}" if pd.notna(r.F_forstetrinn) else ""))
+log("  Merk: krysspriselastisiteten mot norsk ost har feil fortegn for substitutter og er identifisert bare")
+log("  fra 18 års tidsvariasjon i realprisen på ost. Den bør ikke tolkes som strukturell (se rapporten, kap. 6.4).")
+log()
+
 (RES / "nokkeltall.md").write_text("# Nøkkeltall (generert av analyse.py)\n\n" + "\n".join(lines) + "\n")
 
 # --------------------------------------------------------------------------------------

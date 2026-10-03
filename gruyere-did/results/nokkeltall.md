@@ -66,3 +66,13 @@ Smelteost, gj.snitt per måned: 2011–2012 28 t, jan–apr 2013 21 t, mai 2013�
 Import av ost (SSB): 2024 20041 t, 2025 20693 t (Landbruksdirektoratet: 20 041 t og 20 683 t; avviket i 2025 skyldes trolig revisjoner)
 Hoppet over: manuelt_norsk_ost.csv har 1 år med norsk ost (minst 10 trengs). Fyll inn fra Landbruksdirektoratets Markedsrapport.
 
+## 8. Etterspørsel etter importost, panel med 9 kategorier 2008–2025 (klynge på år, n = 162)
+  Grunnmodell                      OLS: egenpris -0.52 (0.04), krysspris norsk ost -1.50 (0.55), inntekt +2.83 (0.20)
+  Grunnmodell                      IV : egenpris -0.23 (0.03), krysspris norsk ost -1.56 (0.46), inntekt +2.65 (0.17), F = 1736
+  Med felles trend                 OLS: egenpris -0.58 (0.05), krysspris norsk ost -0.95 (0.28), inntekt +1.53 (0.19)
+  Med felles trend                 IV : egenpris -0.22 (0.03), krysspris norsk ost -1.15 (0.24), inntekt +1.64 (0.20), F = 2056
+  Med kategorispesifikke trender   OLS: egenpris -0.53 (0.05), krysspris norsk ost -0.97 (0.27), inntekt +1.55 (0.19)
+  Med kategorispesifikke trender   IV : egenpris -0.33 (0.03), krysspris norsk ost -1.09 (0.25), inntekt +1.61 (0.19), F = 696
+  Merk: krysspriselastisiteten mot norsk ost har feil fortegn for substitutter og er identifisert bare
+  fra 18 års tidsvariasjon i realprisen på ost. Den bør ikke tolkes som strukturell (se rapporten, kap. 6.4).
+

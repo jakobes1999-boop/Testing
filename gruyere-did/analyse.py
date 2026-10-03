@@ -331,6 +331,41 @@ es_c_coef.to_csv(RES / "hendelsesstudie_land.csv")
 pre_test = es_c.wald_test(" , ".join(f"E_{y} = 0" for y in [2008, 2009, 2010]), scalar=True)
 log(f"Felles test av førperiode-koeffisienter (2008–2010) i landhendelsesstudien: "
     f"χ²={pre_test.statistic:.2f}, p={pre_test.pvalue:.3f} (få klynger: tolk med forsiktighet)")
+
+# Følsomhet for brudd på parallelle trender (i ånden til Rambachan & Roth, 2023): anta at forskjellen
+# i trend fra førperioden fortsetter lineært, og trekk den fra etterperiode-koeffisientene. Rapporter
+# også hvor stor en lineær trendforskjell måtte være for at gjennomsnittseffekten 2013–2019 skulle bli null.
+pre_years = np.array([2008, 2009, 2010, 2011])
+slope = np.polyfit(pre_years, es_c_coef.loc[pre_years, "b"].values, 1)[0]
+post_years = np.arange(2013, 2020)
+post_avg = es_c_coef.loc[post_years, "b"].mean()
+adj_avg = post_avg - slope * (post_years - REF_YEAR).mean()
+breakdown = post_avg / (post_years - REF_YEAR).mean()
+log(f"Lineær trendforskjell i førperioden: {slope:+.3f} log-poeng per år (positiv = eksponerte land vokste raskere)")
+log(f"Snitt etterperiode 2013–2019: {pct(post_avg):+.0f} %; trendkorrigert: {pct(adj_avg):+.0f} %")
+log(f"Gjennomsnittseffekten blir null først hvis eksponerte land fra 2011 hadde en relativ trend på "
+    f"{breakdown:+.3f} log-poeng per år (førperioden viste {slope:+.3f})")
+log()
+
+# Forlengelse til 2025 (robusthet; brudd i varenumre 2020 og 2022, se data/README.md)
+land_new = read_wide(DATA / "ssb_08801_import_hardost_land_2022_2025.csv", ["Varekoder", "ImpEks", "Land"])
+land_new["year"] = land_new["per"].astype(int)
+hard_ext = pd.concat([
+    land[land["Varekoder"].isin(HARD)], land_new]).groupby(["Land", "year"])[["Mengde1"]].sum().reset_index()
+full = pd.MultiIndex.from_product([sample, range(WINDOW[0], 2026)], names=["Land", "year"])
+cx = hard_ext.set_index(["Land", "year"]).reindex(full, fill_value=0).reset_index()
+cx = cx.merge(expo[["eksponering"]], left_on="Land", right_index=True).rename(columns={"Mengde1": "kg"})
+years_x = [y for y in range(WINDOW[0], 2026) if y != REF_YEAR]
+for y in years_x:
+    cx[f"E_{y}"] = cx["eksponering"] * (cx["year"] == y)
+es_x = ppml("kg ~ C(Land) + C(year) + " + " + ".join(f"E_{y}" for y in years_x), cx)
+es_x_coef = pd.DataFrame({"b": [es_x.params[f"E_{y}"] for y in years_x],
+                          "se": [es_x.bse[f"E_{y}"] for y in years_x]}, index=years_x)
+es_x_coef.loc[REF_YEAR] = [0.0, 0.0]
+es_x_coef = es_x_coef.sort_index()
+es_x_coef.to_csv(RES / "hendelsesstudie_land_2008_2025.csv")
+log("Hendelsesstudie forlenget til 2025 (PPML, effekt i % ved full eksponering): " + ", ".join(
+    f"{y}: {pct(es_x_coef.loc[y, 'b']):+.0f}" for y in [2013, 2016, 2019, 2021, 2022, 2023, 2024, 2025]))
 log()
 
 # --------------------------------------------------------------------------------------
@@ -560,6 +595,20 @@ ax.set_ylabel("100 × log(KPI ost / KPI mat)")
 ax.set_title("Figur 6. Konsumprisen på ost relativt til matvarer", loc="left", color=INK)
 ax.legend(loc="lower right")
 fig.savefig(FIG / "fig6_kpi.png")
+plt.close(fig)
+
+# Figur 7: hendelsesstudie forlenget til 2025
+fig, ax = plt.subplots(figsize=(8, 3.8))
+ax.axhline(0, color=INK2, lw=0.8)
+ax.axvspan(2019.5, 2021.5, color=GRID, alpha=0.6, lw=0)
+ax.fill_between(es_x_coef.index, es_x_coef.b - 1.96 * es_x_coef.se, es_x_coef.b + 1.96 * es_x_coef.se,
+                color=C1, alpha=0.15, lw=0)
+ax.plot(es_x_coef.index, es_x_coef.b, color=C1, marker="o", ms=4)
+ax.set_ylabel("Koeffisient (log-poeng), 2011 = 0")
+ax.set_xticks(range(2008, 2026, 2))
+ax.set_title("Figur 7. Land-DiD (PPML) forlenget til 2025 (pandemiår skyggelagt)", loc="left", color=INK)
+reform_line(ax)
+fig.savefig(FIG / "fig7_hendelsesstudie_2025.png")
 plt.close(fig)
 
 print("\nFerdig. Resultater i results/, figurer i figures/.")

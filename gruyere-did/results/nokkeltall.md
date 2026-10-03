@@ -37,6 +37,11 @@ PPML, mengde, landspesifikke trender             β=-0.522 (SE 0.144) → -41 % 
 PPML, mengde, uten 2012                          β=-0.795 (SE 0.235) → -55 % ved full eksponering; klynge-p=0.001
 
 Felles test av førperiode-koeffisienter (2008–2010) i landhendelsesstudien: χ²=7.23, p=0.065 (få klynger: tolk med forsiktighet)
+Lineær trendforskjell i førperioden: +0.046 log-poeng per år (positiv = eksponerte land vokste raskere)
+Snitt etterperiode 2013–2019: -61 %; trendkorrigert: -69 %
+Gjennomsnittseffekten blir null først hvis eksponerte land fra 2011 hadde en relativ trend på -0.189 log-poeng per år (førperioden viste +0.046)
+
+Hendelsesstudie forlenget til 2025 (PPML, effekt i % ved full eksponering): 2013: -44, 2016: -61, 2019: -65, 2021: -67, 2022: -76, 2023: -80, 2024: -75, 2025: -80
 
 ## 3. Sammensetning etter reformen
 Navngitt andel av hard ost (kg): 30.3% (2013) → 33.8% (2019) → 35.9% (2021)

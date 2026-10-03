@@ -106,3 +106,17 @@ KPI-filen (`ssb_14700_kpi_ost_mat.csv`) er utvidet til 2008M01–2026M08 og omfa
 
 Norsk ost solgt i Norge (tonn per år) fra Landbruksdirektoratets Markedsrapport. Nettstedet er ikke
 tilgjengelig fra analysemiljøet. Armington-modulen i `analyse.py` kjører når minst 10 år er fylt inn.
+
+## 8. `ssb_08801_import_hardost_land_2022_2025.csv`
+
+```
+Kilde: SSB tabell 08801
+Filtre: Varekoder = 04069093_2022, 04069097_2022, 04069098_2022; ImpEks = 1;
+        Land = CH, FR, IT, DK, NL, DE, SE, ES, GB, EE; ContentsCode = Mengde1, Verdi; Tid = 2022–2025
+Uttaksdato: 2026-10-03
+Bearbeiding: Rader der alle verdier er 0 er utelatt (EE, 04069093).
+```
+
+Brudd: fra 2020 ble blåmuggliknende oster med Penicillium roqueforti-marmorering flyttet til 0406.40, og
+fra 2022 ble navnelisten utvidet. Summen av hard ost per land (9093 + 9097 + 9098) er derfor ikke helt
+sammenlignbar med 2008–2019. Forlengelsen til 2025 brukes bare som robusthetssjekk.

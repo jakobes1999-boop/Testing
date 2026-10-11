@@ -188,6 +188,10 @@ def parse_num(s):
         return None
 
 
+# Fotnotemerker som henger fast i etiketten: «Ost2», «Melk1», «Ost²», «Smør² ³»
+FOOTNOTE_RE = re.compile(r"(?<=[A-Za-zÆØÅæøå])(?:\d|[¹²³⁴])(?:\s?[¹²³⁴\d](?=\s))*(?=\s)")
+
+
 def numbers(line):
     return [parse_num(m.group()) for m in NUM_RE.finditer(line)]
 
@@ -197,7 +201,8 @@ def label_of(line):
     return (line[: m.start()] if m else line).strip(" .:-–")
 
 
-CHEESE_RE = re.compile(r"\bost(er|en|ene)?\b|\bfaste og halvfaste\b|\bgulost", re.I)
+# «Ost²», «Ost2» og «ost,» skal treffe, men ikke «oster» i andre ord som «kostnad»
+CHEESE_RE = re.compile(r"(?<![a-zæøå])ost(?:er|en|ene)?(?![a-zæøå])|\bfaste og halvfaste\b|\bgulost", re.I)
 
 # Setningsmønstre for nøkkeltall i løpende tekst
 SENTENCE_PATTERNS = {
@@ -229,9 +234,11 @@ def extract_pdf(path, report_year):
                 for m in pat.finditer(flat):
                     val = next(g for g in m.groups() if g)
                     snippet = flat[max(0, m.start() - 60): m.end() + 40]
-                    yrs = [int(y) for y in YEAR_RE.findall(flat[max(0, m.start() - 200): m.end()])]
+                    # Årstallet står oftest rett etter tallet («… 95 518 tonn i 2025»), ellers før
+                    after = YEAR_RE.findall(flat[m.end(): m.end() + 25])
+                    yrs = [int(y) for y in (after or YEAR_RE.findall(flat[max(0, m.start() - 200): m.end()]))]
                     rows.append(dict(rapportaar=report_year, side=pno, metode="setning", felt=field,
-                                     etikett="", dataaar=(yrs[-1] if yrs else report_year),
+                                     etikett="", dataaar=((yrs[0] if after else yrs[-1]) if yrs else report_year),
                                      verdi=parse_num(val), utdrag=snippet))
 
             # 2) Tabeller som pdfplumber gjenkjenner
@@ -244,14 +251,23 @@ def extract_pdf(path, report_year):
                 yrs = [int(y) for y in YEAR_RE.findall(line)]
                 if len(yrs) < 3 or len(numbers(line)) != len(yrs):
                     continue
+                # Tabelltittelen står noen linjer over årstallslinjen, f.eks. «Omsatte mengder norske meieriprodukter»
+                context = " ".join(lines[max(0, i - 4): i + 1])
+                norsk_omsetning = bool(re.search(r"omsat|omsetning|solgt", context, re.I)
+                                       and re.search(r"norsk", context, re.I))
                 for nxt in lines[i + 1: i + 25]:
-                    lab, vals = label_of(nxt), numbers(nxt)
+                    clean = FOOTNOTE_RE.sub("", nxt)
+                    lab, vals = label_of(clean), numbers(clean)
                     if YEAR_RE.findall(nxt) and len(YEAR_RE.findall(nxt)) >= 3:
                         break
                     if len(vals) >= len(yrs) and CHEESE_RE.search(lab):
-                        for y, v in zip(yrs, vals[-len(yrs):]):
+                        felt = _classify(lab)
+                        if norsk_omsetning and felt == "annet_ost" and re.fullmatch(r"ost(?:\s+tonn)?", lab.strip(), re.I):
+                            felt = "norsk_ost_solgt_tonn"
+                        # Første tall etter etiketten hører til første år; kolonner for endring kommer etter
+                        for y, v in zip(yrs, vals[: len(yrs)]):
                             rows.append(dict(rapportaar=report_year, side=pno, metode="tekstlinje",
-                                             felt=_classify(lab), etikett=lab, dataaar=y, verdi=v, utdrag=nxt.strip()))
+                                             felt=felt, etikett=lab, dataaar=y, verdi=v, utdrag=nxt.strip()))
     return rows
 
 

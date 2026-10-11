@@ -104,8 +104,11 @@ KPI-filen (`ssb_14700_kpi_ost_mat.csv`) er utvidet til 2008M01–2026M08 og omfa
 
 ## 7. `manuelt_norsk_ost.csv` (manuell kilde, må fylles inn)
 
-Norsk ost solgt i Norge (tonn per år) fra Landbruksdirektoratets Markedsrapport. Nettstedet er ikke
-tilgjengelig fra analysemiljøet. Armington-modulen i `analyse.py` kjører når minst 10 år er fylt inn.
+Omsatt mengde norsk ost i Norge (tonn per år, inkludert dagligvare, storhusholdning og industri) fra
+Landbruksdirektoratets Markedsrapport, tabell «Omsatte mengder norske meieriprodukter» (kilde: Opplysningskontoret
+for melk og meieriprodukter). Fylt inn for 2018–2025 fra rapportene for 2020 og 2022–2025 (lastet opp av
+oppdragsgiver 11. oktober 2026). Tallene er identiske i alle rapportene der årene overlapper. 2008–2017 mangler.
+Armington-modulen i `analyse.py` kjører når minst 8 år er fylt inn.
 
 ## 8. `ssb_08801_import_hardost_land_2022_2025.csv`
 
@@ -152,5 +155,13 @@ For hvert dataår velger det verdien fra den nyeste rapporten, slik at revisjone
 rapport, side og tekstutdrag i `uttrekk_ost.csv`. Forslaget må kontrolleres mot PDF-ene før det brukes.
 Mangler en rapport, legges adressen inn i `data/landbruksdirektoratet/urls.txt` som «år url».
 
-Skriptet er testet på syntetiske PDF-er med samme oppbygning (tabeller med og uten rammer, og setninger).
-Det er ikke testet mot de faktiske rapportene, fordi nettstedet var sperret i analysemiljøet.
+Skriptet er testet på syntetiske PDF-er og på de faktiske rapportene for 2020 og 2022–2025. På de faktiske
+rapportene gir det samme serie som manuell avlesning for alle åtte årene. Nedlastingen er ikke testet, fordi
+nettstedet var sperret i analysemiljøet; PDF-ene ble lastet opp manuelt og lagt i `data/landbruksdirektoratet/pdf/`
+(ikke i git).
+
+## 11. `manuelt_ost_ub_kvote.csv`
+
+Import av ost under ordningen for utenlands bearbeiding (UB), andel av osteimporten innenfor tollkvote og samlet
+ostekvote, lest manuelt fra Markedsrapport 2020 og 2022–2025 med sidehenvisning i kolonnen kilde. Andelene for
+2022–2024 er oppgitt som «rundt halvparten» i rapportene og er lagt inn som 0,50.

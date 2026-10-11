@@ -1,0 +1,9 @@
+# Import av ost under «utenlands bearbeiding» (UB, norsk melk ystet i utlandet og reimportert), andel av osteimporten
+# innenfor tollkvote og samlet ostekvote. Kilde: Landbruksdirektoratets Markedsrapport, lest manuelt 11. oktober 2026.
+# Kvoten: 7 200 t fra EU til og med 2017, +300 t fra oktober 2018, 8 400 t fra 1.1.2019, i tillegg 200 t fra EFTA.
+aar,ub_import_tonn,andel_import_innenfor_kvote,ostekvoter_tonn,kilde
+2020,2180,0.52,8600,"Markedsrapport 2020 s. 26–27 (UB «ca. 2 180 tonn»; «52 prosent av osteimporten … innenfor tollkvoter»)"
+2022,2405,0.50,8600,"Markedsrapport 2022 s. 28–29 («rundt halvparten … innenfor tollkvoter»)"
+2023,2159,0.50,8600,"Markedsrapport 2023 s. 24–25 («rundt halvparten … innenfor tollkvoter»)"
+2024,2408,0.50,8600,"Markedsrapport 2024 s. 24–25 («rundt halvparten», eksklusiv UB)"
+2025,2700,0.48,8600,"Markedsrapport 2025 s. 25 (kvoter 8 600 t; «nesten 9 400 tonn … til ordinær tollsats» eksklusiv UB)"

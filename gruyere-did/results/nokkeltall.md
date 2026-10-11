@@ -60,11 +60,26 @@ Smelteost, gj.snitt per måned: 2011–2012 28 t, jan–apr 2013 21 t, mai 2013�
   andel innenfor kvote 0.00: Δln P = 0.94, ε = -0.84 (95 % KI -1.33 til -0.35)
   andel innenfor kvote 0.25: Δln P = 0.82, ε = -0.96 (95 % KI -1.52 til -0.41)
   andel innenfor kvote 0.50: Δln P = 0.66, ε = -1.20 (95 % KI -1.90 til -0.51)
+  andel innenfor kvote 0.60: Δln P = 0.57, ε = -1.38 (95 % KI -2.18 til -0.58)
   andel innenfor kvote 0.75: Δln P = 0.42, ε = -1.91 (95 % KI -3.02 til -0.80)
 
 ## 7. Norsk mot importert ost (Armington)
 Import av ost (SSB): 2024 20041 t, 2025 20693 t (Landbruksdirektoratet: 20 041 t og 20 683 t; avviket i 2025 skyldes trolig revisjoner)
-Hoppet over: manuelt_norsk_ost.csv har 1 år med norsk ost (minst 10 trengs). Fyll inn fra Landbruksdirektoratets Markedsrapport.
+År    import t   norsk t   importandel   rel. pris norsk/import (2018 = 1)
+2018     15471     85018      15.4%        1.000
+2019     16303     84549      16.2%        0.988
+2020     17712     91309      16.2%        0.941
+2021     19669     90057      17.9%        0.965
+2022     19343     86767      18.2%        0.937
+2023     19184     88538      17.8%        0.841
+2024     20041     93702      17.6%        0.885
+2025     20693     95518      17.8%        0.878
+  OLS, nivå med trend og koronadummy                   σ = +0.27 (SE 0.46), n = 8
+  OLS, nivå uten trend                                 σ = -0.84 (SE 0.28), n = 8
+  OLS, førstedifferanser                               σ = +0.43 (SE 0.44), n = 7
+  Kroneepisoden 2022–2023 (Δln(M/D) / Δln(P_D/P_M))    σ = +0.26, n = 2
+  UB-import (norsk melk ystet i utlandet) ligger i importtallene: 2159–2700 t per år i 2020–2025
+  Reformen i 2013 ligger utenfor perioden med norske tall, så σ kan ikke instrumenteres med den.
 
 ## 8. Etterspørsel etter importost, panel med 9 kategorier 2008–2025 (klynge på år, n = 162)
   Grunnmodell                      OLS: egenpris -0.52 (0.04), krysspris norsk ost -1.50 (0.55), inntekt +2.83 (0.20)

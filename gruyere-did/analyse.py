@@ -446,7 +446,7 @@ log()
 beta_q = m_ppml.params["ExP"]
 se_q = m_ppml.bse["ExP"]
 el_rows = []
-for s_q in [0.0, 0.25, 0.5, 0.75]:
+for s_q in [0.0, 0.25, 0.5, 0.6, 0.75]:
     p_before = (1 - s_q) * (p_taxed + SPECIFIC_TARIFF) + s_q * p_taxed
     p_after = (1 - s_q) * p_taxed * (1 + AD_VALOREM) + s_q * p_taxed
     dlnp = np.log(p_after / p_before)
@@ -485,18 +485,37 @@ ok = arm.dropna(subset=["norsk_ost_solgt_tonn"])
 log("## 7. Norsk mot importert ost (Armington)")
 log(f"Import av ost (SSB): 2024 {arm.loc[2024, 'import_tonn']:.0f} t, 2025 {arm.loc[2025, 'import_tonn']:.0f} t "
     "(Landbruksdirektoratet: 20 041 t og 20 683 t; avviket i 2025 skyldes trolig revisjoner)")
-if len(ok) >= 10:
+ub = pd.read_csv(DATA / "manuelt_ost_ub_kvote.csv", comment="#").set_index("aar")
+if len(ok) >= 8:
     ok = ok.assign(ln_md=np.log(ok["import_tonn"] / ok["norsk_ost_solgt_tonn"]),
                    ln_rel=np.log(ok["kpi_ost"] / (ok["import_enhetsverdi"] / ok["import_enhetsverdi"].iloc[0] * 100)),
-                   trend=ok.index - ok.index.min(), post=(ok.index >= REFORM_YEAR).astype(int))
-    ols = smf.ols("ln_md ~ ln_rel + trend", ok).fit(cov_type="HAC", cov_kwds={"maxlags": 2})
-    fs = smf.ols("ln_rel ~ post + trend", ok).fit()
-    rf = smf.ols("ln_md ~ post + trend", ok).fit()
-    sigma_iv = rf.params["post"] / fs.params["post"]
-    log(f"OLS: σ = {ols.params['ln_rel']:.2f} (HAC-SE {ols.bse['ln_rel']:.2f}), n = {len(ok)}")
-    log(f"IV (reform som instrument): σ = {sigma_iv:.2f}; førstetrinn F = {fs.tvalues['post'] ** 2:.1f}")
+                   trend=ok.index - ok.index.min(), covid=ok.index.isin([2020, 2021]).astype(int),
+                   importandel=ok["import_tonn"] / (ok["import_tonn"] + ok["norsk_ost_solgt_tonn"]))
+    ok.to_csv(RES / "armington_estimering.csv")
+    log("År    import t   norsk t   importandel   rel. pris norsk/import (2018 = 1)")
+    for y, r in ok.iterrows():
+        log(f"{y}  {r.import_tonn:8.0f}  {r.norsk_ost_solgt_tonn:8.0f}     {r.importandel:6.1%}        "
+            f"{np.exp(r.ln_rel - ok['ln_rel'].iloc[0]):.3f}")
+    arm_res = []
+    for name, f in [("OLS, nivå med trend og koronadummy", "ln_md ~ ln_rel + trend + covid"),
+                    ("OLS, nivå uten trend", "ln_md ~ ln_rel + covid")]:
+        m_ = smf.ols(f, ok).fit(cov_type="HAC", cov_kwds={"maxlags": 1})
+        arm_res.append(dict(modell=name, sigma=m_.params["ln_rel"], se=m_.bse["ln_rel"], n=int(m_.nobs)))
+    d_ = ok[["ln_md", "ln_rel"]].diff().dropna()
+    m_ = smf.ols("ln_md ~ ln_rel", d_).fit(cov_type="HC1")
+    arm_res.append(dict(modell="OLS, førstedifferanser", sigma=m_.params["ln_rel"], se=m_.bse["ln_rel"], n=int(m_.nobs)))
+    # Kroneepisoden: importprisen steg 21 prosent fra 2022 til 2023 (svakere krone), mens norsk pris steg mindre
+    dmd, drel = ok.loc[2023, "ln_md"] - ok.loc[2022, "ln_md"], ok.loc[2023, "ln_rel"] - ok.loc[2022, "ln_rel"]
+    arm_res.append(dict(modell="Kroneepisoden 2022–2023 (Δln(M/D) / Δln(P_D/P_M))", sigma=dmd / drel, se=np.nan, n=2))
+    arm_res = pd.DataFrame(arm_res)
+    arm_res.to_csv(RES / "armington_sigma.csv", index=False)
+    for _, r in arm_res.iterrows():
+        log(f"  {r.modell:52s} σ = {r.sigma:+.2f}" + (f" (SE {r.se:.2f})" if pd.notna(r.se) else "") + f", n = {r.n}")
+    log(f"  UB-import (norsk melk ystet i utlandet) ligger i importtallene: {ub['ub_import_tonn'].min():.0f}–"
+        f"{ub['ub_import_tonn'].max():.0f} t per år i {ub.index.min()}–{ub.index.max()}")
+    log("  Reformen i 2013 ligger utenfor perioden med norske tall, så σ kan ikke instrumenteres med den.")
 else:
-    log(f"Hoppet over: {manual.name} har {len(ok)} år med norsk ost (minst 10 trengs). "
+    log(f"Hoppet over: {manual.name} har {len(ok)} år med norsk ost (minst 8 trengs). "
         "Fyll inn fra Landbruksdirektoratets Markedsrapport.")
 log()
 

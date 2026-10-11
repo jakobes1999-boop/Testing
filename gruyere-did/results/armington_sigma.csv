@@ -1,0 +1,5 @@
+modell,sigma,se,n
+"OLS, nivå med trend og koronadummy",0.2653206765776912,0.46492297340350663,8
+"OLS, nivå uten trend",-0.8350143185460315,0.2754265751793251,8
+"OLS, førstedifferanser",0.43343549754692956,0.43722160136154736,7
+Kroneepisoden 2022–2023 (Δln(M/D) / Δln(P_D/P_M)),0.26299549422520546,,2
